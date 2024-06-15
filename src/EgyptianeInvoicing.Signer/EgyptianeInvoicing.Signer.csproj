@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="BouncyCastle" Version="1.8.9" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Pkcs11Interop" Version="5.1.2" />
     <PackageReference Include="System.Security.Cryptography.Pkcs" Version="8.0.0" />
@@ -15,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\buildingBlocks\BuildingBlocks.csproj" />
+    <ProjectReference Include="..\EgyptianeInvoicing.Shared\EgyptianeInvoicing.Shared.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,5 @@
 ﻿using BuildingBlocks.Results;
+using EgyptianeInvoicing.Shared.Dtos.SignerDto;
 using EgyptianeInvoicing.Signer.Services.Abstractions;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -25,14 +26,14 @@ namespace EgyptianeInvoicing.Signer.Services
         {
             _logger = logger;
         }
-        public Result<string> SignWithCMS(string serializedJson, string dllLibPath, string tokenPin, string tokenCertificate)
+        public Result<string> SignWithCMS(string serializedJson ,TokenSigningSettingsDto tokenSigningSettings)
         {
-            Result<bool> validationResult = ValidateInputs(serializedJson, dllLibPath, tokenPin, tokenCertificate);
+            Result<bool> validationResult = ValidateInputs(serializedJson, tokenSigningSettings.DllLibPath, tokenSigningSettings.TokenPin, tokenSigningSettings.TokenCertificate);
             if (validationResult.IsFailure)
                 return Result.Failure<string>(validationResult.Error);
 
             byte[] data = Encoding.UTF8.GetBytes(serializedJson);
-            Result<IPkcs11Library> pkcs11LibraryResult = LoadPkcs11Library(dllLibPath);
+            Result<IPkcs11Library> pkcs11LibraryResult = LoadPkcs11Library(tokenSigningSettings.DllLibPath);
             if (pkcs11LibraryResult.IsFailure)
                 return Result.Failure<string>(pkcs11LibraryResult.Error);
 
@@ -44,7 +45,7 @@ namespace EgyptianeInvoicing.Signer.Services
             if (sessionResult.IsFailure)
                 return Result.Failure<string>(sessionResult.Error);
 
-            Result<Unit> loginResult = Login(sessionResult.Value, tokenPin);
+            Result<Unit> loginResult = Login(sessionResult.Value, tokenSigningSettings.TokenPin);
             if (loginResult.IsFailure)
                 return Result.Failure<string>(loginResult.Error);
 
@@ -52,7 +53,7 @@ namespace EgyptianeInvoicing.Signer.Services
             if (certificateResult.IsFailure)
                 return Result.Failure<string>(certificateResult.Error);
 
-            Result<X509Certificate2> certForSigningResult = FindCertificateInStore(tokenCertificate);
+            Result<X509Certificate2> certForSigningResult = FindCertificateInStore(tokenSigningSettings.TokenCertificate);
             if (certForSigningResult.IsFailure)
                 return Result.Failure<string>(certForSigningResult.Error);
 
