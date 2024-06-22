@@ -2,11 +2,11 @@
 {
     public class FreezeStatusDto
     {
-        public bool Frozen { get; set; }
-        public int? Type { get; set; }
-        public int? Scope { get; set; }
-        public DateTime? ActionDate { get; set; }
-        public string AuCode { get; set; }
-        public string AuName { get; set; }
+        public bool frozen { get; set; }
+        public int? type { get; set; }
+        public int? scope { get; set; }
+        public DateTime? actionDate { get; set; }
+        public string? auCode { get; set; }
+        public string? auName { get; set; }
     }
 }

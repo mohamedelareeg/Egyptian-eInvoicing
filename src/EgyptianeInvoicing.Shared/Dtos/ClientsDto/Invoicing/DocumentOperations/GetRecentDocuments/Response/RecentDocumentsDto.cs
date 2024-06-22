@@ -2,7 +2,7 @@
 {
     public class RecentDocumentsDto
     {
-        public List<DocumentSummaryDto> Result { get; set; }
-        public RecentDocumentMetadataDto Metadata { get; set; }
+        public List<DocumentSummaryDto>? result { get; set; }
+        public RecentDocumentMetadataDto? metadata { get; set; }
     }
 }

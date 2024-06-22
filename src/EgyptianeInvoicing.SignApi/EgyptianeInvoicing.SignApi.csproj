@@ -11,12 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EgyptianeInvoicing.Shared\EgyptianeInvoicing.Shared.csproj" />
-    <ProjectReference Include="..\EgyptianeInvoicing.Signer\EgyptianeInvoicing.Signer.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\" />
+    <ProjectReference Include="..\EgyptianeInvoicing.Core\EgyptianeInvoicing.Core.csproj" />
   </ItemGroup>
 
 </Project>

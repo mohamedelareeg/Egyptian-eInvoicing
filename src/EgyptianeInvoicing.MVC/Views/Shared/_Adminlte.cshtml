@@ -1,0 +1,120 @@
+﻿@using System.Globalization
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer localizer
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@localizer["Product Name"]</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="~/lib/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link rel="stylesheet" href="~/lib/icheck-bootstrap/icheck-bootstrap.min.css">
+    <link rel="stylesheet" href="~/lib/overlayScrollbars/css/OverlayScrollbars.min.css">
+    <link rel="stylesheet" href="~/lib/daterangepicker/daterangepicker.css">
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    <!-- Conditional Styles -->
+    @if (CultureInfo.CurrentCulture.Name.StartsWith("ar"))
+    {
+        <link rel="stylesheet" href="~/theme/css/bootstrap-rtl.min.css">
+        <link rel="stylesheet" href="~/theme/css/rtl/adminlte.rtl.css">
+    }
+    else
+    {
+        <link rel="stylesheet" href="~/theme/css/adminlte.min.css">
+    }
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="~/css/site.css" />
+
+    <!-- DataTables Styles -->
+    <link href="~/DataTables/datatables.css" rel="stylesheet" />
+    <link href="~/DataTables/buttons.dataTables.css" rel="stylesheet" />
+
+    <!-- Page-specific Styles -->
+    <link href="~/css/customstyle.css" rel="stylesheet" />
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+        <!-- Partials -->
+        <partial name="_AdminlteMainHeader" />
+        <partial name="_AdminlteMainSidebar" />
+
+        <div class="content-wrapper">
+            <main role="main" class="content">
+                <!-- Loader -->
+                <div class="loader-container active" id="loaderContainer">
+                    <div class="loader">
+                        <img src="~/favicon.svg" alt="Loading..." width="100" height="100">
+                    </div>
+                </div>
+
+                <!-- Alerts and Content -->
+                <div class="custom-container animated">
+                    @RenderBody()
+                    <!-- Back to Top Button -->
+                    <a id="back-to-top" href="#" class="btn btn-primary back-to-top" role="button" aria-label="Scroll to top">
+                        <i class="fas fa-chevron-up"></i>
+                    </a>
+                </div>
+            </main>
+        </div>
+
+        <!-- AdminLTE Footer -->
+        <partial name="_AdminlteFooter" />
+    </div>
+
+    <script src="~/lib/jquery-ui/jquery-ui.min.js"></script>
+    <script src="~/lib/daterangepicker/daterangepicker.js"></script>
+    <script src="~/lib/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+    <script src="~/theme/js/adminlte.js"></script>
+
+    <script src="~/lib/sweetalert.min.js"></script>
+    <script src="~/lib/sweetalert2/sweetalert2.js"></script>
+    <script src="~/lib/toastr/toastr.min.js"></script>
+    <script src="~/js/site.js"></script>
+
+
+
+    <script src="~/datatables/ajax.js"></script>
+    <script src="~/DataTables/datatables.js"></script>
+    <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/DataTables/buttons.dataTables.js"></script>
+
+    <script src="~/DataTables/Export/pdfmake-0.1.36/pdfmake.js"></script>
+    <script src="~/DataTables/Export/pdfmake-0.1.36/vfs_fonts.js"></script>
+    <script src="~/DataTables/Export/Buttons-1.6.5/js/buttons.html5.min.js"></script>
+    <script src="~/DataTables/Export/Buttons-1.6.5/js/buttons.print.min.js"></script>
+
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+
+    <link href="~/lib/sweetalert2/sweetalert2.min.css" rel="stylesheet" />
+    <script src="~/lib/sweetalert2/sweetalert2.min.js"></script>
+
+    <script src="~/lib/select2/js/select2.js"></script>
+    <script src="~/lib/loadingoverlay.js"></script>
+    <script src="~/lib/ua-parser.min.js"></script>
+
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
+
+
+    <!-- Page-specific Scripts -->
+    <script>
+        // Simulate loading with the spinner
+        document.addEventListener("DOMContentLoaded", function () {
+            var loaderContainer = document.getElementById("loaderContainer");
+
+            var interval = setInterval(function () {
+                // Simulate loading for a certain duration
+                clearInterval(interval);
+                loaderContainer.classList.remove("active");
+            }, 300); // Change the duration as needed
+        });
+    </script>
+</body>
+</html>

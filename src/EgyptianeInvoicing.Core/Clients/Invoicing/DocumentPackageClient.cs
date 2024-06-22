@@ -18,7 +18,7 @@ namespace EgyptianeInvoicing.Core.Clients.Invoicing
         public DocumentPackageClient(IHttpClientFactory httpClientFactory, ISecureStorageService secureStorageService)
         {
             _httpClientFactory = httpClientFactory;
-            _invoicingClient = httpClientFactory.CreateClient("InvoicingBaseUrl");
+            _invoicingClient = httpClientFactory.CreateClient("SystemApiBaseUrl");
             _secureStorageService = secureStorageService;
         }
         public async Task<PackageDownloadResponseDto> RequestDocumentPackageAsync(DocumentPackageRequestDto requestDto)

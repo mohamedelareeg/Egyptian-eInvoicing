@@ -2,9 +2,10 @@
 {
     public class RecentDocumentMetadataDto
     {
-        public int TotalPages { get; set; }
-        public int TotalCount { get; set; }
-        public bool QueryContainsCompleteResultSet { get; set; }
-        public int RemainingRecordsCount { get; set; }
+        public int? totalPages { get; set; }
+        public int? totalCount { get; set; }
+        public bool? queryContainsCompleteResultSet { get; set; }
+        public int? remainingRecordsCount { get; set; }
+        public string? continuationToken { get; set; }
     }
 }

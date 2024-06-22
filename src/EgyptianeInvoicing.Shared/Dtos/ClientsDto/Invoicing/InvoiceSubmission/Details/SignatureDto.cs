@@ -2,7 +2,7 @@
 {
     public class SignatureDto
     {
-        public string SignatureType { get; set; }
+        public string Type { get; set; }
         public string Value { get; set; }
     }
 }

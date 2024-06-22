@@ -1,0 +1,260 @@
+﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+
+a.navbar-brand {
+    white-space: normal;
+    text-align: center;
+    word-break: break-all;
+}
+
+/* Provide sufficient contrast against white background */
+a {
+    color: #0366d6;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #483dbf;
+    border-color: #342b94;
+}
+
+.text-primary {
+    color: #483dbf;
+}
+.page-item.active
+.page-link {
+    position: relative;
+    display: block;
+    padding: 0.5rem 0.75rem;
+    margin-left: -1px;
+    line-height: 1.25;
+    color: white;
+    background-color: #483dbf !important;
+    border: 1px solid #342b94 !important;
+}
+
+.nav-pills .nav-link.active,
+.nav-pills .show > .nav-link {
+    color: #fff;
+    background-color: #483dbf;
+    border-color: #342b94;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+.border-top {
+    border-top: 1px solid #e5e5e5;
+}
+
+.border-bottom {
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow {
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+button.accept-policy {
+    font-size: 1rem;
+    line-height: inherit;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px;
+    /* Vertically center the text there */
+}
+
+
+.ItemTranTable {
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    border: 1px solid #4CAF50;
+}
+
+.ItemTranTable td,
+#ItemTranTable th {
+    border: 1px solid #4CAF50;
+    /*padding: 1px;*/
+    line-height: 20px;
+    padding-left: 5px;
+}
+
+.ItemTranTable th {
+    border: 1px solid #808080;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    text-align: left;
+    background-color: #4CAF50;
+    color: white;
+    line-height: 30px;
+    padding-left: 5px;
+}
+
+.ItemTranTable tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.ItemTranTable tr:hover {
+    background-color: #6cba4d;
+    color: white;
+}
+
+.ItemTranTable a:hover {
+    color: #ff0000;
+}
+
+.ItemTranTable td,
+.ItemTranTable th {
+    font-size: 12px;
+}
+
+
+.CustomBlueTable {
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    border: 1px solid #342b94;
+}
+
+    .CustomBlueTable td,
+    #CustomBlueTable th {
+        border: 1px solid #342b94;
+        /*padding: 1px;*/
+        line-height: 20px;
+        padding-left: 5px;
+    }
+
+    .CustomBlueTable th {
+        border: 1px solid #342b94;
+        padding-top: 1px;
+        padding-bottom: 1px;
+        text-align: left;
+        background-color: #483dbf;
+        color: white;
+        line-height: 30px;
+        padding-left: 5px;
+    }
+
+.CustomBlueTable tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+    .CustomBlueTable tr:hover {
+        background-color: #847be3;
+        color: white;
+    }
+
+.CustomBlueTable a:hover {
+    color: #ff0000;
+}
+
+.CustomBlueTable td,
+.CustomBlueTable th {
+    font-size: 12px;
+}
+
+
+.PrintInvoiceTable {
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    border: 1px solid #4CAF50;
+}
+
+.PrintInvoiceTable td,
+#PrintInvoiceTable thth {
+    border: 1px solid #000000;
+    padding-left: 5px;
+}
+
+.PrintInvoiceTable th {
+    border: 1px solid #808080;
+    padding-left: 5px;
+    text-align: left;
+    background-color: #4CAF50;
+    color: white;
+}
+
+.PrintInvoiceTable tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.PrintInvoiceTable tr:hover {
+    background-color: #6cba4d;
+}
+
+.PrintInvoiceTable td,
+.PrintInvoiceTable th {
+    font-size: 12px;
+}
+
+.nopadding {
+    padding: 0px 0px 0px 0px;
+    margin: 0 !important;
+}
+
+@media print {
+
+    .hidden-print,
+    .hidden-print * {
+        display: none !important;
+    }
+}
+
+.imgCustom50px {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+    width: 50px;
+}
+
+.imgCustom50px:hover {
+    box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
+}
+
+.imgCustom75px {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+    width: 75px;
+}
+
+.imgCustom100px {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+    width: 100px;
+}
+
+.imgCustomThurmal {
+    width: 189px;
+    height: 95px;
+}
+

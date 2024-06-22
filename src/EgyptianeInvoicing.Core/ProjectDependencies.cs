@@ -1,4 +1,5 @@
-﻿using EgyptianeInvoicing.Core.Clients.Common;
+﻿using BuildingBlocks.Behaviors;
+using EgyptianeInvoicing.Core.Clients.Common;
 using EgyptianeInvoicing.Core.Clients.Common.Abstractions;
 using EgyptianeInvoicing.Core.Clients.Invoicing;
 using EgyptianeInvoicing.Core.Clients.Invoicing.Abstractions;
@@ -7,17 +8,35 @@ using EgyptianeInvoicing.Core.Services.Abstractions;
 using EgyptianeInvoicing.Shared.Dtos.SignerDto;
 using EgyptianeInvoicing.Signer.Services;
 using EgyptianeInvoicing.Signer.Services.Abstractions;
+using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.IO;
+using System.Reflection;
+using EgyptianeInvoicing.Signer;
 
 namespace EgyptianeInvoicing.Core
 {
     public static class ProjectDependencies
     {
-        public static IServiceCollection AddCoreDependencies(this IServiceCollection services)
+        public static IServiceCollection AddCoreDependencies(this IServiceCollection services, IConfiguration _configuration)
         {
+            #region Mediator & Pipelines
+            //MediatR
+            services.AddMediatR(cfg =>
+            {
+                cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+                //MediatR PopleLines
+                cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationPiplineBehavior<,>));
+                cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(LoggingPipelineBehavior<,>));
+            });
+
+            //Fluent Validation
+            services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly(), includeInternalTypes: true);
+            #endregion
+
             var configuration = new ConfigurationBuilder()
                 .AddJsonFile("signersettings.json", optional: false, reloadOnChange: true)
                 .Build();
@@ -69,6 +88,7 @@ namespace EgyptianeInvoicing.Core
             services.AddScoped<IInvoiceSubmissionClient, InvoiceSubmissionClient>();
             #endregion
             //Services
+            services.AddSignerDependencies(_configuration);
             services.AddScoped<ISecureStorageService, SecureStorageService>();
             services.AddScoped<ITokenSigner, TokenSigner>();
             return services;

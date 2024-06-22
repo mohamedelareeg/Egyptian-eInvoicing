@@ -27,5 +27,6 @@ namespace EgyptianeInvoicing.Shared.Dtos.ClientsDto.Invoicing.InvoiceSubmission
         public double ExtraDiscountAmount { get; set; }
         public double TotalItemsDiscountAmount { get; set; }
         public List<SignatureDto> Signatures { get; set; }
+        public string[] References { get; set; }
     }
 }

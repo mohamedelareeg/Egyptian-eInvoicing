@@ -2,35 +2,37 @@
 {
     public class DocumentSummaryDto
     {
-        public string Uuid { get; set; }
-        public string SubmissionUUID { get; set; }
-        public string LongId { get; set; }
-        public string PublicUrl { get; set; }
-        public string InternalId { get; set; }
-        public string TypeName { get; set; }
-        public string TypeVersionName { get; set; }
-        public string IssuerId { get; set; }
-        public string IssuerName { get; set; }
-        public string IssuerType { get; set; }
-        public string ReceiverId { get; set; }
-        public string ReceiverName { get; set; }
-        public string ReceiverType { get; set; }
-        public DateTime DateTimeIssued { get; set; }
-        public DateTime DateTimeReceived { get; set; }
-        public decimal TotalSales { get; set; }
-        public decimal TotalDiscount { get; set; }
-        public decimal NetAmount { get; set; }
-        public decimal Total { get; set; }
-        public string Status { get; set; }
-        public DateTime? CancelRequestDate { get; set; }
-        public DateTime? RejectRequestDate { get; set; }
-        public DateTime? CancelRequestDelayedDate { get; set; }
-        public DateTime? RejectRequestDelayedDate { get; set; }
-        public DateTime? DeclineCancelRequestDate { get; set; }
-        public DateTime? DeclineRejectRequestDate { get; set; }
-        public string DocumentStatusReason { get; set; }
-        public string CreatedByUserId { get; set; }
-        public FreezeStatusDto FreezeStatus { get; set; }
-        public string LateSubmissionRequestNumber { get; set; }
+        public string? uuid { get; set; }
+        public string? submissionUUID { get; set; }
+        public string? longId { get; set; }
+        public string? publicUrl { get; set; }
+        public string? internalId { get; set; }
+        public string? typeName { get; set; }
+        public string? documentTypeNamePrimaryLang { get; set; }
+        public string? documentTypeNameSecondaryLang { get; set; }
+        public string? typeVersionName { get; set; }
+        public string? issuerId { get; set; }
+        public string? issuerName { get; set; }
+        public string? issuerType { get; set; }
+        public string? receiverId { get; set; }
+        public string? receiverName { get; set; }
+        public string? receiverType { get; set; }
+        public DateTime? dateTimeIssued { get; set; }
+        public DateTime? dateTimeReceived { get; set; }
+        public decimal totalSales { get; set; }
+        public decimal totalDiscount { get; set; }
+        public decimal netAmount { get; set; }
+        public decimal total { get; set; }
+        public string? status { get; set; }
+        public DateTime? cancelRequestDate { get; set; }
+        public DateTime? rejectRequestDate { get; set; }
+        public DateTime? cancelRequestDelayedDate { get; set; }
+        public DateTime? rejectRequestDelayedDate { get; set; }
+        public DateTime? declineCancelRequestDate { get; set; }
+        public DateTime? declineRejectRequestDate { get; set; }
+        public string? documentStatusReason { get; set; }
+        public string? createdByUserId { get; set; }
+        public FreezeStatusDto? freezeStatus { get; set; }
+        public string? lateSubmissionRequestNumber { get; set; }
     }
 }

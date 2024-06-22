@@ -17,7 +17,7 @@ using System.Text;
 
 namespace EgyptianeInvoicing.Signer.Services
 {
-    internal class TokenSigningService : ISigningService
+    public class TokenSigningService : ISigningService
     {
 
         private readonly ILogger<TokenSigningService> _logger;

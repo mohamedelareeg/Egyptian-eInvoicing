@@ -16,7 +16,7 @@ namespace EgyptianeInvoicing.Core.Clients.Invoicing
         public DocumentRetrievalClient(IHttpClientFactory httpClientFactory, ISecureStorageService secureStorageService)
         {
             _httpClientFactory = httpClientFactory;
-            _invoicingClient = httpClientFactory.CreateClient("InvoicingBaseUrl");
+            _invoicingClient = httpClientFactory.CreateClient("SystemApiBaseUrl");
             _secureStorageService = secureStorageService;
         }
         public async Task<DocumentRetrievalDto> GetDocumentAsync(string documentUUID)

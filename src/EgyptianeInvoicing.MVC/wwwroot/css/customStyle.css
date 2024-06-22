@@ -1,0 +1,183 @@
+﻿/* Loader and Spinner Styles */
+.loader-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.loader img {
+    animation: rotate 2s linear infinite;
+    width: 100px;
+    height: 100px;
+}
+
+.loader-container.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.spinner {
+    animation: rotate 2s linear infinite;
+    width: 50px;
+    height: 50px;
+}
+
+.path {
+    stroke: #007bff;
+    stroke-linecap: round;
+    animation: dash 1.5s ease-in-out infinite;
+}
+
+/* General Styles */
+.custom-container {
+    margin: 50px auto;
+    padding: 20px;
+    background: #fff;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.custom-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+/* Table Styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+    table tbody tr:hover {
+        background-color: #f5f5f5;
+    }
+
+th, td {
+    border: 1px solid #dee2e6;
+    padding: 12px;
+    text-align: left;
+}
+
+th {
+    background-color: #342b94;
+    color: #fff;
+}
+
+td {
+    background-color: #fff;
+    color: #495057;
+}
+
+h4 {
+    margin-top: 0;
+    font-size: 24px;
+    color: #343a40;
+}
+
+/* Button Styles */
+.btn {
+    cursor: pointer;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    transition: background-color 0.3s, transform 0.2s ease-in-out;
+}
+
+    .btn:hover {
+        transform: scale(1.05);
+    }
+
+.btn-primary {
+    background-color: #342b94;
+}
+
+    .btn-primary:hover {
+        background-color: #342b94;
+    }
+
+.btn-secondary {
+    background-color: #6c757d;
+}
+
+    .btn-secondary:hover {
+        background-color: #545b62;
+    }
+
+/* Input Field Animation Styles */
+.input-field input:focus,
+.input-field select:focus,
+.input-field textarea:focus {
+    border-color: #342b94;
+    transition: border-color 0.3s ease-in-out;
+    box-shadow: 0 0 8px rgba(52, 43, 148, 0.3);
+}
+
+.input-field label {
+    transition: color 0.3s ease-in-out;
+}
+
+.is-invalid {
+    border-color: #dc3545 !important;
+    transition: border-color 0.3s ease-in-out;
+}
+
+.input-field input[type="checkbox"] {
+    transform: scale(1.5);
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+    .input-field input[type="checkbox"]:hover {
+        transform: scale(1.6);
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .input-field input[type="checkbox"]:active {
+        transform: scale(1.4);
+        transition: transform 0.2s ease-in-out;
+    }
+
+.input-field input:focus + label,
+.input-field select:focus + label,
+.input-field textarea:focus + label {
+    color: #342b94;
+    transition: color 0.3s ease-in-out;
+}
+
+.input-field input:not(:placeholder-shown) + label,
+.input-field select:not(:placeholder-shown) + label,
+.input-field textarea:not(:placeholder-shown) + label {
+    color: #342b94;
+    transition: color 0.3s ease-in-out;
+}
+
+.input-field input:not(:focus) + label,
+.input-field select:not(:focus) + label,
+.input-field textarea:not(:focus) + label {
+    color: #495057;
+    transition: color 0.3s ease-in-out;
+}
+
+.input-field input::placeholder,
+.input-field select::placeholder,
+.input-field textarea::placeholder {
+    color: #ced4da;
+    transition: color 0.3s ease-in-out;
+}

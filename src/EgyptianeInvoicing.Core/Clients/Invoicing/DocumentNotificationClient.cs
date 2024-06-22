@@ -15,7 +15,7 @@ namespace EgyptianeInvoicing.Core.Clients.Invoicing
         public DocumentNotificationClient(IHttpClientFactory httpClientFactory, ISecureStorageService secureStorageService)
         {
             _httpClientFactory = httpClientFactory;
-            _invoicingClient = httpClientFactory.CreateClient("InvoicingBaseUrl");
+            _invoicingClient = httpClientFactory.CreateClient("SystemApiBaseUrl");
             _secureStorageService = secureStorageService;
         }
         public async Task<HttpResponseMessage> ReceiveDocumentNotificationsAsync(string deliveryId, string type, int count, DocumentNotificationMessageDto[] messages)

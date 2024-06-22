@@ -6,6 +6,7 @@ using System;
 using System.IO;
 using EgyptianeInvoicing.Core.Services.Abstractions;
 using EgyptianeInvoicing.Shared.Dtos.SignerDto;
+using Microsoft.Extensions.Options;
 
 namespace EgyptianeInvoicing.Core.Services
 {
@@ -14,11 +15,14 @@ namespace EgyptianeInvoicing.Core.Services
         private readonly ISigningService _signingService;
         private readonly ISerializationService _serializationService;
         private readonly TokenSigningSettingsDto _settings;
-        public TokenSigner(ISigningService signingService, ISerializationService serializationService, TokenSigningSettingsDto settings)
+        public TokenSigner(
+           ISigningService signingService,
+           ISerializationService serializationService,
+           IOptions<TokenSigningSettingsDto> settings)
         {
             _signingService = signingService;
             _serializationService = serializationService;
-            _settings = settings;
+            _settings = settings.Value;
         }
 
         public Result<string> SignDocuments(string serializedJson)

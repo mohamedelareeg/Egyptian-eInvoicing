@@ -4,5 +4,7 @@
     {
         public string CurrencySold { get; set; }
         public decimal AmountEGP { get; set; }
+        public decimal AmountSold { get; set; }
+        public decimal CurrencyExchangeRate { get; set; }
     }
 }

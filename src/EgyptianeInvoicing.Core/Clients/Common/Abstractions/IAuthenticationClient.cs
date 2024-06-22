@@ -2,7 +2,7 @@
 {
     public interface IAuthenticationClient
     {
-        Task<string> LoginAndGetAccessTokenAsync(string idSrvBaseUrl, string clientId, string clientSecret, string registrationNumber = null);
+        Task<string> LoginAndGetAccessTokenAsync(string registrationNumber = null);
 
     }
 }

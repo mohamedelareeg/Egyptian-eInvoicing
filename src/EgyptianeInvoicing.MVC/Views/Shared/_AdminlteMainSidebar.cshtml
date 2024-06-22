@@ -1,0 +1,106 @@
+﻿@{
+
+    var seedData = new EgyptianeInvoicing.MVC.Constants.ModuleSeeding();
+    var modulesList = seedData.GetModulesList();
+}
+
+
+<aside class="main-sidebar sidebar-dark-primary elevation-4" >
+        <a href="@Url.Action("Index", "Home")" class="brand-link">
+        <img src='~/images/logo-icon.png' alt="AdminLTE Logo" class="brand-image img-circle elevation-3">
+        <span class="brand-text font-weight-light">@localizer["System Name"]</span>
+        </a>
+
+
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                @foreach (var item in modulesList)
+                {
+
+                    @if (!string.IsNullOrWhiteSpace(item.Permission) && AuthorizationService.AuthorizeAsync(User, item.Permission).Result.Succeeded||string.IsNullOrWhiteSpace(item.Permission) )
+
+                          if (item.Parent == 1)
+                    {
+                        var path = '/' + (item.IsAction == true ? string.Empty : item.ControllerName + '/') + item.ActionName;
+                        <li class="nav-item has-treeview">
+                            <a href="@(item.Childs == null ? path : "#")" class="nav-link">
+                                <i class="nav-icon fas @(string.IsNullOrWhiteSpace(item.FaIcon) ? "fa-folder" : item.FaIcon)"></i>
+                                <p>
+
+                                    @localizer[item.PageName]
+                                    @if (item.Childs != null)
+                                    {
+                                        <i class="right fas fa-angle-left"></i>
+                                    }
+                                </p>
+                            </a>
+
+                            @if (item.Childs != null)
+                                {
+                                    foreach (var child in item.Childs)
+                                    {
+                                        @if (AuthorizationService.AuthorizeAsync(User, child.Permission).Result.Succeeded)
+                                        {
+                                            var childpath = '/' + item.ControllerName + '/' + (child.IsAction == true ? string.Empty : child.ControllerName + '/') + child.ActionName;
+                                            <ul class="nav nav-treeview">
+                                                <li class="nav-item" style="margin-left: 10px;">
+                                                    <a href="@(child.Childs == null ? childpath : "#")" class="nav-link">
+                                                        <i class="nav-icon fas @(string.IsNullOrWhiteSpace(child.FaIcon) ? "fa-folder" : child.FaIcon)"></i>
+                                                        @localizer[child.PageName]
+                                                        @if (child.Childs != null)
+                                                        {
+                                                            <i class="right fas fa-angle-left"></i>
+                                                        }
+                                                    </a>
+
+                                                    @if (child.Childs != null)
+                                                    {
+                                                        foreach (var subchild in child.Childs)
+                                                        {
+                                                            @if (AuthorizationService.AuthorizeAsync(User, subchild.Permission).Result.Succeeded)
+                                                            {
+                                                                var subchildpath = '/' + item.ControllerName + '/' + child.ControllerName + '/' + (subchild.IsAction == true ? string.Empty : subchild.ControllerName + '/') + subchild.ActionName;
+                                                                <ul class="nav nav-treeview">
+                                                                    <li class="nav-item" style="margin-left: 10px;">
+                                                                        <a href="@subchildpath" class="nav-link">
+                                                                            <i class="nav-icon fas @(string.IsNullOrWhiteSpace(subchild.FaIcon) ? "fa-folder" : subchild.FaIcon)"></i>
+                                                                            @localizer[subchild.PageName]
+                                                                            @if (subchild.Childs != null)
+                                                                            {
+                                                                                <i class="right fas fa-angle-left"></i>
+                                                                            }
+                                                                        </a>
+                                                                    </li>
+                                                                </ul>
+                                                            }
+                                                        }
+                                                    }
+                                                </li>
+                                            </ul>
+                                        }
+                                    }
+                                }
+                            </li>
+                    }
+
+                    }
+                }
+            </ul>
+        </nav>
+
+
+        </div>
+    </aside>
+
+<script>
+    var url = window.location;
+    // for sidebar menu entirely but not cover treeview
+    $('ul.nav-sidebar a').filter(function () {
+        return this.href == url;
+    }).addClass('active');
+
+    // for treeview
+    $('ul.nav-treeview a').filter(function () {
+        return this.href == url;
+    }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
+</script>

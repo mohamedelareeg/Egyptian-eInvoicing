@@ -8,7 +8,7 @@ using System.Text;
 
 namespace EgyptianeInvoicing.Signer.Services
 {
-    internal class JsonSerializationService : ISerializationService
+    public class JsonSerializationService : ISerializationService
     {
         private readonly ILogger<JsonSerializationService> _logger;
 

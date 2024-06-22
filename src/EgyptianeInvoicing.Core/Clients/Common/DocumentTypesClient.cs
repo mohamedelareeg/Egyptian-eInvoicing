@@ -13,7 +13,7 @@ namespace EgyptianeInvoicing.Core.Clients.Common
         public DocumentTypesClient(IHttpClientFactory httpClientFactory, ISecureStorageService secureStorageService)
         {
             _httpClientFactory = httpClientFactory;
-            _invoicingClient = httpClientFactory.CreateClient("InvoicingBaseUrl");
+            _invoicingClient = httpClientFactory.CreateClient("SystemApiBaseUrl");
             _secureStorageService = secureStorageService;
         }
         //GET
