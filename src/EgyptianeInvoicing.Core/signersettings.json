@@ -1,4 +1,7 @@
 {
+  "ConnectionStrings": {
+    "SqlServer": "Server=.;Database=E-Invoice;Integrated Security=true;MultipleActiveResultSets=true;TrustServerCertificate=true;"
+  },
   "TokenSigningSettings": {
     "DllLibPath": "eps2003csp11.dll",
     "TokenPin": "05827500",
@@ -10,17 +13,13 @@
       "IdSrvBaseUrl": "https://id.preprod.eta.gov.eg",
       "InvoicingBaseUrl": "https://preprod.invoicing.eta.gov.eg",
       "SystemApiBaseUrl": "https://api.preprod.invoicing.eta.gov.eg",
-      "RegistrationPortalBaseUrl": "https://profile.preprod.eta.gov.eg",
-      "ClientId": "e965f317-905a-483c-909e-d576c25693b4",
-      "ClientSecret": "abedf462-9050-4659-8d72-ffe261891eb2"
+      "RegistrationPortalBaseUrl": "https://profile.preprod.eta.gov.eg"
     },
     "Prod": {
       "IdSrvBaseUrl": "https://id.eta.gov.eg",
       "InvoicingBaseUrl": "https://invoicing.eta.gov.eg",
       "SystemApiBaseUrl": "https://api.invoicing.eta.gov.eg",
-      "RegistrationPortalBaseUrl": "https://profile.eta.gov.eg",
-      "ClientId": "e965f317-905a-483c-909e-d576c25693b4",
-      "ClientSecret": "abedf462-9050-4659-8d72-ffe261891eb2"
+      "RegistrationPortalBaseUrl": "https://profile.eta.gov.eg"
     }
   }
 }

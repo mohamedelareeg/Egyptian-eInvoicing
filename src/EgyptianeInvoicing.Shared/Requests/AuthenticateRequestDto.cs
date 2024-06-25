@@ -8,7 +8,7 @@ namespace EgyptianeInvoicing.Shared.Requests
 {
     public class AuthenticateRequestDto
     {
-        public string? RegistrationNumber { get; set; } = null;
+        public Guid CompanyId { get; set; }
 
     }
 }

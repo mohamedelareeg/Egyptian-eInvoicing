@@ -632,9 +632,9 @@
     timerProgressBar.style.removeProperty('transition');
     timerProgressBar.style.width = '100%';
     var timerProgressBarFullWidth = parseInt(window.getComputedStyle(timerProgressBar).width);
-    var timerProgressBarPercent = parseInt(timerProgressBarWidth / timerProgressBarFullWidth * 100);
+    var timerProgressBARPercent = parseInt(timerProgressBarWidth / timerProgressBarFullWidth * 100);
     timerProgressBar.style.removeProperty('transition');
-    timerProgressBar.style.width = "".concat(timerProgressBarPercent, "%");
+    timerProgressBar.style.width = "".concat(timerProgressBARPercent, "%");
   };
 
   // Detect Node env
@@ -1829,7 +1829,7 @@
     didClose: undefined,
     onDestroy: undefined,
     didDestroy: undefined,
-    scrollbarPadding: true
+    scrollbARPadding: true
   };
   var updatableParams = ['allowEscapeKey', 'allowOutsideClick', 'background', 'buttonsStyling', 'cancelButtonAriaLabel', 'cancelButtonColor', 'cancelButtonText', 'closeButtonAriaLabel', 'closeButtonHtml', 'confirmButtonAriaLabel', 'confirmButtonColor', 'confirmButtonText', 'currentProgressStep', 'customClass', 'denyButtonAriaLabel', 'denyButtonColor', 'denyButtonText', 'didClose', 'didDestroy', 'footer', 'hideClass', 'html', 'icon', 'iconColor', 'iconHtml', 'imageAlt', 'imageHeight', 'imageUrl', 'imageWidth', 'onAfterClose', 'onClose', 'onDestroy', 'progressSteps', 'reverseButtons', 'showCancelButton', 'showCloseButton', 'showConfirmButton', 'showDenyButton', 'text', 'title', 'titleText', 'willClose'];
   var deprecatedParams = {
@@ -2701,7 +2701,7 @@
     }, SHOW_CLASS_TIMEOUT);
 
     if (isModal()) {
-      fixScrollContainer(container, params.scrollbarPadding, initialBodyOverflow);
+      fixScrollContainer(container, params.scrollbARPadding, initialBodyOverflow);
       setAriaHidden();
     }
 
@@ -2746,11 +2746,11 @@
     }
   };
 
-  var fixScrollContainer = function fixScrollContainer(container, scrollbarPadding, initialBodyOverflow) {
+  var fixScrollContainer = function fixScrollContainer(container, scrollbARPadding, initialBodyOverflow) {
     iOSfix();
     IEfix();
 
-    if (scrollbarPadding && initialBodyOverflow !== 'hidden') {
+    if (scrollbARPadding && initialBodyOverflow !== 'hidden') {
       fixScrollbar();
     } // sweetalert2/issues/1247
 

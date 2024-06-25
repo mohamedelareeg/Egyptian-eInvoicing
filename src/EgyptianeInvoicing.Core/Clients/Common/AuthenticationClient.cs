@@ -28,13 +28,13 @@ namespace EgyptianeInvoicing.Core.Clients.Common
         }
         //POST
         //{{idSrvBaseUrl}}/connect/token
-        public async Task<string> LoginAndGetAccessTokenAsync(string registrationNumber = null)
+        public async Task<string> LoginAndGetAccessTokenAsync(string clientId, string clientSecret, string registrationNumber = null)
         {
             var environment = _configuration.GetSection("E-InvoiceEnvironment").Value;
             var envConfig = _configuration.GetSection($"E-InvoiceEnvironments:{environment}");
             var idSrvBaseUrl = envConfig["IdSrvBaseUrl"];
-            var clientId = envConfig["ClientId"];
-            var clientSecret = envConfig["ClientSecret"];
+            //var clientId = envConfig["ClientId"];
+            //var clientSecret = envConfig["ClientSecret"];
 
             var formData = new List<KeyValuePair<string, string>>
             {

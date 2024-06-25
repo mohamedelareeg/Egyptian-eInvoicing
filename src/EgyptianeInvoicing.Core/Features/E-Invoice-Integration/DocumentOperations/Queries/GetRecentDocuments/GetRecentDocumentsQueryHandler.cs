@@ -27,10 +27,10 @@ namespace EgyptianeInvoicing.Core.Features.DocumentOperations.Queries.GetRecentD
                 var result = await _documentOperationsClient.GetRecentDocumentsAsync(
                     request.SubmissionDateFrom,
                     request.SubmissionDateTo,
-                    request.PageSize,
-                    request.PageNo,
                     request.IssueDateFrom,
                     request.IssueDateTo,
+                    request.PageSize,
+                    request.PageNo,
                     request.Direction,
                     request.Status,
                     request.DocumentType,

@@ -1,0 +1,263 @@
+﻿@{
+    ViewData["Title"] = localizer["Recent Documents"];
+}
+
+
+<form id="searchForm">
+    <div class="row mb-3">
+        <div class="col-md-3">
+            <label for="SubmissionDateFrom" class="form-label">@localizer["Submission Date From"]</label>
+            <input type="date" class="form-control" id="SubmissionDateFrom" name="SubmissionDateFrom">
+        </div>
+        <div class="col-md-3">
+            <label for="SubmissionDateTo" class="form-label">@localizer["Submission Date To"]</label>
+            <input type="date" class="form-control" id="SubmissionDateTo" name="SubmissionDateTo">
+        </div>
+        <div class="col-md-3">
+            <label for="IssueDateFrom" class="form-label">@localizer["Issue Date From"]</label>
+            <input type="date" class="form-control" id="IssueDateFrom" name="IssueDateFrom">
+        </div>
+        <div class="col-md-3">
+            <label for="IssueDateTo" class="form-label">@localizer["Issue Date To"]</label>
+            <input type="date" class="form-control" id="IssueDateTo" name="IssueDateTo">
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-md-3">
+            <label for="Status" class="form-label">@localizer["Status"]</label>
+            <select class="form-control" id="Status" name="Status">
+                <option value="Valid">@localizer["Valid"]</option>
+                <option value="Invalid">@localizer["Invalid"]</option>
+                <option value="Rejected">@localizer["Rejected"]</option>
+                <option value="Cancelled">@localizer["Cancelled"]</option>
+                <option value="Submitted">@localizer["Submitted"]</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="DocumentType" class="form-label">@localizer["Document Type"]</label>
+            <select class="form-control" id="DocumentType" name="DocumentType">
+                <option value="">@localizer["-- Select Document Type --"]</option>
+                <option value="i">@localizer["Invoice"]</option>
+                <option value="c">@localizer["Credit Note"]</option>
+                <option value="d">@localizer["Debit Note"]</option>
+                <option value="ii">@localizer["Import Invoice"]</option>
+                <option value="ei">@localizer["Export Invoice"]</option>
+                <option value="ec">@localizer["Export Credit Note"]</option>
+                <option value="ed">@localizer["Export Debit Note"]</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="ReceiverType" class="form-label">@localizer["Receiver Type"]</label>
+            <select class="form-control" id="ReceiverType" name="ReceiverType">
+                <option value="">@localizer["-- Select Receiver Type --"]</option>
+                <option value="B">@localizer["Business"]</option>
+                <option value="F">@localizer["Foreigner"]</option>
+                <option value="P">@localizer["Person"]</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="ReceiverId" class="form-label">@localizer["Receiver ID"]</label>
+            <input type="text" class="form-control" id="ReceiverId" name="ReceiverId">
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-md-3">
+            <label for="IssuerType" class="form-label">@localizer["Issuer Type"]</label>
+            <select class="form-control" id="IssuerType" name="IssuerType">
+                <option value="">@localizer["-- Select Issuer Type --"]</option>
+                <option value="B">@localizer["Business"]</option>
+                <option value="F">@localizer["Foreigner"]</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="IssuerId" class="form-label">@localizer["Issuer ID"]</label>
+            <input type="text" class="form-control" id="IssuerId" name="IssuerId">
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">@localizer["Search"]</button>
+</form>
+
+
+<table id="DocumentsTable" class="table" style="width:100%">
+    <thead>
+        <tr>
+            <th>@localizer["#"]</th>
+            <th>@localizer["Submission Date"]</th>
+            <th>@localizer["Issue Date"]</th>
+            <th>@localizer["Status"]</th>
+            <th>@localizer["Document Type"]</th>
+            <th>@localizer["Receiver"]</th>
+            <th>@localizer["Issuer"]</th>
+            <th>@localizer["Total"]</th>
+            <th>@localizer["UUID"]</th>
+            <th>@localizer["Internal ID"]</th>
+            <th>@localizer["Action"]</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<script>
+    var localizationStrings = {
+        "search": "@localizer["datatable_search"]",
+        "lengthMenu": "@localizer["datatable_lengthMenu"]",
+        "info": "@localizer["datatable_info"]",
+        "infoEmpty": "@localizer["datatable_infoEmpty"]",
+        "infoFiltered": "@localizer["datatable_infoFiltered"]",
+        "zeroRecords": "@localizer["datatable_zeroRecords"]",
+        "paginate": {
+            "first": "@localizer["datatable_paginate_first"]",
+            "previous": "@localizer["datatable_paginate_previous"]",
+            "next": "@localizer["datatable_paginate_next"]",
+            "last": "@localizer["datatable_paginate_last"]"
+        }
+    };
+
+    $(document).ready(function () {
+        var table = $('#DocumentsTable').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                "url": "@Url.Action("LoadRecentDocuments", "Documents")",
+                "type": "GET",
+                "data": function (d) {
+                    var params = {
+                        Draw: d.draw,
+                        Start: d.start,
+                        Length: d.length,
+                        SearchText: d.search.value,
+                        OrderBy: d.order.map(o => `${d.columns[o.column].data} ${o.dir}`).join(', '),
+                        SubmissionDateFrom: $('#SubmissionDateFrom').val(),
+                        SubmissionDateTo: $('#SubmissionDateTo').val(),
+                        IssueDateFrom: $('#IssueDateFrom').val(),
+                        IssueDateTo: $('#IssueDateTo').val(),
+                        Status: $('#Status').val(),
+                        DocumentType: $('#DocumentType').val(),
+                        ReceiverType: $('#ReceiverType').val(),
+                        ReceiverId: $('#ReceiverId').val(),
+                        IssuerType: $('#IssuerType').val(),
+                        IssuerId: $('#IssuerId').val(),
+                    };
+                    return $.extend({}, d, params);
+                }
+            },
+            "columns": [
+                { "data": "serial" },
+                { "data": "submissionDate" },
+                { "data": "issueDate" },
+                { "data": "status" },
+                { "data": "documentType" },
+                { "data": "receiver" },
+                { "data": "issuer" },
+                { "data": "totalSales" },
+                {
+                    "data": "uuid",
+                    "render": function (data, type, row) {
+                        if (type === 'display') {
+                            return '<a href="' + row.publicUrl + '" target="_blank">' + data + '</a>';
+                        }
+                        return data;
+                    }
+                },
+                { "data": "internalID" },
+                {
+                    "data": null,
+                    "render": function (data, type, row) {
+                        var buttons = '';
+                        switch (row.status) {
+                            case 'Submitted':
+                                buttons = '<button class="btn btn-primary btn-sm">@localizer["Reject"]</button> ' +
+                                    '<button class="btn btn-danger btn-sm">@localizer["Decline"]</button>';
+                                break;
+                            case 'Valid':
+                            case 'Invalid':
+                                buttons = '<button class="btn btn-primary btn-sm">@localizer["View Details"]</button>';
+                                break;
+                            case 'Rejected':
+                            case 'Cancelled':
+                                buttons = '<button class="btn btn-primary btn-sm">@localizer["View Reason"]</button>';
+                                break;
+                            default:
+                                break;
+                        }
+                        return buttons;
+                    }
+                }
+            ],
+            "language": localizationStrings
+        });
+        $('#searchForm').on('submit', function (e) {
+            e.preventDefault();
+            var submissionDateFrom = new Date($('#SubmissionDateFrom').val());
+            var submissionDateTo = new Date($('#SubmissionDateTo').val());
+
+            var difference = submissionDateTo.getTime() - submissionDateFrom.getTime();
+            var oneMonthInMilliseconds = 31 * 24 * 60 * 60 * 1000;
+
+            if (difference > oneMonthInMilliseconds) {
+                showErrorAlert('@localizer["Invalid Date Range"]', '@localizer["Submission Date To should not be more than one month after Submission Date From."]');
+                return;
+            }
+
+            var issueDateFrom = new Date($('#IssueDateFrom').val());
+            var issueDateTo = new Date($('#IssueDateTo').val());
+            var issueDifference = issueDateTo.getTime() - issueDateFrom.getTime();
+
+            if (issueDifference > oneMonthInMilliseconds) {
+                showErrorAlert('@localizer["Invalid Date Range"]', '@localizer["Issue Date To should not be more than one month after Issue Date From."]');
+                return;
+            }
+
+            var issuerType = $('#IssuerType').val();
+            var issuerId = $('#IssuerId').val();
+            var receiverType = $('#ReceiverType').val();
+            var receiverId = $('#ReceiverId').val();
+
+            if (issuerId.trim() !== '') {
+                if (issuerType === '') {
+                    showErrorAlert('@localizer["Issuer Type Required"]', '@localizer["Please select Issuer Type since Issuer ID has a value."]');
+                    return;
+                }
+            }
+
+            if (receiverId.trim() !== '') {
+                if (receiverType === '') {
+                    showErrorAlert('@localizer["Receiver Type Required"]', '@localizer["Please select Receiver Type since Receiver ID has a value."]');
+                    return;
+                }
+            }
+
+            if ((issuerType === 'B' || issuerType === 'F') && issuerId.trim() === '') {
+                showErrorAlert('@localizer["Issuer ID Required"]', '@localizer["Please enter Issuer ID for Business or Foreigner Issuer Type."]');
+                return;
+            }
+
+            if ((receiverType === 'B' || receiverType === 'F') && receiverId.trim() === '') {
+                showErrorAlert('@localizer["Receiver ID Required"]', '@localizer["Please enter Receiver ID for Business or Foreigner Receiver Type."]');
+                return;
+            }
+
+            table.ajax.reload();
+        });
+
+        function showErrorAlert(title, text) {
+            Swal.fire({
+                icon: 'error',
+                title: title,
+                text: text,
+            });
+        }
+        function setDefaultSubmissionDates() {
+            var today = new Date();
+            var firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+
+            var submissionDateFrom = firstDayOfMonth.toISOString().split('T')[0];
+            var submissionDateTo = today.toISOString().split('T')[0];
+
+            $('#SubmissionDateFrom').val(submissionDateFrom);
+            $('#SubmissionDateTo').val(submissionDateTo);
+        }
+
+        setDefaultSubmissionDates();
+    });
+</script>

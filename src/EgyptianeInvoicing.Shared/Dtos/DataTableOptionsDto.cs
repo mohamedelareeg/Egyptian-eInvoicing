@@ -15,7 +15,7 @@ namespace EgyptianeInvoicing.Shared.Dtos
         public string SearchText { get; set; } = "";
 
         // Ordering
-        public string OrderBy { get; set; }
+        public string? OrderBy { get; set; }
         public DataTableOptionsDto()
         {
             Draw = 1;

@@ -1,0 +1,40 @@
+﻿@model EgyptianeInvoicing.Shared.Dtos.ClientsDto.Invoicing.InvoiceSubmission.Details.CompanyDto
+
+@{
+    ViewData["Title"] = "Delete Company";
+}
+
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header">
+            <h2>@localizer["DeleteCompany"]</h2>
+        </div>
+        <div class="card-body">
+            <h3>@localizer["ConfirmDeleteCompany"]</h3>
+            <div>
+                <h4>@localizer["CommercialRegistrationNumber"]: @Model.Id</h4>
+                <h4>@localizer["Name"]: @Model.Name</h4>
+                <h4>@localizer["CompanyType"]: @Model.Type</h4>
+                <h4>@localizer["Address"]:</h4>
+                <ul class="list-unstyled">
+                    <li><strong>@localizer["Country"]: </strong>@Model.Address.Country</li>
+                    <li><strong>@localizer["Governorate"]: </strong>@Model.Address.Governorate</li>
+                    <li><strong>@localizer["RegionCity"]: </strong>@Model.Address.RegionCity</li>
+                    <li><strong>@localizer["Street"]: </strong>@Model.Address.Street</li>
+                    <li><strong>@localizer["BuildingNumber"]: </strong>@Model.Address.BuildingNumber</li>
+                    <li><strong>@localizer["PostalCode"]: </strong>@Model.Address.PostalCode</li>
+                    <li><strong>@localizer["Floor"]: </strong>@Model.Address.Floor</li>
+                    <li><strong>@localizer["Room"]: </strong>@Model.Address.Room</li>
+                    <li><strong>@localizer["Landmark"]: </strong>@Model.Address.Landmark</li>
+                    <li><strong>@localizer["AdditionalInformation"]: </strong>@Model.Address.AdditionalInformation</li>
+                </ul>
+            </div>
+        </div>
+        <div class="card-footer">
+            <form asp-action="DeleteConfirmed" asp-route-id="@Model.ReferenceId" method="post">
+                <button type="submit" class="btn btn-danger">@localizer["Delete"]</button>
+                <a asp-action="Index" class="btn btn-secondary">@localizer["BackToList"]</a>
+            </form>
+        </div>
+    </div>
+</div>

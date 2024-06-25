@@ -10,11 +10,12 @@ namespace EgyptianeInvoicing.Core.Features.Authontication.Commands.Authenticate
 {
     public class AuthenticateCommand : ICommand<string>
     {
-        public string RegistrationNumber { get; }
-
-        public AuthenticateCommand(string registrationNumber = null)
+        public AuthenticateCommand(Guid companyId)
         {
-            RegistrationNumber = registrationNumber;
+            CompanyId = companyId;
         }
+
+        public Guid CompanyId { get; }
+      
     }
 }

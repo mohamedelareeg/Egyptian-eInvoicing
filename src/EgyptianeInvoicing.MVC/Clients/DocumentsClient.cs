@@ -15,5 +15,9 @@ namespace EgyptianeInvoicing.MVC.Clients
         {
             return await PostAsync<SearchDocumentsRequestDto, BaseResponse<RecentDocumentsDto>>("api/v1/documents/search", request);
         }
+        public async Task<BaseResponse<RecentDocumentsDto>> RecentDocumentsAsync(RecentDocumentsRequestDto request)
+        {
+            return await PostAsync<RecentDocumentsRequestDto, BaseResponse<RecentDocumentsDto>>("api/v1/documents/recent", request);
+        }
     }
 }

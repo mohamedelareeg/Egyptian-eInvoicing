@@ -1,0 +1,269 @@
+﻿@model EgyptianeInvoicing.Shared.Requests.CreateCompanyRequestDto
+
+@{
+    ViewData["Title"] = "Create New Company";
+}
+
+<h2 class="text-center">@localizer["CreateNewCompany"]</h2>
+
+<div class="container mt-4">
+    <form asp-action="Create">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">@localizer["CompanyInformation"]</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label asp-for="Name" class="control-label">@localizer["CompanyName"]</label>
+                            <input asp-for="Name" class="form-control" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Phone" class="control-label">@localizer["Phone"]</label>
+                            <input asp-for="Phone" class="form-control" />
+                            <span asp-validation-for="Phone" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Email" class="control-label">@localizer["Email"]</label>
+                            <input asp-for="Email" class="form-control" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="TaxNumber" class="control-label">@localizer["TaxNumber"]</label>
+                            <input asp-for="TaxNumber" class="form-control" />
+                            <span asp-validation-for="TaxNumber" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="CommercialRegistrationNo" class="control-label">@localizer["CommercialRegistrationNumber"]</label>
+                            <input asp-for="CommercialRegistrationNo" class="form-control" />
+                            <span asp-validation-for="CommercialRegistrationNo" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Type" class="control-label">@localizer["CompanyType"]</label>
+                            <select asp-for="Type" class="form-control">
+                                @foreach (var type in Enum.GetValues(typeof(EgyptianeInvoicing.Shared.Enums.CompanyType)))
+                                {
+                                    <option value="@type">@localizer[type.ToString()]</option>
+                                }
+                            </select>
+                            <span asp-validation-for="Type" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">@localizer["Address"]</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label asp-for="Address.Country" class="control-label">@localizer["Country"]</label>
+                            <input asp-for="Address.Country" class="form-control" />
+                            <span asp-validation-for="Address.Country" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Address.Governorate" class="control-label">@localizer["Governorate"]</label>
+                            <input asp-for="Address.Governorate" class="form-control" />
+                            <span asp-validation-for="Address.Governorate" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Address.RegionCity" class="control-label">@localizer["RegionCity"]</label>
+                            <input asp-for="Address.RegionCity" class="form-control" />
+                            <span asp-validation-for="Address.RegionCity" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Address.Street" class="control-label">@localizer["Street"]</label>
+                            <input asp-for="Address.Street" class="form-control" />
+                            <span asp-validation-for="Address.Street" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Address.BuildingNumber" class="control-label">@localizer["BuildingNumber"]</label>
+                            <input asp-for="Address.BuildingNumber" class="form-control" />
+                            <span asp-validation-for="Address.BuildingNumber" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Address.PostalCode" class="control-label">@localizer["PostalCode"]</label>
+                            <input asp-for="Address.PostalCode" class="form-control" />
+                            <span asp-validation-for="Address.PostalCode" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Address.Floor" class="control-label">@localizer["Floor"]</label>
+                            <input asp-for="Address.Floor" class="form-control" />
+                            <span asp-validation-for="Address.Floor" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Address.Room" class="control-label">@localizer["Room"]</label>
+                            <input asp-for="Address.Room" class="form-control" />
+                            <span asp-validation-for="Address.Room" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Address.Landmark" class="control-label">@localizer["Landmark"]</label>
+                            <input asp-for="Address.Landmark" class="form-control" />
+                            <span asp-validation-for="Address.Landmark" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Address.AdditionalInformation" class="control-label">@localizer["AdditionalInformation"]</label>
+                            <input asp-for="Address.AdditionalInformation" class="form-control" />
+                            <span asp-validation-for="Address.AdditionalInformation" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">@localizer["Credentials"]</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label asp-for="Credentials.ClientId" class="control-label">@localizer["ClientId"]</label>
+                            <input asp-for="Credentials.ClientId" class="form-control" />
+                            <span asp-validation-for="Credentials.ClientId" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Credentials.ClientSecret1" class="control-label">@localizer["ClientSecret1"]</label>
+                            <input asp-for="Credentials.ClientSecret1" class="form-control" />
+                            <span asp-validation-for="Credentials.ClientSecret1" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Credentials.ClientSecret2" class="control-label">@localizer["ClientSecret2"]</label>
+                            <input asp-for="Credentials.ClientSecret2" class="form-control" />
+                            <span asp-validation-for="Credentials.ClientSecret2" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Credentials.TokenPin" class="control-label">@localizer["TokenPin"]</label>
+                            <input asp-for="Credentials.TokenPin" class="form-control" />
+                            <span asp-validation-for="Credentials.TokenPin" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Credentials.Certificate" class="control-label">@localizer["TokenCertificate"]</label>
+                            <input asp-for="Credentials.Certificate" class="form-control" />
+                            <span asp-validation-for="Credentials.Certificate" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">@localizer["Payments"]</h5>
+                </div>
+                <div class="card-body" id="paymentFields">
+                    <div class="payment-group">
+                        <div class="form-group">
+                            <label class="control-label">@localizer["BankName"]</label>
+                            <input type="text" name="Payments[0].BankName" class="form-control payment-bank-name" />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">@localizer["BankAddress"]</label>
+                            <input type="text" name="Payments[0].BankAddress" class="form-control payment-bank-address" />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">@localizer["BankAccountNumber"]</label>
+                            <input type="text" name="Payments[0].BankAccountNo" class="form-control payment-bank-account" />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">@localizer["BankAccountIBAN"]</label>
+                            <input type="text" name="Payments[0].BankAccountIBAN" class="form-control payment-bank-iban" />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">@localizer["SwiftCode"]</label>
+                            <input type="text" name="Payments[0].SwiftCode" class="form-control payment-swift-code" />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">@localizer["PaymentTerms"]</label>
+                            <input type="text" name="Payments[0].PaymentTerms" class="form-control payment-terms" />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">@localizer["BankContactPerson"]</label>
+                            <input type="text" name="Payments[0].BankContactPerson" class="form-control payment-contact-person" />
+                        </div>
+                        <button type="button" class="btn btn-danger btn-sm remove-payment">@localizer["RemovePayment"]</button>
+                        <hr />
+                    </div>
+                </div>
+                <button type="button" class="btn btn-primary btn-sm add-payment">@localizer["AddPayment"]</button>
+                </div>
+            </div>
+
+        </div>
+
+    
+        <div class="form-group mt-3 text-center">
+            <input type="submit" value="@localizer["Create"]" class="btn btn-primary" />
+        </div>
+    </form>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        var paymentIndex = 0;
+
+        $('.add-payment').click(function () {
+            paymentIndex++;
+            var paymentGroup = '<div class="payment-group">' +
+                '<div class="form-group">' +
+                '<label class="control-label">@localizer["BankName"]</label>' +
+                '<input type="text" name="Payments[' + paymentIndex + '].BankName" class="form-control payment-bank-name" />' +
+                '</div>' +
+                '<div class="form-group">' +
+                '<label class="control-label">@localizer["BankAddress"]</label>' +
+                '<input type="text" name="Payments[' + paymentIndex + '].BankAddress" class="form-control payment-bank-address" />' +
+                '</div>' +
+                '<div class="form-group">' +
+                '<label class="control-label">@localizer["BankAccountNumber"]</label>' +
+                '<input type="text" name="Payments[' + paymentIndex + '].BankAccountNo" class="form-control payment-bank-account" />' +
+                '</div>' +
+                '<div class="form-group">' +
+                '<label class="control-label">@localizer["BankAccountIBAN"]</label>' +
+                '<input type="text" name="Payments[' + paymentIndex + '].BankAccountIBAN" class="form-control payment-bank-iban" />' +
+                '</div>' +
+                '<div class="form-group">' +
+                '<label class="control-label">@localizer["SwiftCode"]</label>' +
+                '<input type="text" name="Payments[' + paymentIndex + '].SwiftCode" class="form-control payment-swift-code" />' +
+                '</div>' +
+                '<div class="form-group">' +
+                '<label class="control-label">@localizer["PaymentTerms"]</label>' +
+                '<input type="text" name="Payments[' + paymentIndex + '].PaymentTerms" class="form-control payment-terms" />' +
+                '</div>' +
+                '<div class="form-group">' +
+                '<label class="control-label">@localizer["BankContactPerson"]</label>' +
+                '<input type="text" name="Payments[' + paymentIndex + '].BankContactPerson" class="form-control payment-contact-person" />' +
+                '</div>' +
+                '<button type="button" class="btn btn-danger btn-sm remove-payment">@localizer["RemovePayment"]</button>' +
+                '<hr />' +
+                '</div>';
+            $('#paymentFields').append(paymentGroup);
+        });
+
+        $('#paymentFields').on('click', '.remove-payment', function () {
+            $(this).closest('.payment-group').remove();
+        });
+    });
+</script>
+

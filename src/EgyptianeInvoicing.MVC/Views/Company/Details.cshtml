@@ -1,0 +1,48 @@
+﻿@model EgyptianeInvoicing.Shared.Dtos.ClientsDto.Invoicing.InvoiceSubmission.Details.CompanyDto
+
+@{
+    ViewData["Title"] = "Company Details";
+}
+
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header">
+            <h2 class="card-title">@localizer["CompanyDetails"]</h2>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <dl class="row">
+                        <dt class="col-sm-4">@localizer["Name"]:</dt>
+                        <dd class="col-sm-8">@Model.Name</dd>
+
+                        <dt class="col-sm-4">@localizer["CommercialRegistrationNumber"]:</dt>
+                        <dd class="col-sm-8">@Model.Id</dd>
+
+                        <dt class="col-sm-4">@localizer["CompanyType"]:</dt>
+                        <dd class="col-sm-8">@Model.Type</dd>
+                    </dl>
+                </div>
+                <div class="col-md-6">
+                    <h4>@localizer["Address"]:</h4>
+                    <hr />
+                    <ul class="list-unstyled">
+                        <li><strong>@localizer["Country"]: </strong>@Model.Address.Country</li>
+                        <li><strong>@localizer["Governorate"]: </strong>@Model.Address.Governorate</li>
+                        <li><strong>@localizer["RegionCity"]: </strong>@Model.Address.RegionCity</li>
+                        <li><strong>@localizer["Street"]: </strong>@Model.Address.Street</li>
+                        <li><strong>@localizer["BuildingNumber"]: </strong>@Model.Address.BuildingNumber</li>
+                        <li><strong>@localizer["PostalCode"]: </strong>@Model.Address.PostalCode</li>
+                        <li><strong>@localizer["Floor"]: </strong>@Model.Address.Floor</li>
+                        <li><strong>@localizer["Room"]: </strong>@Model.Address.Room</li>
+                        <li><strong>@localizer["Landmark"]: </strong>@Model.Address.Landmark</li>
+                        <li><strong>@localizer["AdditionalInformation"]: </strong>@Model.Address.AdditionalInformation</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <a asp-action="Index" class="btn btn-primary">@localizer["BackToList"]</a>
+        </div>
+    </div>
+</div>

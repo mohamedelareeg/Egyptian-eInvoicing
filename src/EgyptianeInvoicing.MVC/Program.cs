@@ -47,6 +47,7 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 
 builder.Services.AddScoped<IAuthenticationClient, AuthenticationClient>();
 builder.Services.AddScoped<IDocumentsClient, DocumentsClient>();
+builder.Services.AddScoped<ICompanyClient, CompanyClient>();
 
 builder.Services.AddSession(options =>
 {
@@ -81,6 +82,6 @@ app.UseRequestLocalization(localizationOptions);
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Company}/{action=Index}/{id?}");
 
 app.Run();

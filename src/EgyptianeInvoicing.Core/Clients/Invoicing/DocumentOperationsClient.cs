@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Text;
 using System.Text.Json;
 using EgyptianeInvoicing.Core.Clients.Invoicing.Abstractions;
@@ -104,19 +105,19 @@ namespace EgyptianeInvoicing.Core.Clients.Invoicing
             return response;
         }
         public async Task<RecentDocumentsDto> GetRecentDocumentsAsync(
-            DateTime submissionDateFrom,
-            DateTime submissionDateTo,
-            int pageSize = 10,
-            int pageNo = 1,
-            string issueDateFrom = "",
-            string issueDateTo = "",
-            string direction = "",
-            string status = "Valid",
-            string documentType = "i",
-            string receiverType = "",
-            string receiverId = "",
-            string issuerType = "",
-            string issuerId = "")
+            DateTime? submissionDateFrom,
+    DateTime? submissionDateTo,
+    DateTime? issueDateFrom,
+    DateTime? issueDateTo,
+    int pageSize = 10,
+      int pageNo = 1,
+    string direction = "",
+    string status = "Valid",
+    string documentType = "",
+    string receiverType = "",
+    string receiverId = "",
+    string issuerType = "",
+    string issuerId = "")
         {
             _invoicingClient.DefaultRequestHeaders.Clear();
             var accessToken = _secureStorageService.GetToken();
@@ -126,27 +127,46 @@ namespace EgyptianeInvoicing.Core.Clients.Invoicing
             }
             _invoicingClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
             _invoicingClient.DefaultRequestHeaders.Add("PageSize", pageSize.ToString());
-            _invoicingClient.DefaultRequestHeaders.Add("PageNo", pageNo.ToString());
 
-            var queryParameters = new List<string>
-                {
-                    $"pageNo={pageNo}",
-                    $"pageSize={pageSize}",
-                    $"submissionDateFrom={submissionDateFrom:yyyy-MM-ddTHH:mm:ss}",
-                    $"submissionDateTo={submissionDateTo:yyyy-MM-ddTHH:mm:ss}"
-                };
+            var queryParameters = new List<string>();
 
-            if (!string.IsNullOrEmpty(issueDateFrom)) queryParameters.Add($"issueDateFrom={issueDateFrom}");
-            if (!string.IsNullOrEmpty(issueDateTo)) queryParameters.Add($"issueDateTo={issueDateTo}");
-            if (!string.IsNullOrEmpty(direction)) queryParameters.Add($"direction={direction}");
-            if (!string.IsNullOrEmpty(status)) queryParameters.Add($"status={status}");
-            if (!string.IsNullOrEmpty(documentType)) queryParameters.Add($"documentType={documentType}");
-            if (!string.IsNullOrEmpty(receiverType)) queryParameters.Add($"receiverType={receiverType}");
-            if (!string.IsNullOrEmpty(receiverId)) queryParameters.Add($"receiverId={receiverId}");
-            if (!string.IsNullOrEmpty(issuerType)) queryParameters.Add($"issuerType={issuerType}");
-            if (!string.IsNullOrEmpty(issuerId)) queryParameters.Add($"issuerId={issuerId}");
+            //AppendQueryParam(queryParameters, "submissionDateFrom", "2024-05-01T15:00:59");//submissionDateFrom?.ToString("yyyy-MM-ddTHH:mm:ss")
+            //AppendQueryParam(queryParameters, "submissionDateTo", "2024-05-31T20:00:00");//submissionDateTo?.ToString("yyyy-MM-ddTHH:mm:ss"));
+            AppendQueryParam(queryParameters, "pageNo", pageNo.ToString());
+            AppendQueryParam(queryParameters, "pageSize", pageSize.ToString());
+            if (!submissionDateFrom.HasValue)
+            {
+                submissionDateFrom = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1, 0, 0, 0);
+            }
+            AppendQueryParam(queryParameters, "submissionDateFrom", submissionDateFrom?.ToString("yyyy-MM-ddTHH:mm:ss"));
 
-            var url = $"api/v1.0/documents/recent?{string.Join("&", queryParameters)}";
+            if (!submissionDateTo.HasValue)
+            {
+                submissionDateTo = DateTime.Today.Date.AddDays(1).AddTicks(-1);
+            }
+            AppendQueryParam(queryParameters, "submissionDateTo", submissionDateTo?.ToString("yyyy-MM-ddTHH:mm:ss"));
+
+            AppendQueryParam(queryParameters, "issueDateFrom", issueDateFrom?.ToString("yyyy-MM-ddTHH:mm:ss"));
+            AppendQueryParam(queryParameters, "issueDateTo", issueDateTo?.ToString("yyyy-MM-ddTHH:mm:ss"));
+            if (!string.IsNullOrEmpty(receiverType))
+            {
+                direction = "Sent";
+            }
+            else if (!string.IsNullOrEmpty(issuerType))
+            {
+                direction = "Received";
+            }
+            AppendQueryParam(queryParameters, "direction", direction);
+            AppendQueryParam(queryParameters, "status", status);
+            AppendQueryParam(queryParameters, "documentType", documentType);
+            AppendQueryParam(queryParameters, "receiverType", receiverType);
+            AppendQueryParam(queryParameters, "receiverId", receiverId);
+            AppendQueryParam(queryParameters, "issuerType", issuerType);
+            AppendQueryParam(queryParameters, "issuerId", issuerId);
+
+
+            var queryString = string.Join("&", queryParameters);
+            var url = $"api/v1.0/documents/recent?{queryString}";
 
             var response = await _invoicingClient.GetAsync(url);
 
@@ -206,6 +226,14 @@ namespace EgyptianeInvoicing.Core.Clients.Invoicing
             AppendQueryParam(queryParameters, "pageSize", pageSize.ToString());
             AppendQueryParam(queryParameters, "issueDateFrom", issueDateFrom?.ToString("yyyy-MM-ddTHH:mm:ss"));
             AppendQueryParam(queryParameters, "issueDateTo", issueDateTo?.ToString("yyyy-MM-ddTHH:mm:ss"));
+            if (!string.IsNullOrEmpty(receiverType))
+            {
+                direction = "Sent";
+            }
+            else if(!string.IsNullOrEmpty(issuerType))
+            {
+                direction = "Received";
+            }
             AppendQueryParam(queryParameters, "direction", direction);
             AppendQueryParam(queryParameters, "status", status);
             AppendQueryParam(queryParameters, "documentType", documentType);
@@ -217,8 +245,8 @@ namespace EgyptianeInvoicing.Core.Clients.Invoicing
             AppendQueryParam(queryParameters, "internalID", internalID);
 
             var queryString = string.Join("&", queryParameters);
-            var url = $"https://api.invoicing.eta.gov.eg/api/v1.0/documents/search?{queryString}";
-
+            //var url = $"https://api.invoicing.eta.gov.eg/api/v1.0/documents/search?{queryString}";
+            var url = $"api/v1.0/documents/search?{queryString}";
             var response = await _invoicingClient.GetAsync(url);
 
             if (response.IsSuccessStatusCode)

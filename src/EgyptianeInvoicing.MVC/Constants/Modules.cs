@@ -8,28 +8,43 @@ namespace EgyptianeInvoicing.MVC.Constants
         {
             return new List<Modules>
             {
-                new Modules
+
+                 new Modules
                 {
-                    PageName = "Dashboard",
-                    RoleName = "Dashboard",
+                    PageName = "Company",
+                    RoleName = "Company",
                     Path = "",
-                    ControllerName = "Home",
+                    ControllerName = "Company",
                     ActionName = "Index",
                     Parent = 1,
                     IsShow = 1,
-                    FaIcon = "fas fa-tachometer-alt"
+                    FaIcon = "fas fa-building"
                 },
                 new Modules
                 {
-                    PageName = "Documents",
-                    RoleName = "Documents",
-                    Path = "/Documents/Index", 
+                    PageName = "RecentDocument",
+                    RoleName = "RecentDocument",
+                    Path = "",
                     ControllerName = "Documents",
-                    ActionName = "Index",
+                    ActionName = "RecentDocument",
                     Parent = 1,
                     IsShow = 1,
-                    FaIcon = "far fa-file-alt"
+                    FaIcon = "far fa-clock"
+                },
+
+                new Modules
+                {
+                    PageName = "SearchDocument",
+                    RoleName = "SearchDocument",
+                    Path = "",
+                    ControllerName = "Documents",
+                    ActionName = "SearchDocument",
+                    Parent = 1,
+                    IsShow = 1,
+                    FaIcon = "fas fa-search"
                 }
+
+               
             };
         }
     }

@@ -21,7 +21,7 @@ namespace EgyptianeInvoicing.SignApi.Controllers
         [HttpPost("authenticate")]
         public async Task<IActionResult> Authenticate([FromBody] AuthenticateRequestDto request)
         {
-            var result = await Sender.Send(new AuthenticateCommand(request.RegistrationNumber));
+            var result = await Sender.Send(new AuthenticateCommand(request.CompanyId));
             return CustomResult(result);
         }
     }

@@ -1,0 +1,90 @@
+﻿@model List<EgyptianeInvoicing.Shared.Dtos.ClientsDto.Invoicing.InvoiceSubmission.Details.CompanyDto>
+
+<h2>@localizer["Companies"]</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">@localizer["CreateNew"]</a>
+</p>
+
+<table id="CompaniesTable" class="table">
+    <thead>
+        <tr>
+            <th>@localizer["CommercialRegistrationNumber"]</th>
+            <th>@localizer["Name"]</th>
+            <th>@localizer["Type"]</th>
+            <th>@localizer["Actions"]</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#CompaniesTable').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    "url": '@Url.Action("LoadData", "Company")',
+                    "type": "POST",
+                    "contentType": "application/json",
+                    "data": function (d) {
+                        return JSON.stringify({
+                            draw: d.draw,
+                            start: d.start,
+                            length: d.length,
+                            searchText: d.search.value,
+                            orderBy: d.order.map(o => `${d.columns[o.column].data} ${o.dir}`).join(', ')
+                        });
+                    }
+                },
+                "columns": [
+                    { "data": "commercialRegistrationNumber" },
+                    { "data": "name" },
+                    { "data": "type" },
+                    {
+                        "data": null,
+                        "render": function (data, type, row) {
+                            return `
+                                            <a href="@Url.Action("Details", "Company")?id=${row.referenceId}" class="btn btn-info">@localizer["Details"]</a>
+                                            <a href="@Url.Action("Delete", "Company")?id=${row.referenceId}" class="btn btn-danger">@localizer["Delete"]</a>
+                                        <button class="btn btn-success" onclick="authenticateCompany('${row.referenceId}')">@localizer["Authenticate"]</button>
+                                    `;
+                        }
+                    }
+                ]
+            });
+        });
+
+        function authenticateCompany(companyId) {
+            Swal.fire({
+                title: '@localizer["AuthenticationRequiredTitle"]',
+                text: '@localizer["AuthenticationRequiredText"]',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: '@localizer["AuthenticationConfirmButton"]',
+                cancelButtonText: '@localizer["AuthenticationCancelButton"]'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    authenticateToEInvoice(companyId);
+                }
+            });
+        }
+
+        function authenticateToEInvoice(companyId) {
+            $.ajax({
+                url: '/Home/Authenticate',
+                type: 'POST',
+                data: { companyId: companyId },
+                success: function (response) {
+                    Swal.fire('@localizer["AuthenticationSuccessTitle"]', '@localizer["AuthenticationSuccessText"]', 'success');
+                    // Optionally reload the page or update the UI
+                },
+                error: function (xhr, status, error) {
+                    Swal.fire('@localizer["AuthenticationErrorTitle"]', '@localizer["AuthenticationErrorText"]', 'error');
+                }
+            });
+        }
+    </script>
+}

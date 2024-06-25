@@ -1,4 +1,5 @@
 ﻿using EgyptianeInvoicing.Core.Features.Authontication.Commands.Authenticate;
+using EgyptianeInvoicing.Core.Features.DocumentOperations.Queries.GetRecentDocuments;
 using EgyptianeInvoicing.Core.Features.DocumentOperations.Queries.SearchDocuments;
 using EgyptianeInvoicing.Shared.Requests;
 using EgyptianeInvoicing.SignApi.Controllers.Base;
@@ -38,6 +39,27 @@ namespace EgyptianeInvoicing.SignApi.Controllers
                 IssuerId = request.IssuerId,
                 UUID = request.UUID,
                 InternalID = request.InternalID
+            });
+            return CustomResult(result);
+        }
+        [HttpPost("recent")]
+        public async Task<IActionResult> RecentDocuments([FromBody] RecentDocumentsRequestDto request)
+        {
+            var result = await Sender.Send(new GetRecentDocumentsQuery
+            {
+                SubmissionDateFrom = request.SubmissionDateFrom,
+                SubmissionDateTo = request.SubmissionDateTo,
+                IssueDateFrom = request.IssueDateFrom,
+                IssueDateTo = request.IssueDateTo,
+                PageSize = request.PageSize,
+                PageNo = request.PageNo,
+                Direction = request.Direction,
+                Status = request.Status,
+                DocumentType = request.DocumentType,
+                ReceiverType = request.ReceiverType,
+                ReceiverId = request.ReceiverId,
+                IssuerType = request.IssuerType,
+                IssuerId = request.IssuerId,
             });
             return CustomResult(result);
         }

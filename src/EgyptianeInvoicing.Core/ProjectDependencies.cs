@@ -16,6 +16,11 @@ using System;
 using System.IO;
 using System.Reflection;
 using EgyptianeInvoicing.Signer;
+using EgyptianeInvoicing.Core.Data;
+using Microsoft.EntityFrameworkCore;
+using EgyptianeInvoicing.Core.Features.Companies;
+using EgyptianeInvoicing.Core.Data.Repositories.Abstractions;
+using EgyptianeInvoicing.Core.Data.Repositories;
 
 namespace EgyptianeInvoicing.Core
 {
@@ -36,6 +41,10 @@ namespace EgyptianeInvoicing.Core
             //Fluent Validation
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly(), includeInternalTypes: true);
             #endregion
+            #region AutoMapper
+            // Mapping Profiles
+            services.AddAutoMapper(typeof(CompanyProfile));
+            #endregion
 
             var configuration = new ConfigurationBuilder()
                 .AddJsonFile("signersettings.json", optional: false, reloadOnChange: true)
@@ -43,6 +52,11 @@ namespace EgyptianeInvoicing.Core
 
             services.Configure<TokenSigningSettingsDto>(configuration.GetSection("TokenSigningSettings"));
 
+            services.AddDbContext<ApplicationDbContext>(options =>
+            {
+                string connectionString = configuration.GetConnectionString("SqlServer");
+                options.UseSqlServer(connectionString);
+            });
             #region E-Invoice Environment
             var env = configuration.GetSection("E-InvoiceEnvironment").Value;
 
@@ -91,6 +105,8 @@ namespace EgyptianeInvoicing.Core
             services.AddSignerDependencies(_configuration);
             services.AddScoped<ISecureStorageService, SecureStorageService>();
             services.AddScoped<ITokenSigner, TokenSigner>();
+            //Repositories
+            services.AddScoped<ICompanyRepository, CompanyRepository>();
             return services;
         }
     }

@@ -21,7 +21,7 @@ Eduardo Lundgren <eduardolundgren@gmail.com>
 Aaron Eisenberger <aaronchi@gmail.com>
 Joan Piedra <theneojp@gmail.com>
 Bruno Basto <b.basto@gmail.com>
-Remy Sharp <remy@leftlogic.com>
+Remy ShARP <remy@leftlogic.com>
 Bohdan Ganicky <bohdan.ganicky@gmail.com>
 David Bolter <david.bolter@gmail.com>
 Chi Cheng <cloudream@gmail.com>

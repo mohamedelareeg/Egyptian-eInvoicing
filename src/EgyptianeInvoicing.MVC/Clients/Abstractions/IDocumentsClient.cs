@@ -6,6 +6,6 @@ namespace EgyptianeInvoicing.MVC.Clients.Abstractions
     public interface IDocumentsClient
     {
         Task<BaseResponse<RecentDocumentsDto>> SearchDocumentsAsync(SearchDocumentsRequestDto request);
-
+        Task<BaseResponse<RecentDocumentsDto>> RecentDocumentsAsync(RecentDocumentsRequestDto request);
     }
 }
