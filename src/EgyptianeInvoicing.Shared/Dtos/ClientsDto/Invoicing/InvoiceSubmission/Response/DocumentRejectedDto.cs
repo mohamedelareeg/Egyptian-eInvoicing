@@ -4,7 +4,7 @@ namespace EgyptianeInvoicing.Shared.Dtos.ClientsDto.Invoicing.InvoiceSubmission.
 {
     public class DocumentRejectedDto
     {
-        public string InternalId { get; set; }
-        public Error Error { get; set; }
+        public string internalId { get; set; }
+        public Error error { get; set; }
     }
 }

@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EgyptianeInvoicing.Signer",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EgyptianeInvoicing.Core", "src\EgyptianeInvoicing.Core\EgyptianeInvoicing.Core.csproj", "{7020C5CE-6257-4819-B859-277E73850B3D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EgyptianeInvoicing.MVC", "src\EgyptianeInvoicing.MVC\EgyptianeInvoicing.MVC.csproj", "{7E221FD4-D179-4478-9346-78CC351C20CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EgyptianeInvoicing.MVC", "src\EgyptianeInvoicing.MVC\EgyptianeInvoicing.MVC.csproj", "{7E221FD4-D179-4478-9346-78CC351C20CF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

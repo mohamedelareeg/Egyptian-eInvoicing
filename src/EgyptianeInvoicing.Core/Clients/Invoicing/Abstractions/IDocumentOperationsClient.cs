@@ -5,9 +5,10 @@ namespace EgyptianeInvoicing.Core.Clients.Invoicing.Abstractions
 {
     public interface IDocumentOperationsClient
     {
-        Task<HttpResponseMessage> CancelDocumentAsync(string documentUUID, string reason);
-        Task<HttpResponseMessage> RejectDocumentAsync(string documentUUID, string reason);
+        Task<HttpResponseMessage> CancelDocumentAsync(Guid companyId, string documentUUID, string reason);
+        Task<HttpResponseMessage> RejectDocumentAsync(Guid companyId, string documentUUID, string reason);
         Task<RecentDocumentsDto> GetRecentDocumentsAsync(
+            Guid companyId,
             DateTime? submissionDateFrom = null,
             DateTime? submissionDateTo = null,
             DateTime? issueDateFrom = null,
@@ -23,6 +24,7 @@ namespace EgyptianeInvoicing.Core.Clients.Invoicing.Abstractions
             string issuerId = ""
         );
         Task<RecentDocumentsDto> SearchDocumentsAsync(
+            Guid companyId,
             DateTime? submissionDateFrom = null,
             DateTime? submissionDateTo = null,
             DateTime? issueDateFrom = null,
@@ -39,7 +41,7 @@ namespace EgyptianeInvoicing.Core.Clients.Invoicing.Abstractions
             string uuid = "",
             string internalID = ""
         );
-        Task<SubmissionResponseDto> GetSubmissionAsync(string submissionUUID, string pageSize = "10", string pageNo = "1");
+        Task<GetSubmissionResponseDto> GetSubmissionAsync(Guid companyId, string submissionUUID, string pageSize = "10", string pageNo = "1");
 
     }
 }

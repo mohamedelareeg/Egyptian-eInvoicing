@@ -1,0 +1,51 @@
+﻿<!-- Partial view markup -->
+<div class="card mb-3">
+    <div class="card-body">
+        <h5 class="card-title">@localizer["SelectedCompany"]</h5>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <tbody>
+                    <tr>
+                        <th style="width: 200px;">@localizer["Name"]</th>
+                        <td><span id="selectedCompanyName"></span></td>
+                    </tr>
+                    <tr>
+                        <th>@localizer["CommercialRegistrationNumber"]</th>
+                        <td><span id="selectedCompanyRegNumber"></span></td>
+                    </tr>
+                    <tr>
+                        <th>@localizer["Type"]</th>
+                        <td><span id="selectedCompanyType"></span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        checkSelectedCompany();
+    });
+    function showSelectedCompany(name, regNumber, type) {
+        $('#selectedCompanyName').text(name);
+        $('#selectedCompanyRegNumber').text(regNumber);
+        $('#selectedCompanyType').text(type);
+        $('#selectedCompanyCard').show();
+    }
+
+    function checkSelectedCompany() {
+        $.ajax({
+            url: '@Url.Action("GetSelectedCompany", "Company")',
+            type: 'GET',
+            success: function (response) {
+                if (response.data) {
+                    showSelectedCompany(response.data.name, response.data.id, response.data.type);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('Error retrieving selected company:', error);
+            }
+        });
+    }
+</script>

@@ -23,7 +23,7 @@ namespace EgyptianeInvoicing.Core.Features.DocumentOperations.Commands.CancelDoc
         {
             try
             {
-                var response = await _documentOperationsClient.CancelDocumentAsync(request.DocumentUUID, request.Reason);
+                var response = await _documentOperationsClient.CancelDocumentAsync(request.CompanyId, request.DocumentUUID, request.Reason);
                 if (!response.IsSuccessStatusCode)
                 {
                     var errorMessage = await response.Content.ReadAsStringAsync();

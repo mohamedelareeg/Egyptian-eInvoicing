@@ -19,7 +19,7 @@ namespace EgyptianeInvoicing.Core.Features.Codes.Commands.RequestCodeReuse
 
         public async Task<Result<bool>> Handle(RequestCodeReuseCommand request, CancellationToken cancellationToken)
         {
-            var response = await _codeManagementClient.RequestCodeReuseAsync(request.Request);
+            var response = await _codeManagementClient.RequestCodeReuseAsync(request.CompanyId, request.Request);
             if (!response.IsSuccessStatusCode)
             {
                 var errorMessage = await response.Content.ReadAsStringAsync();

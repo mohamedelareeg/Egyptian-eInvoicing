@@ -24,6 +24,7 @@ namespace EgyptianeInvoicing.Core.Features.DocumentNotifications.Commands.Receiv
             try
             {
                 var response = await _documentNotificationClient.ReceiveDocumentNotificationsAsync(
+                    request.CompanyId,
                     request.DeliveryId,
                     request.Type,
                     request.Count,

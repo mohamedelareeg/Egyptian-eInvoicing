@@ -22,7 +22,7 @@ namespace EgyptianeInvoicing.Core.Features.Codes.Queries.GetCodeDetailsByItemCod
 
         public async Task<Result<GetCodeDetailsResponseDto>> Handle(GetCodeDetailsByItemCodeQuery request, CancellationToken cancellationToken)
         {
-            var response = await _codeManagementClient.GetCodeDetailsByItemCodeAsync(request.CodeType, request.ItemCode);
+            var response = await _codeManagementClient.GetCodeDetailsByItemCodeAsync(request.CompanyId, request.CodeType, request.ItemCode);
             return response;
         }
     }

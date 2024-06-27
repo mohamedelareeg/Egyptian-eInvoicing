@@ -4,10 +4,12 @@ using EgyptianeInvoicing.MVC.Localization;
 using EgyptianeInvoicing.MVC.Middlewares;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Localization;
+using OfficeOpenXml;
 using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
+ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 builder.Services.AddTransient<GlobalExceptionHandlerMiddleWare>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpContextAccessor();

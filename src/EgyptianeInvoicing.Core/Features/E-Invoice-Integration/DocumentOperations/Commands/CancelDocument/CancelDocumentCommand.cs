@@ -12,6 +12,14 @@ namespace EgyptianeInvoicing.Core.Features.DocumentOperations.Commands.CancelDoc
 {
     public class CancelDocumentCommand : ICommand<bool>
     {
+        public CancelDocumentCommand(Guid companyId, string documentUUID, string reason)
+        {
+            CompanyId = companyId;
+            DocumentUUID = documentUUID;
+            Reason = reason;
+        }
+
+        public Guid CompanyId { get; set; }
         public string DocumentUUID { get; set; }
         public string Reason { get; set; }
     }

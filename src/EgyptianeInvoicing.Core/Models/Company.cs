@@ -22,7 +22,8 @@ namespace EgyptianeInvoicing.Core.Models
         public CompanyType Type { get; private set; } = CompanyType.B;
         public ClientCredentials? Credentials { get; private set; }
         public IReadOnlyCollection<Payment> Payments => _payments;
-
+        public string? EInvoiceToken { get; private set; }
+        public string ActivityCode { get; private set; }
         private Company() { }
 
         private Company(
@@ -33,21 +34,24 @@ namespace EgyptianeInvoicing.Core.Models
             string? taxNumber,
             string commercialRegistrationNo,
             Address address,
+            string? activityCode,
             CompanyType type = CompanyType.B,
             ClientCredentials? credentials = null,
-            List<Payment> payments = null)
+            List<Payment> payments = null,
+            string eInvoiceToken = null)
             : base(id)
         {
-
             Name = name;
             Phone = phone;
             Email = email;
             TaxNumber = taxNumber;
             CommercialRegistrationNo = commercialRegistrationNo;
             Address = address;
+            ActivityCode = activityCode;
             Type = type;
             Credentials = credentials;
             _payments = payments ?? new List<Payment>();
+            EInvoiceToken = eInvoiceToken;
         }
 
         public static Result<Company> Create(
@@ -57,6 +61,7 @@ namespace EgyptianeInvoicing.Core.Models
             string? taxNumber,
             string commercialRegistrationNo,
             Address address,
+            string activityCode,
             CompanyType type = CompanyType.B,
             ClientCredentials? credentials = null,
             List<Payment> payments = null)
@@ -73,6 +78,9 @@ namespace EgyptianeInvoicing.Core.Models
             if (address == null)
                 return Result.Failure<Company>("Company.Create", "Address is required.");
 
+            if (string.IsNullOrEmpty(activityCode))
+                return Result.Failure<Company>("Company.Create", "Activity code cannot be null or empty.");
+
             if (!Enum.IsDefined(typeof(CompanyType), type))
                 return Result.Failure<Company>("Company.Create", "Invalid company type.");
 
@@ -88,6 +96,7 @@ namespace EgyptianeInvoicing.Core.Models
                 taxNumber,
                 commercialRegistrationNo,
                 address,
+                activityCode,
                 type,
                 credentials,
                 payments);
@@ -194,6 +203,22 @@ namespace EgyptianeInvoicing.Core.Models
         public Result<bool> CleARPayments()
         {
             _payments.Clear();
+            return Result.Success(true);
+        }
+        public Result<bool> SetEInvoiceToken(string eInvoiceToken)
+        {
+            if (string.IsNullOrEmpty(eInvoiceToken))
+                return Result.Failure<bool>("Company.SetEInvoiceToken", "E-Invoice token cannot be null or empty.");
+
+            EInvoiceToken = eInvoiceToken;
+            return Result.Success(true);
+        }
+        public Result<bool> ModifyActivityCode(string activityCode)
+        {
+            if (string.IsNullOrEmpty(activityCode))
+                return Result.Failure<bool>("Company.ModifyActivityCode", "Activity code cannot be null or empty.");
+
+            ActivityCode = activityCode;
             return Result.Success(true);
         }
         private static bool IsValidEmail(string email)

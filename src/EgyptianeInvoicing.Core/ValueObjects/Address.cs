@@ -6,7 +6,7 @@ namespace EgyptianeInvoicing.Core.ValueObjects
 {
     public sealed class Address : ValueObject
     {
-        public string? BranchId { get; private set; }
+        public int BranchId { get; private set; } = 0;
         public string Country { get; private set; } = "EG";
         public string Governorate { get; private set; } = "Cairo";
         public string? RegionCity { get; private set; }
@@ -20,7 +20,7 @@ namespace EgyptianeInvoicing.Core.ValueObjects
 
         private Address() { }
 
-        private Address(string? branchId, string country, string governorate, string? regionCity, string? street, string? buildingNumber, string? postalCode, string? floor, string? room, string? landmark, string? additionalInformation)
+        private Address(int branchId , string country, string governorate, string? regionCity, string? street, string? buildingNumber, string? postalCode, string? floor, string? room, string? landmark, string? additionalInformation)
         {
             BranchId = branchId;
             Country = country;
@@ -50,7 +50,7 @@ namespace EgyptianeInvoicing.Core.ValueObjects
             yield return AdditionalInformation;
         }
 
-        public static Result<Address> Create(string? branchId, string country, string governorate, string? regionCity, string? street, string? buildingNumber, string? postalCode, string? floor, string? room, string? landmark, string? additionalInformation)
+        public static Result<Address> Create(int branchId, string country, string governorate, string? regionCity, string? street, string? buildingNumber, string? postalCode, string? floor, string? room, string? landmark, string? additionalInformation)
         {
             if (string.IsNullOrEmpty(country))
                 return Result.Failure<Address>("Address.Create", "Country is required.");
@@ -59,7 +59,7 @@ namespace EgyptianeInvoicing.Core.ValueObjects
             return Result.Success(address);
         }
 
-        public Result<bool> Modify(string? branchId = null, string? country = null, string? governorate = null, string? regionCity = null, string? street = null, string? buildingNumber = null, string? postalCode = null, string? floor = null, string? room = null, string? landmark = null, string? additionalInformation = null)
+        public Result<bool> Modify(int branchId = 0, string? country = null, string? governorate = null, string? regionCity = null, string? street = null, string? buildingNumber = null, string? postalCode = null, string? floor = null, string? room = null, string? landmark = null, string? additionalInformation = null)
         {
             if (country != null && string.IsNullOrEmpty(country))
                 return Result.Failure<bool>("Address.Modify", "Country cannot be null or empty.");

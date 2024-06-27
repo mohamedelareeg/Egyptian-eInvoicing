@@ -13,6 +13,14 @@ namespace EgyptianeInvoicing.Core.Features.Codes.Commands.UpdateEGSCodeUsage
 {
     public class UpdateEGSCodeUsageCommand : ICommand<bool>
     {
+        public UpdateEGSCodeUsageCommand(Guid companyId, int codeUsageRequestId, UpdateEGSCodeUsageRequestDto request)
+        {
+            CompanyId = companyId;
+            CodeUsageRequestId = codeUsageRequestId;
+            Request = request;
+        }
+
+        public Guid CompanyId { get; set; }
         public int CodeUsageRequestId { get; set; }
         public UpdateEGSCodeUsageRequestDto Request { get; set; }
     }

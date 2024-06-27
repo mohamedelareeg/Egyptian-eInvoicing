@@ -2,8 +2,8 @@
 {
     public class DocumentAcceptedDto
     {
-        public string UUID { get; set; }
-        public string LongId { get; set; }
-        public string InternalId { get; set; }
+        public string uUID { get; set; }
+        public string longId { get; set; }
+        public string internalId { get; set; }
     }
 }

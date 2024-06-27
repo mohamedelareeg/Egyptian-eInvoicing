@@ -11,5 +11,11 @@ namespace EgyptianeInvoicing.Core.Features.DocumentTypes.Queries.GetDocumentType
 {
     public class GetDocumentTypesQuery : IListQuery<DocumentTypeDto>
     {
+        public GetDocumentTypesQuery(Guid companyId)
+        {
+            CompanyId = companyId;
+        }
+
+        public Guid CompanyId { get; set; }
     }
 }

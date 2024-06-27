@@ -12,6 +12,9 @@ namespace EgyptianeInvoicing.Core.Features.DocumentOperations.Queries.SearchDocu
 {
     public class SearchDocumentsQuery : IQuery<RecentDocumentsDto>
     {
+       
+
+        public Guid CompanyId { get; set; }
         public DateTime? SubmissionDateFrom { get; set; }
         public DateTime? SubmissionDateTo { get; set; }
         public DateTime? IssueDateFrom { get; set; }

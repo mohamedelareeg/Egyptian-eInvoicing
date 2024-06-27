@@ -26,6 +26,7 @@ namespace EgyptianeInvoicing.Core.Features.Notifications.Queries.GetNotification
             try
             {
                 var result = await _notificationsClient.GetNotificationsAsync(
+                    request.CompanyId,
                     request.PageSize,
                     request.PageNo,
                     request.DateFrom,

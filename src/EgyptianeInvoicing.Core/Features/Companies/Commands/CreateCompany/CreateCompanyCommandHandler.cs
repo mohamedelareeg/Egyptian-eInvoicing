@@ -27,7 +27,7 @@ namespace EgyptianeInvoicing.Core.Features.Companies.Commands.CreateCompany
             Address address = null;
             if (request.Address != null)
             {
-                var addressResult = Address.Create(request.Address.BranchId, request.Address.Country, request.Address.Governorate, request.Address.RegionCity, request.Address.Street, request.Address.BuildingNumber, request.Address.PostalCode, request.Address.Floor, request.Address.Room, request.Address.Landmark, request.Address.AdditionalInformation);
+                var addressResult = Address.Create(Int32.Parse(request.Address.BranchID), request.Address.Country, request.Address.Governate, request.Address.RegionCity, request.Address.Street, request.Address.BuildingNumber, request.Address.PostalCode, request.Address.Floor, request.Address.Room, request.Address.Landmark, request.Address.AdditionalInformation);
 
                 if (addressResult.IsFailure)
                     return Result.Failure<CompanyDto>(addressResult.Error);
@@ -60,7 +60,7 @@ namespace EgyptianeInvoicing.Core.Features.Companies.Commands.CreateCompany
                 credentials = credentialsResult.Value;
             }
 
-            var companyResult = Company.Create(request.Name, request.Phone, request.Email, request.TaxNumber, request.CommercialRegistrationNo, address, request.Type, credentials, payments);
+            var companyResult = Company.Create(request.Name, request.Phone, request.Email, request.TaxNumber, request.CommercialRegistrationNo, address, request.ActivityCode, request.Type, credentials, payments);
 
             if (companyResult.IsFailure)
                 return Result.Failure<CompanyDto>(companyResult.Error);

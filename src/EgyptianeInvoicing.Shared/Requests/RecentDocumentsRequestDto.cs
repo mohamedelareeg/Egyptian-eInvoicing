@@ -8,6 +8,7 @@ namespace EgyptianeInvoicing.Shared.Requests
 {
     public class RecentDocumentsRequestDto
     {
+        public Guid CompanyId { get; set; }
         private DateTime? _submissionDateFrom;
         private DateTime? _submissionDateTo;
 

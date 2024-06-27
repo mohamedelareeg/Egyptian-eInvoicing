@@ -11,11 +11,13 @@ namespace EgyptianeInvoicing.Core.Features.DocumentPackages.Queries.RequestDocum
 {
     public class RequestDocumentPackageQuery : IQuery<PackageDownloadResponseDto>
     {
-        public DocumentPackageRequestDto RequestDto { get; set; }
-
-        public RequestDocumentPackageQuery(DocumentPackageRequestDto requestDto)
+        public RequestDocumentPackageQuery(Guid companyId, DocumentPackageRequestDto requestDto)
         {
+            CompanyId = companyId;
             RequestDto = requestDto;
         }
+
+        public Guid CompanyId { get; set; }
+        public DocumentPackageRequestDto RequestDto { get; set; }
     }
 }

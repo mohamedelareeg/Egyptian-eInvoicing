@@ -12,6 +12,8 @@ namespace EgyptianeInvoicing.Core.Features.DocumentOperations.Queries.GetRecentD
 {
     public class GetRecentDocumentsQuery : IQuery<RecentDocumentsDto>
     {
+        
+        public Guid CompanyId { get; set; }
         public DateTime? SubmissionDateFrom { get; set; }
         public DateTime? SubmissionDateTo { get; set; }
         public int PageSize { get; set; } = 10;

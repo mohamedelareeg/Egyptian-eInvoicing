@@ -26,6 +26,7 @@ namespace EgyptianeInvoicing.Core.Features.Companies.Commands.CreateCompany
         public CompanyType Type { get; }
         public ClientCredentialsDto? Credentials { get; }
         public List<PaymentDto>? Payments { get; }
+        public string ActivityCode { get; private set; }
 
         public CreateCompanyCommand(CreateCompanyRequestDto requestDto)
         {
@@ -38,6 +39,7 @@ namespace EgyptianeInvoicing.Core.Features.Companies.Commands.CreateCompany
             Type = requestDto.Type;
             Credentials = requestDto.Credentials;
             Payments = requestDto.Payments;
+            ActivityCode = requestDto.ActivityCode;
         }
     }
 }

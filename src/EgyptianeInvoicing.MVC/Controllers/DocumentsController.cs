@@ -1,5 +1,6 @@
 ﻿using EgyptianeInvoicing.MVC.Clients;
 using EgyptianeInvoicing.MVC.Clients.Abstractions;
+using EgyptianeInvoicing.MVC.Constants;
 using EgyptianeInvoicing.Shared.Dtos;
 using EgyptianeInvoicing.Shared.Requests;
 using Microsoft.AspNetCore.Mvc;
@@ -66,7 +67,7 @@ namespace EgyptianeInvoicing.MVC.Controllers
                 UUID = UUID,
                 InternalID = InternalID
             };
-
+            parameters.CompanyId = (Guid)(CompanyDtoSingleton.Instance?.ReferenceId);
             var response = await _documentsClient.SearchDocumentsAsync(parameters);
 
             if (!response.Succeeded)
@@ -144,7 +145,7 @@ namespace EgyptianeInvoicing.MVC.Controllers
                 IssuerType = IssuerType,
                 IssuerId = IssuerId,
             };
-
+            parameters.CompanyId = (Guid)(CompanyDtoSingleton.Instance?.ReferenceId);
             var response = await _documentsClient.RecentDocumentsAsync(parameters);
 
             if (!response.Succeeded)
@@ -178,7 +179,19 @@ namespace EgyptianeInvoicing.MVC.Controllers
             };
             return Json(responseDatatable);
         }
+        public async Task<IActionResult> GetDocumentPDF(string rid)
+        {
+            var response = await _documentsClient.GetDocumentPDFAsync(rid);
+
+            if (!response.Succeeded)
+            {
+                return BadRequest(response.Message);
+            }
+            return File(response.Data, "application/pdf", rid + ".PDF");
+        }
+
+
     }
-  
+
 }
 

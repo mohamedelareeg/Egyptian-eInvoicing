@@ -10,6 +10,23 @@ namespace EgyptianeInvoicing.Core.Features.DocumentPackages.Queries.GetPackagesR
 {
     public class GetPackagesRequestQuery : IQuery<DocumentPackageResponseDto>
     {
+        public GetPackagesRequestQuery(Guid companyId, int pageSize, int pageNo, DateTime dateFrom, DateTime dateTo, string documentTypeName, string statuses, string productsInternalCodes, int receiverSenderType, string receiverSenderId, string branchNumber, string itemCodes)
+        {
+            CompanyId = companyId;
+            PageSize = pageSize;
+            PageNo = pageNo;
+            DateFrom = dateFrom;
+            DateTo = dateTo;
+            DocumentTypeName = documentTypeName;
+            Statuses = statuses;
+            ProductsInternalCodes = productsInternalCodes;
+            ReceiverSenderType = receiverSenderType;
+            ReceiverSenderId = receiverSenderId;
+            BranchNumber = branchNumber;
+            ItemCodes = itemCodes;
+        }
+
+        public Guid CompanyId { get; set; }
         public int PageSize { get; set; }
         public int PageNo { get; set; }
         public DateTime DateFrom { get; set; }

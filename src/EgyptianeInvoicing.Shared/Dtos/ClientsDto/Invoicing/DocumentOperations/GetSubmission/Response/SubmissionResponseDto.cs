@@ -2,7 +2,7 @@
 
 namespace EgyptianeInvoicing.Shared.Dtos.ClientsDto.Invoicing.DocumentOperations.GetSubmission.Response
 {
-    public class SubmissionResponseDto
+    public class GetSubmissionResponseDto
     {
         public string uuid { get; set; }
         public int documentCount { get; set; }

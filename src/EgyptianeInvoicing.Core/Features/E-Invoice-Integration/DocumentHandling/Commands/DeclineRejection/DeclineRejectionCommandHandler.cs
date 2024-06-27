@@ -22,7 +22,7 @@ namespace EgyptianeInvoicing.Core.Features.DocumentHandling.Commands.DeclineReje
         {
             try
             {
-                var response = await _documentHandlingClient.DeclineRejectionAsync(request.DocumentUUID);
+                var response = await _documentHandlingClient.DeclineRejectionAsync(request.CompanyId, request.DocumentUUID);
 
                 if (!response.IsSuccessStatusCode)
                 {

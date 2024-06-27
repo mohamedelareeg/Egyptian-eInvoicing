@@ -24,7 +24,7 @@ namespace EgyptianeInvoicing.Core.Features.Documents.Queries.GetDocument
         {
             try
             {
-                var document = await _client.GetDocumentAsync(request.DocumentUUID);
+                var document = await _client.GetDocumentAsync(request.CompanyId, request.DocumentUUID);
                 return Result.Success(document);
             }
             catch (Exception ex)

@@ -22,7 +22,7 @@ namespace EgyptianeInvoicing.Core.Features.Codes.Commands.CreateEGSCodeUsage
         {
             try
             {
-                var response = await _codeManagementClient.CreateEGSCodeUsageAsync(request.Request);
+                var response = await _codeManagementClient.CreateEGSCodeUsageAsync(request.CompanyId, request.Request);
                 if (!response.IsSuccessStatusCode)
                 {
                     var errorMessage = await response.Content.ReadAsStringAsync();

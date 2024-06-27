@@ -1,5 +1,7 @@
 ﻿using EgyptianeInvoicing.MVC.Clients.Abstractions;
+using EgyptianeInvoicing.MVC.Constants;
 using EgyptianeInvoicing.Shared.Dtos;
+using EgyptianeInvoicing.Shared.Dtos.ClientsDto.Invoicing.InvoiceSubmission.Details;
 using EgyptianeInvoicing.Shared.Requests;
 using Microsoft.AspNetCore.Mvc;
 
@@ -118,5 +120,39 @@ namespace EgyptianeInvoicing.MVC.Controllers
                 return View("Error");
             }
         }
+        [HttpGet]
+        public IActionResult GetSelectedCompany()
+        {
+            var selectedCompany = CompanyDtoSingleton.Instance;
+
+            if (selectedCompany != null)
+            {
+                return Ok(new { success = true, data = selectedCompany });
+            }
+            else
+            {
+                return Ok(new { success = false });
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> SetSelectedCompany([FromBody] CompanyDto dto)
+        {
+            try
+            {
+                if (dto == null)
+                {
+                    return BadRequest("CompanyDto cannot be null");
+                }
+
+                CompanyDtoSingleton.SetCompany(dto);
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = ex.Message });
+            }
+        }
+
     }
 }

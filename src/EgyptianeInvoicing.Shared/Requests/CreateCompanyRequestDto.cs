@@ -20,5 +20,6 @@ namespace EgyptianeInvoicing.Shared.Requests
         public CompanyType Type { get; set; }
         public ClientCredentialsDto Credentials { get; set; }
         public List<PaymentDto> Payments { get; set; }
+        public string ActivityCode { get; private set; }
     }
 }

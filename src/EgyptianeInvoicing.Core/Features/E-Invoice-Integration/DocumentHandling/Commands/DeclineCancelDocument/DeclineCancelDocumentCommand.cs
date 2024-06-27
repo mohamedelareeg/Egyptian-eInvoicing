@@ -10,13 +10,17 @@ namespace EgyptianeInvoicing.Core.Features.DocumentHandling.Commands.DeclineCanc
 {
     public class DeclineCancelDocumentCommand : ICommand<bool>
     {
-        public string DocumentUUID { get; }
-        public string DeclineReason { get; }
-
-        public DeclineCancelDocumentCommand(string documentUUID, string declineReason)
+        public DeclineCancelDocumentCommand(Guid companyId, string documentUUID, string declineReason)
         {
+            CompanyId = companyId;
             DocumentUUID = documentUUID;
             DeclineReason = declineReason;
         }
+
+        public Guid CompanyId { get; set; }
+        public string DocumentUUID { get; }
+        public string DeclineReason { get; }
+
+   
     }
 }

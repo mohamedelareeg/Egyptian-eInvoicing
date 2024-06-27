@@ -1,4 +1,5 @@
 ﻿using EgyptianeInvoicing.Core.Clients.Invoicing.Abstractions;
+using EgyptianeInvoicing.Core.Data.Repositories.Abstractions;
 using EgyptianeInvoicing.Core.Services.Abstractions;
 using System.Text;
 using System.Text.Json;
@@ -9,18 +10,18 @@ namespace EgyptianeInvoicing.Core.Clients.Invoicing
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly HttpClient _invoicingClient;
-        private readonly ISecureStorageService _secureStorageService;
+        private readonly ICompanyRepository _companyRepository;
 
-        public DocumentHandlingClient(IHttpClientFactory httpClientFactory, ISecureStorageService secureStorageService)
+        public DocumentHandlingClient(IHttpClientFactory httpClientFactory, ICompanyRepository companyRepository)
         {
             _httpClientFactory = httpClientFactory;
             _invoicingClient = httpClientFactory.CreateClient("SystemApiBaseUrl");
-            _secureStorageService = secureStorageService;
+            _companyRepository = companyRepository;
         }
-        public async Task<HttpResponseMessage> DeclineCancelDocumentAsync(string documentUUID, string declineReason)
+        public async Task<HttpResponseMessage> DeclineCancelDocumentAsync(Guid companyId, string documentUUID, string declineReason)
         {
             _invoicingClient.DefaultRequestHeaders.Clear();
-            var accessToken = _secureStorageService.GetToken();
+            var accessToken = await _companyRepository.GetCompanyTokenByIdAsync(companyId);
             if (string.IsNullOrEmpty(accessToken))
             {
                 throw new HttpRequestException($"Token is null or empty. Retrieved token: '{accessToken}'");
@@ -43,10 +44,10 @@ namespace EgyptianeInvoicing.Core.Clients.Invoicing
 
             return response;
         }
-        public async Task<HttpResponseMessage> DeclineRejectionAsync(string documentUUID)
+        public async Task<HttpResponseMessage> DeclineRejectionAsync(Guid companyId, string documentUUID)
         {
             _invoicingClient.DefaultRequestHeaders.Clear();
-            var accessToken = _secureStorageService.GetToken();
+            var accessToken = await _companyRepository.GetCompanyTokenByIdAsync(companyId);
             if (string.IsNullOrEmpty(accessToken))
             {
                 throw new HttpRequestException($"Token is null or empty. Retrieved token: '{accessToken}'");

@@ -14,6 +14,7 @@ using EgyptianeInvoicing.Shared.Dtos.ClientsDto.Common.Codes.SearchCodeUsage.Req
 using EgyptianeInvoicing.Shared.Dtos.ClientsDto.Common.Codes.SearchPublishedCodes.Request;
 using EgyptianeInvoicing.Shared.Dtos.ClientsDto.Common.Codes.UpdateCode.Request;
 using EgyptianeInvoicing.Shared.Dtos.ClientsDto.Common.Codes.UpdateEGSCodeUsage.Request;
+using EgyptianeInvoicing.Core.Data.Repositories.Abstractions;
 
 namespace EgyptianeInvoicing.Core.Clients.Common
 {
@@ -21,21 +22,21 @@ namespace EgyptianeInvoicing.Core.Clients.Common
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly HttpClient _invoicingClient;
-        private readonly ISecureStorageService _secureStorageService;
+        private readonly ICompanyRepository _companyRepository;
 
-        public CodeManagementClient(IHttpClientFactory httpClientFactory, ISecureStorageService secureStorageService)
+        public CodeManagementClient(IHttpClientFactory httpClientFactory, ICompanyRepository companyRepository)
         {
             _httpClientFactory = httpClientFactory;
             _invoicingClient = httpClientFactory.CreateClient("SystemApiBaseUrl");
-            _secureStorageService = secureStorageService;
+            _companyRepository = companyRepository;
         }
 
         //POST
         //{{apiBaseUrl}}/api/v1.0/codetypes/requests/codes
-        public async Task<HttpResponseMessage> CreateEGSCodeUsageAsync(List<CreateEGSCodeUsageItemDto> request)
+        public async Task<HttpResponseMessage> CreateEGSCodeUsageAsync(Guid companyId, List<CreateEGSCodeUsageItemDto> request)
         {
             _invoicingClient.DefaultRequestHeaders.Clear();
-            var accessToken = _secureStorageService.GetToken();
+            var accessToken = await _companyRepository.GetCompanyTokenByIdAsync(companyId);
             if (string.IsNullOrEmpty(accessToken))
             {
                 throw new HttpRequestException($"Token is null or empty. Retrieved token: '{accessToken}'");
@@ -70,10 +71,10 @@ namespace EgyptianeInvoicing.Core.Clients.Common
 
         //GET
         //{{apiBaseUrl}}/api/v1.0/codetypes/requests/my?Active=true&Status=Approved&PageSize=10&PageNumber=1&OrderDirections=Descending
-        public async Task<List<CodeUsageRequestDetailsDto>> SearchCodeUsageRequestsAsync(string active, string status, string pageSize, string pageNumber, string orderDirection)
+        public async Task<List<CodeUsageRequestDetailsDto>> SearchCodeUsageRequestsAsync(Guid companyId, string active, string status, string pageSize, string pageNumber, string orderDirection)
         {
             _invoicingClient.DefaultRequestHeaders.Clear();
-            var accessToken = _secureStorageService.GetToken();
+            var accessToken = await _companyRepository.GetCompanyTokenByIdAsync(companyId);
             if (string.IsNullOrEmpty(accessToken))
             {
                 throw new HttpRequestException($"Token is null or empty. Retrieved token: '{accessToken}'");
@@ -93,10 +94,10 @@ namespace EgyptianeInvoicing.Core.Clients.Common
 
         //PUT
         //{{apiBaseUrl}}/api/v1.0/codetypes/requests/codeusages
-        public async Task<HttpResponseMessage> RequestCodeReuseAsync(List<CodeUsageItemDto> request)
+        public async Task<HttpResponseMessage> RequestCodeReuseAsync(Guid companyId, List<CodeUsageItemDto> request)
         {
             _invoicingClient.DefaultRequestHeaders.Clear();
-            var accessToken = _secureStorageService.GetToken();
+            var accessToken = await _companyRepository.GetCompanyTokenByIdAsync(companyId);
             if (string.IsNullOrEmpty(accessToken))
             {
                 throw new HttpRequestException($"Token is null or empty. Retrieved token: '{accessToken}'");
@@ -130,10 +131,10 @@ namespace EgyptianeInvoicing.Core.Clients.Common
         }
         //GET
         //{{apiBaseUrl}}/api/v1.0/codetypes/:codeType/codes?ParentLevelName=GPC Level 4 Code - Brick&OnlyActive=true&ActiveFrom=2019-01-01T00:00:00Z&Ps=10&Pn=1&OrdDir=Descending&CodeTypeLevelNumber=5
-        public async Task<List<PublishedCodeDto>> SearchPublishedCodesAsync(string codeType, string parentLevelName, bool onlyActive, DateTime activeFrom, int pageSize, int pageNumber)
+        public async Task<List<PublishedCodeDto>> SearchPublishedCodesAsync(Guid companyId,string codeType, string parentLevelName, bool onlyActive, DateTime activeFrom, int pageSize, int pageNumber)
         {
             _invoicingClient.DefaultRequestHeaders.Clear();
-            var accessToken = _secureStorageService.GetToken();
+            var accessToken = await _companyRepository.GetCompanyTokenByIdAsync(companyId);
             if (string.IsNullOrEmpty(accessToken))
             {
                 throw new HttpRequestException($"Token is null or empty. Retrieved token: '{accessToken}'");
@@ -163,10 +164,10 @@ namespace EgyptianeInvoicing.Core.Clients.Common
 
         //GET
         //{{apiBaseUrl}}/api/v1.0/codetypes/:codeType/codes/:itemCode
-        public async Task<GetCodeDetailsResponseDto> GetCodeDetailsByItemCodeAsync(string codeType, string itemCode)
+        public async Task<GetCodeDetailsResponseDto> GetCodeDetailsByItemCodeAsync(Guid companyId, string codeType, string itemCode)
         {
             _invoicingClient.DefaultRequestHeaders.Clear();
-            var accessToken = _secureStorageService.GetToken();
+            var accessToken = await _companyRepository.GetCompanyTokenByIdAsync(companyId);
             if (string.IsNullOrEmpty(accessToken))
             {
                 throw new HttpRequestException($"Token is null or empty. Retrieved token: '{accessToken}'");
@@ -184,10 +185,10 @@ namespace EgyptianeInvoicing.Core.Clients.Common
 
         //PUT
         //{{apiBaseUrl}}/api/v1.0/codetypes/requests/codes/:codeUsageRequestId
-        public async Task<HttpResponseMessage> UpdateEGSCodeUsageAsync(int codeUsageRequestId, UpdateEGSCodeUsageRequestDto request)
+        public async Task<HttpResponseMessage> UpdateEGSCodeUsageAsync(Guid companyId, int codeUsageRequestId, UpdateEGSCodeUsageRequestDto request)
         {
             _invoicingClient.DefaultRequestHeaders.Clear();
-            var accessToken = _secureStorageService.GetToken();
+            var accessToken = await _companyRepository.GetCompanyTokenByIdAsync(companyId);
             if (string.IsNullOrEmpty(accessToken))
             {
                 throw new HttpRequestException($"Token is null or empty. Retrieved token: '{accessToken}'");
@@ -221,10 +222,10 @@ namespace EgyptianeInvoicing.Core.Clients.Common
 
         //PUT
         //{{apiBaseUrl}}/api/v1.0/codetypes/:codeType/codes/:itemCode
-        public async Task<HttpResponseMessage> UpdateCodeAsync(string codeType, string itemCode, CodeUpdateRequestDto codeUpdateRequest)
+        public async Task<HttpResponseMessage> UpdateCodeAsync(Guid companyId, string codeType, string itemCode, CodeUpdateRequestDto codeUpdateRequest)
         {
             _invoicingClient.DefaultRequestHeaders.Clear();
-            var accessToken = _secureStorageService.GetToken();
+            var accessToken = await _companyRepository.GetCompanyTokenByIdAsync(companyId);
             if (string.IsNullOrEmpty(accessToken))
             {
                 throw new HttpRequestException($"Token is null or empty. Retrieved token: '{accessToken}'");

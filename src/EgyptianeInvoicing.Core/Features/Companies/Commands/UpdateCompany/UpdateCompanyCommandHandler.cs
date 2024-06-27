@@ -65,7 +65,7 @@ namespace EgyptianeInvoicing.Core.Features.Companies.Commands.UpdateCompany
 
             if (request.Address != null)
             {
-                var addressResult = Address.Create(request.Address.BranchId, request.Address.Country, request.Address.Governorate, request.Address.RegionCity, request.Address.Street, request.Address.BuildingNumber, request.Address.PostalCode, request.Address.Floor, request.Address.Room, request.Address.Landmark, request.Address.AdditionalInformation);
+                var addressResult = Address.Create(Int32.Parse(request.Address.BranchID), request.Address.Country, request.Address.Governate, request.Address.RegionCity, request.Address.Street, request.Address.BuildingNumber, request.Address.PostalCode, request.Address.Floor, request.Address.Room, request.Address.Landmark, request.Address.AdditionalInformation);
                 if (addressResult.IsFailure)
                     return Result.Failure<bool>(addressResult.Error);
 

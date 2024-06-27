@@ -12,6 +12,13 @@ namespace EgyptianeInvoicing.Core.Features.Codes.Commands.RequestCodeReuse
 {
     public class RequestCodeReuseCommand : ICommand<bool>
     {
+        public RequestCodeReuseCommand(Guid companyId, List<CodeUsageItemDto> request)
+        {
+            CompanyId = companyId;
+            Request = request;
+        }
+
+        public Guid CompanyId { get; set; }
         public List<CodeUsageItemDto> Request { get; set; }
     }
 }

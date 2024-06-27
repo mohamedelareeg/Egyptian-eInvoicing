@@ -1,4 +1,5 @@
 ﻿using EgyptianeInvoicing.Core.Clients.Common.Abstractions;
+using EgyptianeInvoicing.Core.Data.Repositories.Abstractions;
 using EgyptianeInvoicing.Core.Services.Abstractions;
 using EgyptianeInvoicing.Shared.Dtos.ClientsDto;
 using Microsoft.Extensions.Configuration;
@@ -13,14 +14,14 @@ namespace EgyptianeInvoicing.Core.Clients.Common
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly HttpClient _idSrvClient;
-        private readonly ISecureStorageService _secureStorageService;
+        private readonly ICompanyRepository _companyRepository;
         private readonly IConfiguration _configuration;
 
-        public AuthenticationClient(IHttpClientFactory httpClientFactory, ISecureStorageService secureStorageService, IConfiguration configuration)
+        public AuthenticationClient(IHttpClientFactory httpClientFactory, ICompanyRepository companyRepository, IConfiguration configuration)
         {
             _httpClientFactory = httpClientFactory;
             _idSrvClient = httpClientFactory.CreateClient("IdSrvBaseUrl");
-            _secureStorageService = secureStorageService;
+            _companyRepository = companyRepository;
              _configuration = new ConfigurationBuilder()
                 .AddJsonFile("signersettings.json", optional: false, reloadOnChange: true)
                 .Build();
@@ -28,7 +29,7 @@ namespace EgyptianeInvoicing.Core.Clients.Common
         }
         //POST
         //{{idSrvBaseUrl}}/connect/token
-        public async Task<string> LoginAndGetAccessTokenAsync(string clientId, string clientSecret, string registrationNumber = null)
+        public async Task<string> LoginAndGetAccessTokenAsync(Guid companyId, string clientId, string clientSecret, string registrationNumber = null)
         {
             var environment = _configuration.GetSection("E-InvoiceEnvironment").Value;
             var envConfig = _configuration.GetSection($"E-InvoiceEnvironments:{environment}");
@@ -58,7 +59,7 @@ namespace EgyptianeInvoicing.Core.Clients.Common
                 var responseBody = await response.Content.ReadAsStringAsync();
                 var tokenResponse = JsonSerializer.Deserialize<TokenResponse>(responseBody);
                 var accessToken = tokenResponse.access_token;
-                _secureStorageService.SaveToken(accessToken);
+                await _companyRepository.SaveCompanyTokenAsync(companyId, accessToken);
                 return tokenResponse.access_token;
             }
             else if (response.StatusCode == HttpStatusCode.BadRequest)

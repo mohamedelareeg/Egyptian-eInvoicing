@@ -3,9 +3,11 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using EgyptianeInvoicing.Core.Clients.Invoicing.Abstractions;
+using EgyptianeInvoicing.Core.Data.Repositories.Abstractions;
 using EgyptianeInvoicing.Core.Services.Abstractions;
 using EgyptianeInvoicing.Shared.Dtos.ClientsDto.Invoicing.DocumentOperations.GetRecentDocuments.Response;
 using EgyptianeInvoicing.Shared.Dtos.ClientsDto.Invoicing.DocumentOperations.GetSubmission.Response;
+using EgyptianeInvoicing.Shared.Dtos.ClientsDto.Invoicing.InvoiceSubmission.Response;
 
 namespace EgyptianeInvoicing.Core.Clients.Invoicing
 {
@@ -13,18 +15,18 @@ namespace EgyptianeInvoicing.Core.Clients.Invoicing
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly HttpClient _invoicingClient;
-        private readonly ISecureStorageService _secureStorageService;
+        private readonly ICompanyRepository _companyRepository;
 
-        public DocumentOperationsClient(IHttpClientFactory httpClientFactory, ISecureStorageService secureStorageService)
+        public DocumentOperationsClient(IHttpClientFactory httpClientFactory, ICompanyRepository companyRepository)
         {
             _httpClientFactory = httpClientFactory;
             _invoicingClient = httpClientFactory.CreateClient("SystemApiBaseUrl");
-            _secureStorageService = secureStorageService;
+            _companyRepository = companyRepository;
         }
-        public async Task<HttpResponseMessage> CancelDocumentAsync(string documentUUID, string reason)
+        public async Task<HttpResponseMessage> CancelDocumentAsync(Guid companyId, string documentUUID, string reason)
         {
             _invoicingClient.DefaultRequestHeaders.Clear();
-            var accessToken = _secureStorageService.GetToken();
+            var accessToken = await _companyRepository.GetCompanyTokenByIdAsync(companyId);
             if (string.IsNullOrEmpty(accessToken))
             {
                 throw new HttpRequestException($"Token is null or empty. Retrieved token: '{accessToken}'");
@@ -64,10 +66,10 @@ namespace EgyptianeInvoicing.Core.Clients.Invoicing
         }
 
 
-        public async Task<HttpResponseMessage> RejectDocumentAsync(string documentUUID, string reason)
+        public async Task<HttpResponseMessage> RejectDocumentAsync(Guid companyId, string documentUUID, string reason)
         {
             _invoicingClient.DefaultRequestHeaders.Clear();
-            var accessToken = _secureStorageService.GetToken();
+            var accessToken = await _companyRepository.GetCompanyTokenByIdAsync(companyId);
             if (string.IsNullOrEmpty(accessToken))
             {
                 throw new HttpRequestException($"Token is null or empty. Retrieved token: '{accessToken}'");
@@ -105,6 +107,7 @@ namespace EgyptianeInvoicing.Core.Clients.Invoicing
             return response;
         }
         public async Task<RecentDocumentsDto> GetRecentDocumentsAsync(
+            Guid companyId,
             DateTime? submissionDateFrom,
     DateTime? submissionDateTo,
     DateTime? issueDateFrom,
@@ -120,14 +123,14 @@ namespace EgyptianeInvoicing.Core.Clients.Invoicing
     string issuerId = "")
         {
             _invoicingClient.DefaultRequestHeaders.Clear();
-            var accessToken = _secureStorageService.GetToken();
+            var accessToken = await _companyRepository.GetCompanyTokenByIdAsync(companyId);
             if (string.IsNullOrEmpty(accessToken))
             {
                 throw new HttpRequestException($"Token is null or empty. Retrieved token: '{accessToken}'");
             }
             _invoicingClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
             _invoicingClient.DefaultRequestHeaders.Add("PageSize", pageSize.ToString());
-
+            _invoicingClient.DefaultRequestHeaders.Add("Accept-Language", "ar");
             var queryParameters = new List<string>();
 
             //AppendQueryParam(queryParameters, "submissionDateFrom", "2024-05-01T15:00:59");//submissionDateFrom?.ToString("yyyy-MM-ddTHH:mm:ss")
@@ -181,6 +184,7 @@ namespace EgyptianeInvoicing.Core.Clients.Invoicing
         }
 
         public async Task<RecentDocumentsDto> SearchDocumentsAsync(
+            Guid companyId,
     DateTime? submissionDateFrom,
     DateTime? submissionDateTo,
     DateTime? issueDateFrom,
@@ -198,14 +202,14 @@ namespace EgyptianeInvoicing.Core.Clients.Invoicing
     string internalID = "")
         {
             _invoicingClient.DefaultRequestHeaders.Clear();
-            var accessToken = _secureStorageService.GetToken();
+            var accessToken = await _companyRepository.GetCompanyTokenByIdAsync(companyId);
             if (string.IsNullOrEmpty(accessToken))
             {
                 throw new HttpRequestException($"Token is null or empty. Retrieved token: '{accessToken}'");
             }
             _invoicingClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
             _invoicingClient.DefaultRequestHeaders.Add("PageSize", pageSize.ToString());
-
+            _invoicingClient.DefaultRequestHeaders.Add("Accept-Language", "ar");
             var queryParameters = new List<string>();
 
             if (!submissionDateFrom.HasValue)
@@ -272,10 +276,10 @@ namespace EgyptianeInvoicing.Core.Clients.Invoicing
         }
 
 
-        public async Task<SubmissionResponseDto> GetSubmissionAsync(string submissionUUID, string pageSize = "10", string pageNo = "1")
+        public async Task<GetSubmissionResponseDto> GetSubmissionAsync(Guid companyId, string submissionUUID, string pageSize = "10", string pageNo = "1")
         {
             _invoicingClient.DefaultRequestHeaders.Clear();
-            var accessToken = _secureStorageService.GetToken();
+            var accessToken = await _companyRepository.GetCompanyTokenByIdAsync(companyId);
             if (string.IsNullOrEmpty(accessToken))
             {
                 throw new HttpRequestException($"Token is null or empty. Retrieved token: '{accessToken}'");
@@ -290,7 +294,7 @@ namespace EgyptianeInvoicing.Core.Clients.Invoicing
             response.EnsureSuccessStatusCode();
 
             var responseBody = await response.Content.ReadAsStringAsync();
-            var submissionResponse = JsonSerializer.Deserialize<SubmissionResponseDto>(responseBody, new JsonSerializerOptions
+            var submissionResponse = JsonSerializer.Deserialize<GetSubmissionResponseDto>(responseBody, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             });

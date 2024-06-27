@@ -2,7 +2,7 @@
     ViewData["Title"] = localizer["Recent Documents"];
 }
 
-
+<partial name="~/views/Partial/_SelectedCompanyPartial.cshtml" />
 <form id="searchForm">
     <div class="row mb-3">
         <div class="col-md-3">
@@ -97,6 +97,8 @@
     <tbody></tbody>
 </table>
 
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     var localizationStrings = {
         "search": "@localizer["datatable_search"]",
@@ -180,6 +182,7 @@
                             default:
                                 break;
                         }
+                        buttons += ' <button class="btn btn-success btn-sm" onclick="downloadDocumentPDF(\'' + row.uuid + '\')">@localizer["Download PDF"]</button>';
                         return buttons;
                     }
                 }
@@ -257,7 +260,58 @@
             $('#SubmissionDateFrom').val(submissionDateFrom);
             $('#SubmissionDateTo').val(submissionDateTo);
         }
-
+       
         setDefaultSubmissionDates();
+      
+
     });
+    function downloadDocumentPDF(rid) {
+        Swal.fire({
+            title: '@localizer["Downloading..."]',
+            html: '<div id="progress-bar" style="width: 100%; background-color: #f0f0f0;"><div style="width: 0%; height: 20px; background-color: #4caf50;"></div></div>',
+            allowOutsideClick: false,
+            showCancelButton: false,
+            showConfirmButton: false,
+            onBeforeOpen: () => {
+                Swal.showLoading();
+                const progressBar = Swal.getHtmlContainer().querySelector('#progress-bar div');
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += 10;
+                    if (progress > 100) {
+                        clearInterval(interval);
+                    } else {
+                        progressBar.style.width = `${progress}%`;
+                    }
+                }, 500);
+            }
+        });
+
+        $.ajax({
+            url: '/Documents/GetDocumentPDF?rid=' + encodeURIComponent(rid),
+            type: 'GET',
+            xhrFields: {
+                responseType: 'blob'
+            },
+            success: function (data) {
+                Swal.close();
+                var blob = new Blob([data], { type: 'application/pdf' });
+                var link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = rid + '.pdf';
+                link.click();
+            },
+            error: function (xhr, status, error) {
+                Swal.close();
+                Swal.fire({
+                    icon: 'error',
+                    title: '@localizer["Download failed"]',
+                    text: error
+                });
+                console.error(error);
+            }
+        });
+    }
+
+
 </script>

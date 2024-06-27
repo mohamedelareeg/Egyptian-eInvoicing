@@ -6,8 +6,9 @@ namespace EgyptianeInvoicing.Core.Clients.Invoicing.Abstractions
 {
     public interface IDocumentPackageClient
     {
-        Task<PackageDownloadResponseDto> RequestDocumentPackageAsync(DocumentPackageRequestDto requestDto);
+        Task<PackageDownloadResponseDto> RequestDocumentPackageAsync(Guid companyId, DocumentPackageRequestDto requestDto);
         Task<DocumentPackageResponseDto> GetPackagesRequestAsync(
+            Guid companyId,
             int pageSize,
             int pageNo,
             DateTime dateFrom,
@@ -20,6 +21,6 @@ namespace EgyptianeInvoicing.Core.Clients.Invoicing.Abstractions
             string branchNumber = "",
             string itemCodes = ""
         );
-        Task<byte[]> GetDocumentPackageAsync(string rid);
+        Task<byte[]> GetDocumentPackageAsync(Guid companyId, string rid);
     }
 }

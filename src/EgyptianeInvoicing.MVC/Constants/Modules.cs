@@ -22,6 +22,17 @@ namespace EgyptianeInvoicing.MVC.Constants
                 },
                 new Modules
                 {
+                    PageName = "DocumentUpload",
+                    RoleName = "DocumentUpload",
+                    Path = "",
+                    ControllerName = "DocumentUpload",
+                    ActionName = "Index",
+                    Parent = 1,
+                    IsShow = 1,
+                    FaIcon = "fas fa-file-upload"
+                },
+                new Modules
+                {
                     PageName = "RecentDocument",
                     RoleName = "RecentDocument",
                     Path = "",

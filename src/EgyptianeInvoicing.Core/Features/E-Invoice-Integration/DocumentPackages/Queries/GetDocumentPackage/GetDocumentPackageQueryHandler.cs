@@ -22,7 +22,7 @@ namespace EgyptianeInvoicing.Core.Features.DocumentPackages.Queries.GetDocumentP
         {
             try
             {
-                var response = await _documentPackageClient.GetDocumentPackageAsync(request.Rid);
+                var response = await _documentPackageClient.GetDocumentPackageAsync(request.CompanyId, request.Rid);
                 return Result.Success(response);
             }
             catch (HttpRequestException ex)

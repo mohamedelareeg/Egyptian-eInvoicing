@@ -27,7 +27,7 @@ namespace EgyptianeInvoicing.Core.Features.DocumentTypes.Queries.GetDocumentType
         public async Task<Result<CustomList<DocumentTypeDto>>> Handle(GetDocumentTypesQuery request, CancellationToken cancellationToken)
         {
 
-            var result = await _documentTypesClient.GetDocumentTypesAsync();
+            var result = await _documentTypesClient.GetDocumentTypesAsync(request.CompanyId);
             return result.ToCustomList();
         }
     }

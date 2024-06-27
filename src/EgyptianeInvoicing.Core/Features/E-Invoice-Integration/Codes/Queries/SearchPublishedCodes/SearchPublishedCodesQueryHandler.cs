@@ -24,6 +24,7 @@ namespace EgyptianeInvoicing.Core.Features.Codes.Queries.SearchPublishedCodes
         public async Task<Result<CustomList<PublishedCodeDto>>> Handle(SearchPublishedCodesQuery request, CancellationToken cancellationToken)
         {
             var response = await _codeManagementClient.SearchPublishedCodesAsync(
+                request.CompanyId,
                 request.CodeType,
                 request.ParentLevelName,
                 request.OnlyActive,

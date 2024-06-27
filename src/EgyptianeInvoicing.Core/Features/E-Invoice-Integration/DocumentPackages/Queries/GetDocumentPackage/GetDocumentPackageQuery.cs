@@ -9,11 +9,14 @@ namespace EgyptianeInvoicing.Core.Features.DocumentPackages.Queries.GetDocumentP
 {
     public class GetDocumentPackageQuery : IQuery<byte[]>
     {
-        public string Rid { get; set; }
-
-        public GetDocumentPackageQuery(string rid)
+        public GetDocumentPackageQuery(Guid companyId, string rid)
         {
+            CompanyId = companyId;
             Rid = rid;
         }
+
+        public Guid CompanyId { get; set; }
+        public string Rid { get; set; }
+
     }
 }

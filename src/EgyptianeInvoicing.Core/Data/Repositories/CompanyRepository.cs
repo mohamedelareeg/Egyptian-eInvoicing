@@ -116,5 +116,33 @@ namespace EgyptianeInvoicing.Core.Data.Repositories
 
             return query.Provider.CreateQuery<Company>(orderByExpression);
         }
+        public async Task<string> GetCompanyTokenByIdAsync(Guid id)
+        {
+            var token = await _context.Set<Company>()
+                                       .Where(c => c.Id == id)
+                                       .Select(c => c.EInvoiceToken)
+                                       .FirstOrDefaultAsync();
+            return token;
+        }
+        public async Task<Result<bool>> SaveCompanyTokenAsync(Guid id, string eInvoiceToken)
+        {
+            var company = await _context.Set<Company>()
+                                        .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (company == null)
+                return Result.Failure<bool>("SaveCompanyTokenAsync", "Company not found.");
+
+            company.SetEInvoiceToken(eInvoiceToken);
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                return Result.Success(true);
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure<bool>("SaveCompanyTokenAsync", ex.Message);
+            }
+        }
     }
 }

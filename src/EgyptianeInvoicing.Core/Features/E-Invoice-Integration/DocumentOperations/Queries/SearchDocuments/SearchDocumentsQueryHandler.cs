@@ -25,6 +25,7 @@ namespace EgyptianeInvoicing.Core.Features.DocumentOperations.Queries.SearchDocu
             try
             {
                 var result = await _documentOperationsClient.SearchDocumentsAsync(
+                    request.CompanyId,
                     request.SubmissionDateFrom,
                     request.SubmissionDateTo,
                     request.IssueDateFrom,

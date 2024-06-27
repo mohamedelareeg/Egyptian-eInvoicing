@@ -24,6 +24,7 @@ namespace EgyptianeInvoicing.Core.Features.DocumentPackages.Queries.GetPackagesR
             try
             {
                 var response = await _documentPackageClient.GetPackagesRequestAsync(
+                    request.CompanyId,
                     request.PageSize,
                     request.PageNo,
                     request.DateFrom,

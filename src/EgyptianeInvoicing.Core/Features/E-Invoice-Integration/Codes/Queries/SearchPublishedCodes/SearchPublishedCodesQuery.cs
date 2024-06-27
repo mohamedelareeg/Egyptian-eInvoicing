@@ -11,6 +11,18 @@ namespace EgyptianeInvoicing.Core.Features.Codes.Queries.SearchPublishedCodes
 {
     public class SearchPublishedCodesQuery : IListQuery<PublishedCodeDto>
     {
+        public SearchPublishedCodesQuery(Guid companyId, string codeType, string parentLevelName, bool onlyActive, DateTime activeFrom, int pageSize, int pageNumber)
+        {
+            CompanyId = companyId;
+            CodeType = codeType;
+            ParentLevelName = parentLevelName;
+            OnlyActive = onlyActive;
+            ActiveFrom = activeFrom;
+            PageSize = pageSize;
+            PageNumber = pageNumber;
+        }
+
+        public Guid CompanyId { get; set; }
         public string CodeType { get; set; }
         public string ParentLevelName { get; set; }
         public bool OnlyActive { get; set; }

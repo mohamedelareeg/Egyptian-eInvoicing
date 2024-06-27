@@ -1,4 +1,5 @@
 ﻿using EgyptianeInvoicing.Core.Clients.Common.Abstractions;
+using EgyptianeInvoicing.Core.Data.Repositories.Abstractions;
 using EgyptianeInvoicing.Core.Services.Abstractions;
 using EgyptianeInvoicing.Shared.Dtos.ClientsDto.Common.Notifications.Response;
 using System.Text.Json;
@@ -9,20 +10,20 @@ namespace EgyptianeInvoicing.Core.Clients.Common
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly HttpClient _invoicingClient;
-        private readonly ISecureStorageService _secureStorageService;
+        private readonly ICompanyRepository _companyRepository;
 
-        public NotificationsClient(IHttpClientFactory httpClientFactory, ISecureStorageService secureStorageService)
+        public NotificationsClient(IHttpClientFactory httpClientFactory, ICompanyRepository companyRepository)
         {
             _httpClientFactory = httpClientFactory;
             _invoicingClient = httpClientFactory.CreateClient("SystemApiBaseUrl");
-            _secureStorageService = secureStorageService;
+            _companyRepository = companyRepository;
         }
         //GET
         //{{apiBaseUrl}}/api/v1/notifications/taxpayer?pageSize=10&pageNo=1&dateFrom=&dateTo=&type=&language=en&status=&channel=
-        public async Task<NotificationsResponseDto> GetNotificationsAsync(int pageSize, int pageNo, DateTime? dateFrom, DateTime? dateTo, string type, string language, string status, string channel)
+        public async Task<NotificationsResponseDto> GetNotificationsAsync(Guid companyId, int pageSize, int pageNo, DateTime? dateFrom, DateTime? dateTo, string type, string language, string status, string channel)
         {
             _invoicingClient.DefaultRequestHeaders.Clear();
-            var accessToken = _secureStorageService.GetToken();
+            var accessToken = await _companyRepository.GetCompanyTokenByIdAsync(companyId);
             if (string.IsNullOrEmpty(accessToken))
             {
                 throw new HttpRequestException($"Token is null or empty. Retrieved token: '{accessToken}'");

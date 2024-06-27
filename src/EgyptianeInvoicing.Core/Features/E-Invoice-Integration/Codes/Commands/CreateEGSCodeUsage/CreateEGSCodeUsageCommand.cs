@@ -13,11 +13,15 @@ namespace EgyptianeInvoicing.Core.Features.Codes.Commands.CreateEGSCodeUsage
 {
     public class CreateEGSCodeUsageCommand : ICommand<bool>
     {
-        public List<CreateEGSCodeUsageItemDto> Request { get; }
-
-        public CreateEGSCodeUsageCommand(List<CreateEGSCodeUsageItemDto> request)
+        public CreateEGSCodeUsageCommand(Guid companyId, List<CreateEGSCodeUsageItemDto> request)
         {
+            CompanyId = companyId;
             Request = request;
         }
+
+        public Guid CompanyId { get; set; }
+        public List<CreateEGSCodeUsageItemDto> Request { get; }
+
+    
     }
 }

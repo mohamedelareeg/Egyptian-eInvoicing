@@ -23,7 +23,7 @@ namespace EgyptianeInvoicing.Core.Features.Codes.Queries.SearchCodeUsageRequests
 
         public async Task<Result<CustomList<CodeUsageRequestDetailsDto>>> Handle(SearchCodeUsageRequestsQuery request, CancellationToken cancellationToken)
         {
-            var result = await _codeManagementClient.SearchCodeUsageRequestsAsync(request.Active,request.Status,request.PageSize,request.PageNumber,request.OrderDirection);
+            var result = await _codeManagementClient.SearchCodeUsageRequestsAsync(request.CompanyId, request.Active,request.Status,request.PageSize,request.PageNumber,request.OrderDirection);
             return result.ToCustomList();
         }
     }

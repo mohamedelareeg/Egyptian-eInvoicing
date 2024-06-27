@@ -25,6 +25,7 @@ namespace EgyptianeInvoicing.Core.Features.DocumentOperations.Queries.GetRecentD
             try
             {
                 var result = await _documentOperationsClient.GetRecentDocumentsAsync(
+                    request.CompanyId,
                     request.SubmissionDateFrom,
                     request.SubmissionDateTo,
                     request.IssueDateFrom,

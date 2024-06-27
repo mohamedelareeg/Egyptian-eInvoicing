@@ -36,7 +36,7 @@ namespace EgyptianeInvoicing.Core.Features.Authentication.Commands.Authenticate
                 if (string.IsNullOrEmpty(credentials.ClientId) || string.IsNullOrEmpty(credentials.ClientSecret1))
                     return Result.Failure<string>("AuthenticateCommandHandler.Handle", $"Invalid company credentials.");
 
-                var token = await _authenticationClient.LoginAndGetAccessTokenAsync(credentials.ClientId, credentials.ClientSecret1, null);// company.CommercialRegistrationNo);
+                var token = await _authenticationClient.LoginAndGetAccessTokenAsync(request.CompanyId, credentials.ClientId, credentials.ClientSecret1, null);// company.CommercialRegistrationNo);
                 return Result.Success(token);
             }
             catch (Exception ex)

@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Text.Json;
 using EgyptianeInvoicing.Core.Clients.Invoicing.Abstractions;
+using EgyptianeInvoicing.Core.Data.Repositories.Abstractions;
 using EgyptianeInvoicing.Core.Services.Abstractions;
 using EgyptianeInvoicing.Shared.Dtos.ClientsDto.Invoicing.DocumentRetrieval.GetDocument.Response;
 using EgyptianeInvoicing.Shared.Dtos.ClientsDto.Invoicing.DocumentRetrieval.GetDocumentDetails.Response;
@@ -11,18 +12,18 @@ namespace EgyptianeInvoicing.Core.Clients.Invoicing
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly HttpClient _invoicingClient;
-        private readonly ISecureStorageService _secureStorageService;
+        private readonly ICompanyRepository _companyRepository;
 
-        public DocumentRetrievalClient(IHttpClientFactory httpClientFactory, ISecureStorageService secureStorageService)
+        public DocumentRetrievalClient(IHttpClientFactory httpClientFactory, ICompanyRepository companyRepository)
         {
             _httpClientFactory = httpClientFactory;
             _invoicingClient = httpClientFactory.CreateClient("SystemApiBaseUrl");
-            _secureStorageService = secureStorageService;
+            _companyRepository = companyRepository;
         }
-        public async Task<DocumentRetrievalDto> GetDocumentAsync(string documentUUID)
+        public async Task<DocumentRetrievalDto> GetDocumentAsync(Guid companyId, string documentUUID)
         {
             _invoicingClient.DefaultRequestHeaders.Clear();
-            var accessToken = _secureStorageService.GetToken();
+            var accessToken = await _companyRepository.GetCompanyTokenByIdAsync(companyId);
             if (string.IsNullOrEmpty(accessToken))
             {
                 throw new HttpRequestException($"Token is null or empty. Retrieved token: '{accessToken}'");
@@ -47,16 +48,22 @@ namespace EgyptianeInvoicing.Core.Clients.Invoicing
                 throw new Exception($"Failed to retrieve document. Status code: {response.StatusCode}");
             }
         }
-        public async Task<byte[]> GetDocumentPdfAsync(string documentUUID)
+        //private string GetCurrentLanguagePreference()
+        //{
+        //    return System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName;
+        //}
+        public async Task<byte[]> GetDocumentPdfAsync(Guid companyId, string documentUUID)
         {
             _invoicingClient.DefaultRequestHeaders.Clear();
-            var accessToken = _secureStorageService.GetToken();
+            var accessToken = await _companyRepository.GetCompanyTokenByIdAsync(companyId);
             if (string.IsNullOrEmpty(accessToken))
             {
                 throw new HttpRequestException($"Token is null or empty. Retrieved token: '{accessToken}'");
             }
             _invoicingClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
+            //var currentLanguage = GetCurrentLanguagePreference() ?? "en"; 
 
+            _invoicingClient.DefaultRequestHeaders.Add("Accept-Language", "ar");
             var url = $"/api/v1.0/documents/{documentUUID}/pdf";
 
             using (var request = new HttpRequestMessage(HttpMethod.Get, url))
@@ -65,14 +72,14 @@ namespace EgyptianeInvoicing.Core.Clients.Invoicing
 
                 if (response.IsSuccessStatusCode)
                 {
-                    if (response.Content.Headers.ContentType?.MediaType == "application/octet-stream")
+                    if (response.Content.Headers.ContentType?.MediaType == "application/pdf")
                     {
                         var pdfBytes = await response.Content.ReadAsByteArrayAsync();
                         return pdfBytes;
                     }
                     else
                     {
-                        throw new Exception("Unexpected content type received. Expected application/octet-stream.");
+                        throw new Exception("Unexpected content type received. Expected application/pdf.");
                     }
                 }
                 else if (response.StatusCode == HttpStatusCode.NotFound)
@@ -94,10 +101,10 @@ namespace EgyptianeInvoicing.Core.Clients.Invoicing
             }
         }
 
-        public async Task<DocumentDetailsDto> GetDocumentDetailsAsync(string documentUUID)
+        public async Task<DocumentDetailsDto> GetDocumentDetailsAsync(Guid companyId, string documentUUID)
         {
             _invoicingClient.DefaultRequestHeaders.Clear();
-            var accessToken = _secureStorageService.GetToken();
+            var accessToken = await _companyRepository.GetCompanyTokenByIdAsync(companyId);
             if (string.IsNullOrEmpty(accessToken))
             {
                 throw new HttpRequestException($"Token is null or empty. Retrieved token: '{accessToken}'");

@@ -23,7 +23,7 @@ namespace EgyptianeInvoicing.Core.Features.DocumentOperations.Commands.RejectDoc
         {
             try
             {
-                var response = await _documentOperationsClient.RejectDocumentAsync(request.DocumentUUID, request.Reason);
+                var response = await _documentOperationsClient.RejectDocumentAsync(request.CompanyId, request.DocumentUUID, request.Reason);
                 if (!response.IsSuccessStatusCode)
                 {
                     var errorMessage = await response.Content.ReadAsStringAsync();

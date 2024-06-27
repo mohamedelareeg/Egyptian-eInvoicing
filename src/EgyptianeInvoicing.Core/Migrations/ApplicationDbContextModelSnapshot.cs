@@ -28,6 +28,10 @@ namespace EgyptianeInvoicing.Core.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("ActivityCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("Cancelled")
                         .HasColumnType("bit");
 
@@ -38,6 +42,9 @@ namespace EgyptianeInvoicing.Core.Migrations
 
                     b.Property<DateTime>("CreatedOnUtc")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("EInvoiceToken")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
                         .HasMaxLength(255)
@@ -86,8 +93,8 @@ namespace EgyptianeInvoicing.Core.Migrations
                                 .HasColumnType("nvarchar(500)")
                                 .HasColumnName("AdditionalInformation");
 
-                            b1.Property<string>("BranchId")
-                                .HasColumnType("nvarchar(max)")
+                            b1.Property<int>("BranchId")
+                                .HasColumnType("int")
                                 .HasColumnName("BranchId");
 
                             b1.Property<string>("BuildingNumber")

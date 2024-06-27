@@ -2,7 +2,7 @@
 {
     public interface IDocumentHandlingClient
     {
-        Task<HttpResponseMessage> DeclineCancelDocumentAsync(string documentUUID, string declineReason);
-        Task<HttpResponseMessage> DeclineRejectionAsync(string documentUUID);
+        Task<HttpResponseMessage> DeclineCancelDocumentAsync(Guid companyId, string documentUUID, string declineReason);
+        Task<HttpResponseMessage> DeclineRejectionAsync(Guid companyId, string documentUUID);
     }
 }

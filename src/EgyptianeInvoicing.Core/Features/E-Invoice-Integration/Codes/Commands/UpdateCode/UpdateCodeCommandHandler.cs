@@ -24,7 +24,7 @@ namespace EgyptianeInvoicing.Core.Features.Codes.Commands.UpdateCode
         {
             try
             {
-                var response = await _codeManagementClient.UpdateCodeAsync(request.CodeType, request.ItemCode, request.Request);
+                var response = await _codeManagementClient.UpdateCodeAsync(request.CompanyId, request.CodeType, request.ItemCode, request.Request);
                 if (!response.IsSuccessStatusCode)
                 {
                     var errorMessage = await response.Content.ReadAsStringAsync();

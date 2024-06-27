@@ -52,6 +52,7 @@ namespace EgyptianeInvoicing.Core.Services
                 }
 
                 string cades = cadesResult.Value;
+                return cades;
 
                 JObject signaturesObject = new JObject(
                     new JProperty("signatureType", "I"),

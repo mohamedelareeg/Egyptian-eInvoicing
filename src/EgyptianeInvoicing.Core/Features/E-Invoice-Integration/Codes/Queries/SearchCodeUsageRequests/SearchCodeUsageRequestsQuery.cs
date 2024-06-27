@@ -10,6 +10,17 @@ namespace EgyptianeInvoicing.Core.Features.Codes.Queries.SearchCodeUsageRequests
 {
     public class SearchCodeUsageRequestsQuery : IListQuery<CodeUsageRequestDetailsDto>
     {
+        public SearchCodeUsageRequestsQuery(Guid companyId, string active, string status, string pageSize, string pageNumber, string orderDirection)
+        {
+            CompanyId = companyId;
+            Active = active;
+            Status = status;
+            PageSize = pageSize;
+            PageNumber = pageNumber;
+            OrderDirection = orderDirection;
+        }
+
+        public Guid CompanyId { get; set; }
         public string Active { get; set; }
         public string Status { get; set; }
         public string PageSize { get; set; }

@@ -12,11 +12,14 @@ namespace EgyptianeInvoicing.Core.Features.Documents.Queries.GetDocumentDetails
 {
     public class GetDocumentDetailsQuery : IQuery<DocumentDetailsDto>
     {
-        public string DocumentUUID { get; }
-
-        public GetDocumentDetailsQuery(string documentUUID)
+        public GetDocumentDetailsQuery(Guid companyId, string documentUUID)
         {
+            CompanyId = companyId;
             DocumentUUID = documentUUID;
         }
+
+        public Guid CompanyId { get; set; }
+        public string DocumentUUID { get; }
+
     }
 }

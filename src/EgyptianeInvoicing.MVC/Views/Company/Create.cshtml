@@ -38,6 +38,11 @@
                             <input asp-for="TaxNumber" class="form-control" />
                             <span asp-validation-for="TaxNumber" class="text-danger"></span>
                         </div>
+                        <div class="form-group">
+                            <label asp-for="ActivityCode" class="control-label">@localizer["Activity Code"]</label>
+                            <input asp-for="ActivityCode" class="form-control" />
+                            <span asp-validation-for="ActivityCode" class="text-danger"></span>
+                        </div>
 
                         <div class="form-group">
                             <label asp-for="CommercialRegistrationNo" class="control-label">@localizer["CommercialRegistrationNumber"]</label>
@@ -72,9 +77,9 @@
                         </div>
 
                         <div class="form-group">
-                            <label asp-for="Address.Governorate" class="control-label">@localizer["Governorate"]</label>
-                            <input asp-for="Address.Governorate" class="form-control" />
-                            <span asp-validation-for="Address.Governorate" class="text-danger"></span>
+                            <label asp-for="Address.Governate" class="control-label">@localizer["Governorate"]</label>
+                            <input asp-for="Address.Governate" class="form-control" />
+                            <span asp-validation-for="Address.Governate" class="text-danger"></span>
                         </div>
 
                         <div class="form-group">

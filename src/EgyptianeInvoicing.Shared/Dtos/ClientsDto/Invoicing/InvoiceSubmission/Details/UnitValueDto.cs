@@ -3,8 +3,8 @@
     public class UnitValueDto
     {
         public string CurrencySold { get; set; }
-        public decimal AmountEGP { get; set; }
-        public decimal AmountSold { get; set; }
+        public double AmountEGP { get; set; }
+        public double AmountSold { get; set; }
         public decimal CurrencyExchangeRate { get; set; }
     }
 }

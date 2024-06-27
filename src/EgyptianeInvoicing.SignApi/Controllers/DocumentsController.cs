@@ -1,6 +1,10 @@
 ﻿using EgyptianeInvoicing.Core.Features.Authontication.Commands.Authenticate;
 using EgyptianeInvoicing.Core.Features.DocumentOperations.Queries.GetRecentDocuments;
 using EgyptianeInvoicing.Core.Features.DocumentOperations.Queries.SearchDocuments;
+using EgyptianeInvoicing.Core.Features.DocumentPackages.Queries.GetDocumentPackage;
+using EgyptianeInvoicing.Core.Features.Documents.Queries.GetDocumentPdf;
+using EgyptianeInvoicing.Core.Features.InvoiceSubmission.Commands.SubmitInvoice;
+using EgyptianeInvoicing.Shared.Dtos;
 using EgyptianeInvoicing.Shared.Requests;
 using EgyptianeInvoicing.SignApi.Controllers.Base;
 using MediatR;
@@ -24,6 +28,7 @@ namespace EgyptianeInvoicing.SignApi.Controllers
         {
             var result = await Sender.Send(new SearchDocumentsQuery
             {
+                CompanyId = request.CompanyId,
                 SubmissionDateFrom = request.SubmissionDateFrom,
                 SubmissionDateTo = request.SubmissionDateTo,
                 IssueDateFrom = request.IssueDateFrom,
@@ -47,6 +52,7 @@ namespace EgyptianeInvoicing.SignApi.Controllers
         {
             var result = await Sender.Send(new GetRecentDocumentsQuery
             {
+                CompanyId = request.CompanyId,
                 SubmissionDateFrom = request.SubmissionDateFrom,
                 SubmissionDateTo = request.SubmissionDateTo,
                 IssueDateFrom = request.IssueDateFrom,
@@ -63,5 +69,26 @@ namespace EgyptianeInvoicing.SignApi.Controllers
             });
             return CustomResult(result);
         }
+
+        [HttpPost("package/{Rid}")]
+        public async Task<IActionResult> GetDocumentPackage(Guid CompanyId, string Rid)
+        {
+            var result = await Sender.Send(new GetDocumentPackageQuery(CompanyId, Rid));
+            return CustomResult(result);
+        }
+        [HttpPost("pdf/{Rid}")]
+        public async Task<IActionResult> GetDocumentPdf(Guid CompanyId, string Rid)
+        {
+            var result = await Sender.Send(new GetDocumentPdfQuery(CompanyId, Rid));
+            return CustomResult(result);
+        }
+        [HttpPost("submit-invoice")]
+        public async Task<IActionResult> SubmitInvoice(SubmitInvoiceRequestDto request)
+        {
+            var command = new SubmitInvoiceCommand(request.CompanyId, request.Invoices);
+            var result = await Sender.Send(command);
+            return CustomResult(result);
+        }
+
     }
 }

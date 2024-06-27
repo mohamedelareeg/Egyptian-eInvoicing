@@ -11,6 +11,14 @@ namespace EgyptianeInvoicing.Core.Features.DocumentOperations.Commands.RejectDoc
 {
     public class RejectDocumentCommand : ICommand<bool>
     {
+        public RejectDocumentCommand(Guid companyId, string documentUUID, string reason)
+        {
+            CompanyId = companyId;
+            DocumentUUID = documentUUID;
+            Reason = reason;
+        }
+
+        public Guid CompanyId { get; set; }
         public string DocumentUUID { get; set; }
         public string Reason { get; set; }
     }

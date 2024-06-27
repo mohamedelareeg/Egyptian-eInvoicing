@@ -2,6 +2,7 @@
 using System.Text;
 using System.Text.Json;
 using EgyptianeInvoicing.Core.Clients.Invoicing.Abstractions;
+using EgyptianeInvoicing.Core.Data.Repositories.Abstractions;
 using EgyptianeInvoicing.Core.Services.Abstractions;
 using EgyptianeInvoicing.Shared.Dtos.ClientsDto;
 using EgyptianeInvoicing.Shared.Dtos.ClientsDto.Invoicing.DocumentPackage.GetPackagesRequest.Response;
@@ -14,17 +15,17 @@ namespace EgyptianeInvoicing.Core.Clients.Invoicing
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly HttpClient _invoicingClient;
-        private readonly ISecureStorageService _secureStorageService;
-        public DocumentPackageClient(IHttpClientFactory httpClientFactory, ISecureStorageService secureStorageService)
+        private readonly ICompanyRepository _companyRepository;
+        public DocumentPackageClient(IHttpClientFactory httpClientFactory, ICompanyRepository companyRepository)
         {
             _httpClientFactory = httpClientFactory;
             _invoicingClient = httpClientFactory.CreateClient("SystemApiBaseUrl");
-            _secureStorageService = secureStorageService;
+            _companyRepository = companyRepository;
         }
-        public async Task<PackageDownloadResponseDto> RequestDocumentPackageAsync(DocumentPackageRequestDto requestDto)
+        public async Task<PackageDownloadResponseDto> RequestDocumentPackageAsync(Guid companyId, DocumentPackageRequestDto requestDto)
         {
             _invoicingClient.DefaultRequestHeaders.Clear();
-            var accessToken = _secureStorageService.GetToken();
+            var accessToken = await _companyRepository.GetCompanyTokenByIdAsync(companyId);
             if (string.IsNullOrEmpty(accessToken))
             {
                 throw new HttpRequestException($"Token is null or empty. Retrieved token: '{accessToken}'");
@@ -67,10 +68,10 @@ namespace EgyptianeInvoicing.Core.Clients.Invoicing
                 throw new HttpRequestException($"Request failed with status code {response.StatusCode} and message {response.ReasonPhrase}");
             }
         }
-        public async Task<DocumentPackageResponseDto> GetPackagesRequestAsync(int pageSize, int pageNo, DateTime dateFrom, DateTime dateTo, string documentTypeName = "", string statuses = "", string productsInternalCodes = "", int receiverSenderType = 0, string receiverSenderId = "", string branchNumber = "", string itemCodes = "")
+        public async Task<DocumentPackageResponseDto> GetPackagesRequestAsync(Guid companyId, int pageSize, int pageNo, DateTime dateFrom, DateTime dateTo, string documentTypeName = "", string statuses = "", string productsInternalCodes = "", int receiverSenderType = 0, string receiverSenderId = "", string branchNumber = "", string itemCodes = "")
         {
             _invoicingClient.DefaultRequestHeaders.Clear();
-            var accessToken = _secureStorageService.GetToken();
+            var accessToken = await _companyRepository.GetCompanyTokenByIdAsync(companyId);
             if (string.IsNullOrEmpty(accessToken))
             {
                 throw new HttpRequestException($"Token is null or empty. Retrieved token: '{accessToken}'");
@@ -111,10 +112,10 @@ namespace EgyptianeInvoicing.Core.Clients.Invoicing
                 throw new HttpRequestException($"Failed to retrieve document package requests. Status code: {response.StatusCode}");
             }
         }
-        public async Task<byte[]> GetDocumentPackageAsync(string rid)
+        public async Task<byte[]> GetDocumentPackageAsync(Guid companyId, string rid)
         {
             _invoicingClient.DefaultRequestHeaders.Clear();
-            var accessToken = _secureStorageService.GetToken();
+            var accessToken = await _companyRepository.GetCompanyTokenByIdAsync(companyId);
             if (string.IsNullOrEmpty(accessToken))
             {
                 throw new HttpRequestException($"Token is null or empty. Retrieved token: '{accessToken}'");

@@ -19,6 +19,8 @@ namespace EgyptianeInvoicing.Core.Data.Repositories.Abstractions
         Task DeleteAsync(Company company);
         Task<bool> ExistsAsync(Guid id);
         Task<Result<CustomList<Company>>> GetAllCompaniesAsync(DataTableOptionsDto options);
+        Task<string> GetCompanyTokenByIdAsync(Guid id);
+        Task<Result<bool>> SaveCompanyTokenAsync(Guid id, string eInvoiceToken);
 
     }
 }

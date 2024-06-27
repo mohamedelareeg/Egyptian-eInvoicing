@@ -23,7 +23,7 @@ namespace EgyptianeInvoicing.Core.Features.Codes.Commands.UpdateEGSCodeUsage
         {
             try
             {
-                var response = await _codeManagementClient.UpdateEGSCodeUsageAsync(request.CodeUsageRequestId, request.Request);
+                var response = await _codeManagementClient.UpdateEGSCodeUsageAsync(request.CompanyId, request.CodeUsageRequestId, request.Request);
                 if (!response.IsSuccessStatusCode)
                 {
                     var errorMessage = await response.Content.ReadAsStringAsync();

@@ -22,7 +22,7 @@ namespace EgyptianeInvoicing.Core.Features.Documents.Queries.GetDocumentPdf
         {
             try
             {
-                var pdfBytes = await _client.GetDocumentPdfAsync(request.DocumentUUID);
+                var pdfBytes = await _client.GetDocumentPdfAsync(request.CompanyId, request.DocumentUUID);
                 return Result.Success(pdfBytes);
             }
             catch (Exception ex)

@@ -11,11 +11,14 @@ namespace EgyptianeInvoicing.Core.Features.Documents.Queries.GetDocumentPdf
 {
     public class GetDocumentPdfQuery : IQuery<byte[]>
     {
-        public string DocumentUUID { get; }
-
-        public GetDocumentPdfQuery(string documentUUID)
+        public GetDocumentPdfQuery(Guid companyId, string documentUUID)
         {
+            CompanyId = companyId;
             DocumentUUID = documentUUID;
         }
+
+        public Guid CompanyId { get; set; }
+        public string DocumentUUID { get; }
+
     }
 }

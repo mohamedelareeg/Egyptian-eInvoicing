@@ -16,6 +16,7 @@ namespace EgyptianeInvoicing.Core.Features.Companies.Commands.CreateCompany
                            .EmailAddress().When(x => !string.IsNullOrEmpty(x.Email))
                            .WithMessage("A valid email is required.");
             RuleFor(x => x.TaxNumber).NotEmpty().WithMessage("Tax number is required.");
+            RuleFor(x => x.ActivityCode).NotEmpty().WithMessage("Activity Code is required.");
             RuleFor(x => x.CommercialRegistrationNo).NotEmpty().WithMessage("Commercial registration number is required.");
             When(x => x.Address != null, () =>
             {
@@ -39,8 +40,8 @@ namespace EgyptianeInvoicing.Core.Features.Companies.Commands.CreateCompany
             public AddressValidator()
             {
                 RuleFor(x => x.Country).NotEmpty().WithMessage("Country is required.");
-                RuleFor(x => x.Governorate).NotEmpty().WithMessage("Governate is required.");
-                RuleFor(x => x.BranchId).MaximumLength(50).WithMessage("BranchId cannot exceed 50 characters.");
+                RuleFor(x => x.Governate).NotEmpty().WithMessage("Governate is required.");
+                RuleFor(x => x.BranchID.ToString()).MaximumLength(50).WithMessage("BranchId cannot exceed 50 characters.");
                 RuleFor(x => x.RegionCity).MaximumLength(100).WithMessage("Region/City cannot exceed 100 characters.");
                 RuleFor(x => x.Street).MaximumLength(100).WithMessage("Street cannot exceed 100 characters.");
                 RuleFor(x => x.BuildingNumber).MaximumLength(20).WithMessage("Building Number cannot exceed 20 characters.");

@@ -4,6 +4,7 @@ using System.Text.Json;
 using EgyptianeInvoicing.Core.Clients.Invoicing.Abstractions;
 using EgyptianeInvoicing.Core.Services.Abstractions;
 using EgyptianeInvoicing.Shared.Dtos.ClientsDto.Invoicing.DocumentNotification.Request;
+using EgyptianeInvoicing.Core.Data.Repositories.Abstractions;
 
 namespace EgyptianeInvoicing.Core.Clients.Invoicing
 {
@@ -11,17 +12,17 @@ namespace EgyptianeInvoicing.Core.Clients.Invoicing
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly HttpClient _invoicingClient;
-        private readonly ISecureStorageService _secureStorageService;
-        public DocumentNotificationClient(IHttpClientFactory httpClientFactory, ISecureStorageService secureStorageService)
+        private readonly ICompanyRepository _companyRepository;
+        public DocumentNotificationClient(IHttpClientFactory httpClientFactory, ICompanyRepository companyRepository)
         {
             _httpClientFactory = httpClientFactory;
             _invoicingClient = httpClientFactory.CreateClient("SystemApiBaseUrl");
-            _secureStorageService = secureStorageService;
+            _companyRepository = companyRepository;
         }
-        public async Task<HttpResponseMessage> ReceiveDocumentNotificationsAsync(string deliveryId, string type, int count, DocumentNotificationMessageDto[] messages)
+        public async Task<HttpResponseMessage> ReceiveDocumentNotificationsAsync(Guid companyId, string deliveryId, string type, int count, DocumentNotificationMessageDto[] messages)
         {
             _invoicingClient.DefaultRequestHeaders.Clear();
-            var accessToken = _secureStorageService.GetToken();
+            var accessToken = await _companyRepository.GetCompanyTokenByIdAsync(companyId);
             if (string.IsNullOrEmpty(accessToken))
             {
                 throw new HttpRequestException($"Token is null or empty. Retrieved token: '{accessToken}'");
@@ -46,10 +47,10 @@ namespace EgyptianeInvoicing.Core.Clients.Invoicing
 
             return response;
         }
-        public async Task<HttpResponseMessage> ReceiveDocumentPackageNotificationAsync(string deliveryId, string packageId)
+        public async Task<HttpResponseMessage> ReceiveDocumentPackageNotificationAsync(Guid companyId, string deliveryId, string packageId)
         {
             _invoicingClient.DefaultRequestHeaders.Clear();
-            var accessToken = _secureStorageService.GetToken();
+            var accessToken = await _companyRepository.GetCompanyTokenByIdAsync(companyId);
             if (string.IsNullOrEmpty(accessToken))
             {
                 throw new HttpRequestException($"Token is null or empty. Retrieved token: '{accessToken}'");

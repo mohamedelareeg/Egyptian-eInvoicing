@@ -1,0 +1,325 @@
+﻿@model List<EgyptianeInvoicing.Shared.Dtos.ImportedInvoiceDto>
+@{
+    ViewData["Title"] = localizer["Upload Documents"];
+
+    int invoiceCount = Model != null ? Model.Count : 0;
+    int uniqueCustomerCount = Model != null ? Model.Select(i => i.RegisterNumber).Distinct().Count() : 0;
+}
+
+<section class="content">
+    <div class="card card-default color-palette-bo">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="box">
+                        @if (TempData["SuccessMessage"] != null)
+                        {
+                            <div class="alert alert-success alert-dismissible" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                @TempData["SuccessMessage"]
+                            </div>
+                        }
+                        @if (TempData["Error"] != null)
+                        {
+                            <div class="alert alert-danger alert-dismissible" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                @TempData["Error"]
+                            </div>
+                        }
+                     
+                      <div class="container-fluid">
+                            <div class="row mb-4">
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4 class="card-title">@localizer["Excel File Information"]</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <a href="#" id="downloadExcelLink" class="btn btn-primary float-end">
+                                                <i class="fa fa-download"></i> @localizer["Download Sample File"]
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4 class="card-title">@localizer["Import product (Excel)"]</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <form asp-action="Upload" method="post" enctype="multipart/form-data" class="form-vertical">
+                                                <div class="row mb-3">
+                                                    <label for="upload_excel_file" class="col-sm-4 col-form-label">
+                                                        @localizer["Upload Excel File"] <i class="text-danger">*</i>
+                                                    </label>
+                                                    <div class="col-sm-8">
+                                                        <input class="form-control" name="file" type="file" id="upload_excel_file" placeholder="@localizer["Upload Excel File"]" required>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                        <input type="submit" class="btn btn-primary" value="@localizer["Submit"]" />
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                      
+
+                        @if (Model != null && Model.Any())
+                        {
+                             <partial name="~/views/Partial/_SelectedCompanyPartial.cshtml" />
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="panel panel-bd">
+                                        <div class="panel-heading">
+                                            <div class="panel-title">
+                                                <h4>@localizer["Summary"]</h4>
+                                            </div>
+                                        </div>
+                                        <div class="panel-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered table-hover">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>@localizer["Number of Invoices:"]</th>
+                                                            <th>@localizer["Number of Unique Customers:"]</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>@invoiceCount</td>
+                                                            <td>@uniqueCustomerCount</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-sm-6">
+                                                <input type="button" class="btn btn-primary btn-large" id="submitInvoicesButton" value="@localizer["Submit Invoices"]" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="panel panel-bd">
+                                        <div class="panel-heading">
+                                            <div class="panel-title">
+                                                <h4>@localizer["Invoices"]</h4>
+                                            </div>
+                                        </div>
+                                        <div class="panel-body">
+                                            <table id="DocumentsTable" class="table table-bordered table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>@localizer["Serial Number"]</th>
+                                                        <th>@localizer["Issue Date"]</th>
+                                                        <th>@localizer["Invoice Type"]</th>
+                                                        <th>@localizer["Customer Type"]</th>
+                                                        <th>@localizer["Name"]</th>
+                                                        <th>@localizer["Register Number"]</th>
+                                                        <th>@localizer["Country"]</th>
+                                                        <th>@localizer["Items"]</th>
+                                                        <th>@localizer["Status"]</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var invoice in Model)
+                                                    {
+                                                        <tr id="row-@invoice.SerialNumber">
+                                                            <td>@invoice.SerialNumber</td>
+                                                            <td>@invoice.IssueDate.ToString("dd/MM/yyyy")</td>
+                                                            <td>@invoice.InvoiceType</td>
+                                                            <td>@invoice.CustomerType</td>
+                                                            <td>@invoice.Name</td>
+                                                            <td>@invoice.RegisterNumber</td>
+                                                            <td>@invoice.Country</td>
+                                                            <td>
+                                                                <table class="table table-sm table-bordered">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>@localizer["Item Name"]</th>
+                                                                            <th>@localizer["Code Type"]</th>
+                                                                            <th>@localizer["Quantity"]</th>
+                                                                            <th>@localizer["Unit Price"]</th>
+                                                                            <th>@localizer["Unit Discount"]</th>
+                                                                            <th>@localizer["VAT Code"]</th>
+                                                                            <th>@localizer["Discount Tax Code"]</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        @foreach (var item in invoice.Items)
+                                                                        {
+                                                                            <tr>
+                                                                                <td>@item.ProductName</td>
+                                                                                <td>@item.CodeType</td>
+                                                                                <td>@item.Quantity</td>
+                                                                                <td>@item.UnitPrice</td>
+                                                                                <td>@item.UnitDiscount</td>
+                                                                                <td>@item.VATCode</td>
+                                                                                <td>@item.DiscountTaxCode</td>
+                                                                            </tr>
+                                                                        }
+                                                                    </tbody>
+                                                                </table>
+                                                            </td>
+                                                            <td></td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+
+    $(document).ready(function () {
+        var table = $('#DocumentsTable').DataTable({
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "@localizer["All"]"]]
+        });
+
+        $('#downloadExcelLink').on('click', function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: '/DocumentUpload/DownloadSample',
+                type: 'GET',
+                xhrFields: {
+                    responseType: 'blob'
+                },
+                success: function (data) {
+                    var blob = new Blob([data], { type: 'text/excel' });
+
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = 'sample.excel';
+                    link.click();
+                    window.URL.revokeObjectURL(link.href);
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error downloading Excel:', error);
+                }
+            });
+        });
+       var invoices = @Html.Raw(Json.Serialize(Model));
+       $('#submitInvoicesButton').on('click', function () {
+    Swal.fire({
+        title: '@localizer["Submit Invoices"]',
+        text: '@localizer["Are you sure you want to submit these invoices? Make sure the USB signature token is connected."]',
+        showCancelButton: true,
+        confirmButtonText: '@localizer["Submit"]',
+        cancelButtonText: '@localizer["Cancel"]',
+        icon: 'warning',
+        allowOutsideClick: false,
+    }).then((result) => {
+        if (result.isConfirmed) {
+
+            invoices = invoices.filter(function (invoice) {
+                return !invoice.Uploaded;
+            });
+
+            var totalInvoices = invoices.length;
+            var currentInvoice = 0;
+
+            Swal.fire({
+                title: '@localizer["Submitting Invoices"]',
+                html: '<div id="swal-progress">' +
+                    '<progress id="invoiceProgressBar" value="0" max="100" style="width: 100%;"></progress>' +
+                    '<p id="invoiceDetails">@localizer["Submitting invoice"] <span id="currentInvoice">1</span> @localizer["of"] ' + totalInvoices + '</p>' +
+                    '</div>',
+                allowOutsideClick: false,
+                showCancelButton: false,
+                showConfirmButton: false,
+                willOpen: () => {
+                    Swal.showLoading();
+                    submitInvoices(invoices, totalInvoices, currentInvoice);
+                }
+            });
+
+            function submitInvoices(invoices, totalInvoices, currentInvoice) {
+                if (currentInvoice < totalInvoices) {
+                    $.ajax({
+                        url: '/DocumentUpload/SubmitInvoice',
+                        type: 'POST',
+                        data: JSON.stringify(invoices[currentInvoice]),
+                        contentType: 'application/json',
+                        success: function (data) {
+                            var progress = ((currentInvoice + 1) / totalInvoices) * 100;
+                            $('#invoiceProgressBar').val(progress);
+                            $('#currentInvoice').text(currentInvoice + 1);
+
+                            // Update DataTable with success status for the current invoice
+                            var table = $('#DocumentsTable').DataTable();
+                            var row = table.row('#row-' + invoices[currentInvoice].serialNumber);
+                            row.cell(row.index(), 10).data('<span class="text-success"><i class="fas fa-check-circle"></i> @localizer["Success"]</span>').draw(false);
+                            invoices[currentInvoice].Uploaded = true;
+                            // Continue to next invoice
+                            currentInvoice++;
+                            if (currentInvoice < totalInvoices) {
+                                submitInvoices(invoices, totalInvoices, currentInvoice);
+                            } else {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: '@localizer["Completed"]',
+                                    text: '@localizer["All invoices have been submitted successfully."]',
+                                    confirmButtonText: '@localizer["OK"]'
+                                });
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : error;
+                            // Update DataTable with error status for the current invoice
+                            var table = $('#DocumentsTable').DataTable();
+                            var row = table.row('#row-' + invoices[currentInvoice].serialNumber);
+                                                        row.cell(row.index(), 10).data('<span class="text-danger">'+errorMessage+'</span>').draw(false);
+                            // Continue to next invoice
+                            currentInvoice++;
+                            if (currentInvoice < totalInvoices) {
+                                submitInvoices(invoices, totalInvoices, currentInvoice);
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: '@localizer["Error"]',
+                                    text: '@localizer["Some invoices could not be submitted."] @localizer["Please review and try again."]',
+                                    confirmButtonText: '@localizer["OK"]'
+                                });
+                            }
+                        }
+                    });
+                }
+            }
+        }
+    });
+});
+
+    });
+</script>

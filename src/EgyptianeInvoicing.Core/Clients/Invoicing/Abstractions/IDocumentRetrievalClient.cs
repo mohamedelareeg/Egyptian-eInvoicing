@@ -5,8 +5,8 @@ namespace EgyptianeInvoicing.Core.Clients.Invoicing.Abstractions
 {
     public interface IDocumentRetrievalClient
     {
-        Task<DocumentRetrievalDto> GetDocumentAsync(string documentUUID);
-        Task<byte[]> GetDocumentPdfAsync(string documentUUID);
-        Task<DocumentDetailsDto> GetDocumentDetailsAsync(string documentUUID);
+        Task<DocumentRetrievalDto> GetDocumentAsync(Guid companyId, string documentUUID);
+        Task<byte[]> GetDocumentPdfAsync(Guid companyId, string documentUUID);
+        Task<DocumentDetailsDto> GetDocumentDetailsAsync(Guid companyId, string documentUUID);
     }
 }

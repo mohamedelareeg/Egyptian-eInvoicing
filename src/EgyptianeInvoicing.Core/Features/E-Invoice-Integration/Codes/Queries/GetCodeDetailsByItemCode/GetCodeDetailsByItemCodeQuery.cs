@@ -11,6 +11,14 @@ namespace EgyptianeInvoicing.Core.Features.Codes.Queries.GetCodeDetailsByItemCod
 {
     public class GetCodeDetailsByItemCodeQuery : IQuery<GetCodeDetailsResponseDto>
     {
+        public GetCodeDetailsByItemCodeQuery(Guid companyId, string codeType, string itemCode)
+        {
+            CompanyId = companyId;
+            CodeType = codeType;
+            ItemCode = itemCode;
+        }
+
+        public Guid CompanyId { get; set; }
         public string CodeType { get; set; }
         public string ItemCode { get; set; }
     }
