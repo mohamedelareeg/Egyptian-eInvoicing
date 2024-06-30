@@ -1,5 +1,5 @@
 ﻿using EgyptianeInvoicing.Core.Clients.Invoicing.Abstractions;
-using EgyptianeInvoicing.Core.Data.Repositories.Abstractions;
+using EgyptianeInvoicing.Core.Data.Abstractions.Repositories;
 using EgyptianeInvoicing.Core.Services.Abstractions;
 using System.Text;
 using System.Text.Json;

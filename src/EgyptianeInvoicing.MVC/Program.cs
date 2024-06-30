@@ -50,6 +50,9 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 builder.Services.AddScoped<IAuthenticationClient, AuthenticationClient>();
 builder.Services.AddScoped<IDocumentsClient, DocumentsClient>();
 builder.Services.AddScoped<ICompanyClient, CompanyClient>();
+builder.Services.AddScoped<IInvoiceClient, InvoiceClient>();
+
+builder.Services.AddScoped<ValidateImportedInvoice>();
 
 builder.Services.AddSession(options =>
 {

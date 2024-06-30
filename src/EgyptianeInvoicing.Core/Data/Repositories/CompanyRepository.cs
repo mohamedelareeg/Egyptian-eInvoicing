@@ -1,5 +1,4 @@
 ﻿using BuildingBlocks.Results;
-using EgyptianeInvoicing.Core.Data.Repositories.Abstractions;
 using EgyptianeInvoicing.Core.Models;
 using EgyptianeInvoicing.Shared.Dtos.ClientsDto.Invoicing.InvoiceSubmission.Details;
 using EgyptianeInvoicing.Shared.Dtos;
@@ -11,6 +10,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using BuildingBlocks.Extentions;
+using EgyptianeInvoicing.Core.Data.Abstractions.Repositories;
 
 namespace EgyptianeInvoicing.Core.Data.Repositories
 {
@@ -44,19 +44,16 @@ namespace EgyptianeInvoicing.Core.Data.Repositories
         public async Task AddAsync(Company company)
         {
             await _context.Set<Company>().AddAsync(company);
-            await _context.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(Company company)
         {
             _context.Set<Company>().Update(company);
-            await _context.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(Company company)
         {
             _context.Set<Company>().Remove(company);
-            await _context.SaveChangesAsync();
         }
 
         public async Task<bool> ExistsAsync(Guid id)

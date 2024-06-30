@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using BuildingBlocks.Messaging;
 using BuildingBlocks.Results;
-using EgyptianeInvoicing.Core.Data.Repositories.Abstractions;
+using EgyptianeInvoicing.Core.Data.Abstractions.Repositories;
 using EgyptianeInvoicing.Shared.Dtos.ClientsDto.Invoicing.InvoiceSubmission.Details;
 using MediatR;
 using System.Threading;

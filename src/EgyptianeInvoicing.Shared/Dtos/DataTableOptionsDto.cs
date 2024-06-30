@@ -10,8 +10,8 @@ namespace EgyptianeInvoicing.Shared.Dtos
         public int Length { get; set; } = 10;
 
         // Filter
-        public DateTime? FromDate { get; set; } = DateTime.Now;
-        public DateTime? ToDate { get; set; } = DateTime.Now;
+        public DateTime? FromDate { get; set; }
+        public DateTime? ToDate { get; set; }
         public string SearchText { get; set; } = "";
 
         // Ordering

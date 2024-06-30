@@ -2,7 +2,7 @@
 {
     public class TaxTotalDto
     {
-        public string TaxType { get; set; }
-        public decimal Amount { get; set; }
+        public string? TaxType { get; set; }
+        public double? Amount { get; set; }
     }
 }

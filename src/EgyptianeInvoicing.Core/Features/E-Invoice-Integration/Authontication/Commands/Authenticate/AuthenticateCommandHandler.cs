@@ -1,7 +1,7 @@
 ﻿using BuildingBlocks.Messaging;
 using BuildingBlocks.Results;
 using EgyptianeInvoicing.Core.Clients.Common.Abstractions;
-using EgyptianeInvoicing.Core.Data.Repositories.Abstractions;
+using EgyptianeInvoicing.Core.Data.Abstractions.Repositories;
 using EgyptianeInvoicing.Core.Features.Authontication.Commands.Authenticate;
 using MediatR;
 using System;

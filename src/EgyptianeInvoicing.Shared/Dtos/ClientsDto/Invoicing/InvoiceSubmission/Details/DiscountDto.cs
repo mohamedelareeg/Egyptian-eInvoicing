@@ -2,7 +2,7 @@
 {
     public class DiscountDto
     {
-        public decimal Rate { get; set; }
-        public decimal Amount { get; set; }
+        public double? Rate { get; set; }
+        public double? Amount { get; set; }
     }
 }

@@ -4,7 +4,7 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using EgyptianeInvoicing.Core.Clients.Invoicing.Abstractions;
-using EgyptianeInvoicing.Core.Data.Repositories.Abstractions;
+using EgyptianeInvoicing.Core.Data.Abstractions.Repositories;
 using EgyptianeInvoicing.Core.Services.Abstractions;
 using EgyptianeInvoicing.Shared.Dtos.ClientsDto.Invoicing.InvoiceSubmission;
 using EgyptianeInvoicing.Shared.Dtos.ClientsDto.Invoicing.InvoiceSubmission.Details;
@@ -23,7 +23,7 @@ namespace EgyptianeInvoicing.Core.Clients.Invoicing
             _invoicingClient = httpClientFactory.CreateClient("SystemApiBaseUrl");
             _companyRepository = companyRepository;
         }
-        public async Task<SubmissionResponseDto> SubmitRegularInvoiceAsync(Guid companyId, List<DocumentDto> request)
+        public async Task<SubmissionResponseDto> SubmitRegularInvoiceAsync(Guid companyId, List<EInvoiceDto> request)
         {
             _invoicingClient.DefaultRequestHeaders.Clear();
             var accessToken = await _companyRepository.GetCompanyTokenByIdAsync(companyId);
@@ -35,7 +35,7 @@ namespace EgyptianeInvoicing.Core.Clients.Invoicing
             //_invoicingClient.DefaultRequestHeaders.Add("Content-Type", "application/json");
             var payload = new
             {
-                documents = request.Select(doc => new DocumentDto
+                documents = request.Select(doc => new EInvoiceDto
                 {
                     Issuer = new CompanyDto
                     {
@@ -168,7 +168,7 @@ namespace EgyptianeInvoicing.Core.Clients.Invoicing
                 }
             }
         }
-        public async Task<SubmissionResponseDto> SubmitDebitNoteAsync(Guid companyId, List<DocumentDto> request)
+        public async Task<SubmissionResponseDto> SubmitDebitNoteAsync(Guid companyId, List<EInvoiceDto> request)
         {
             _invoicingClient.DefaultRequestHeaders.Clear();
             var accessToken = await _companyRepository.GetCompanyTokenByIdAsync(companyId);
@@ -206,7 +206,7 @@ namespace EgyptianeInvoicing.Core.Clients.Invoicing
                 }
             }
         }
-        public async Task<SubmissionResponseDto> SubmitCreditNoteAsync(Guid companyId, List<DocumentDto> request)
+        public async Task<SubmissionResponseDto> SubmitCreditNoteAsync(Guid companyId, List<EInvoiceDto> request)
         {
             _invoicingClient.DefaultRequestHeaders.Clear();
             var accessToken = await _companyRepository.GetCompanyTokenByIdAsync(companyId);
@@ -244,7 +244,7 @@ namespace EgyptianeInvoicing.Core.Clients.Invoicing
                 }
             }
         }
-        public async Task<SubmissionResponseDto> SubmitExportInvoiceAsync(Guid companyId, List<DocumentDto> request)
+        public async Task<SubmissionResponseDto> SubmitExportInvoiceAsync(Guid companyId, List<EInvoiceDto> request)
         {
             _invoicingClient.DefaultRequestHeaders.Clear();
             var accessToken = await _companyRepository.GetCompanyTokenByIdAsync(companyId);
@@ -282,7 +282,7 @@ namespace EgyptianeInvoicing.Core.Clients.Invoicing
                 }
             }
         }
-        public async Task<SubmissionResponseDto> SubmitExportDebitNoteAsync(Guid companyId, List<DocumentDto> request)
+        public async Task<SubmissionResponseDto> SubmitExportDebitNoteAsync(Guid companyId, List<EInvoiceDto> request)
         {
             _invoicingClient.DefaultRequestHeaders.Clear();
             var accessToken = await _companyRepository.GetCompanyTokenByIdAsync(companyId);
@@ -321,7 +321,7 @@ namespace EgyptianeInvoicing.Core.Clients.Invoicing
                 }
             }
         }
-        public async Task<SubmissionResponseDto> SubmitExportCreditNoteAsync(Guid companyId, List<DocumentDto> request)
+        public async Task<SubmissionResponseDto> SubmitExportCreditNoteAsync(Guid companyId, List<EInvoiceDto> request)
         {
             _invoicingClient.DefaultRequestHeaders.Clear();
             var accessToken = await _companyRepository.GetCompanyTokenByIdAsync(companyId);

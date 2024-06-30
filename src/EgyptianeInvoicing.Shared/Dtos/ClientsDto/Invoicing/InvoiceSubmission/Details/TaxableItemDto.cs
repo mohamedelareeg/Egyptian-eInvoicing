@@ -2,9 +2,9 @@
 {
     public class TaxableItemDto
     {
-        public string TaxType { get; set; }
-        public decimal Amount { get; set; }
-        public string SubType { get; set; }
-        public decimal Rate { get; set; }
+        public string? TaxType { get; set; }
+        public double? Amount { get; set; }
+        public string? SubType { get; set; }
+        public double? Rate { get; set; }
     }
 }

@@ -4,7 +4,7 @@ using System.Text.Json;
 using EgyptianeInvoicing.Core.Clients.Invoicing.Abstractions;
 using EgyptianeInvoicing.Core.Services.Abstractions;
 using EgyptianeInvoicing.Shared.Dtos.ClientsDto.Invoicing.DocumentNotification.Request;
-using EgyptianeInvoicing.Core.Data.Repositories.Abstractions;
+using EgyptianeInvoicing.Core.Data.Abstractions.Repositories;
 
 namespace EgyptianeInvoicing.Core.Clients.Invoicing
 {

@@ -19,8 +19,10 @@ using EgyptianeInvoicing.Signer;
 using EgyptianeInvoicing.Core.Data;
 using Microsoft.EntityFrameworkCore;
 using EgyptianeInvoicing.Core.Features.Companies;
-using EgyptianeInvoicing.Core.Data.Repositories.Abstractions;
 using EgyptianeInvoicing.Core.Data.Repositories;
+using EgyptianeInvoicing.Core.Features.Invoices;
+using EgyptianeInvoicing.Core.Data.Abstractions.Repositories;
+using EgyptianeInvoicing.Core.Data.Abstractions;
 
 namespace EgyptianeInvoicing.Core
 {
@@ -44,6 +46,7 @@ namespace EgyptianeInvoicing.Core
             #region AutoMapper
             // Mapping Profiles
             services.AddAutoMapper(typeof(CompanyProfile));
+            services.AddAutoMapper(typeof(InvoicesProfile));
             #endregion
 
             var configuration = new ConfigurationBuilder()
@@ -57,6 +60,7 @@ namespace EgyptianeInvoicing.Core
                 string connectionString = configuration.GetConnectionString("SqlServer");
                 options.UseSqlServer(connectionString);
             });
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
             #region E-Invoice Environment
             var env = configuration.GetSection("E-InvoiceEnvironment").Value;
 
@@ -105,8 +109,11 @@ namespace EgyptianeInvoicing.Core
             services.AddSignerDependencies(_configuration);
             services.AddScoped<ISecureStorageService, SecureStorageService>();
             services.AddScoped<ITokenSigner, TokenSigner>();
+            services.AddScoped<IInvoiceService, InvoiceService>();
+            services.AddScoped<ICompanyService, CompanyService>();
             //Repositories
             services.AddScoped<ICompanyRepository, CompanyRepository>();
+            services.AddScoped<IInvoiceRepository, InvoiceRepository>();
             return services;
         }
     }

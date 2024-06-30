@@ -22,7 +22,7 @@ namespace EgyptianeInvoicing.Shared.Dtos.ClientsDto.Invoicing.DocumentRetrieval.
         public decimal total { get; set; }
         public string status { get; set; }
         public string lateSubmissionRequestNumber { get; set; }
-        public DocumentDto Document { get; set; }
+        public EInvoiceDto Document { get; set; }
         public string transformationStatus { get; set; }
         public DocumentValidationResultsDto validationResults { get; set; }
         public List<DocumentAdditionalMetadataDto> additionalMetadata { get; set; }

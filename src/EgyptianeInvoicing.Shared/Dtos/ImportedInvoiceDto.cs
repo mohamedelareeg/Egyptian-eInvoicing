@@ -19,5 +19,8 @@ namespace EgyptianeInvoicing.Shared.Dtos
         public List<ImportedInvoiceItemDto> Items { get; set; }// بيان الاصناف
 
         public bool Uploaded { get; set; } = false;
+
+
+
     }
 }

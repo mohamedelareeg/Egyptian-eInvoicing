@@ -9,7 +9,7 @@ using System.Xml.Linq;
 
 namespace EgyptianeInvoicing.Core.Models
 {
-    public class Company : AggregateRoot
+    public class Company : AggregateRoot, IAuditableEntity
     {
         private readonly List<Payment> _payments = new();
         public string Name { get; private set; }
@@ -23,7 +23,7 @@ namespace EgyptianeInvoicing.Core.Models
         public ClientCredentials? Credentials { get; private set; }
         public IReadOnlyCollection<Payment> Payments => _payments;
         public string? EInvoiceToken { get; private set; }
-        public string ActivityCode { get; private set; }
+        public string? ActivityCode { get; private set; }
         private Company() { }
 
         private Company(
@@ -61,10 +61,11 @@ namespace EgyptianeInvoicing.Core.Models
             string? taxNumber,
             string commercialRegistrationNo,
             Address address,
-            string activityCode,
+            string? activityCode,
             CompanyType type = CompanyType.B,
             ClientCredentials? credentials = null,
-            List<Payment> payments = null)
+            List<Payment> payments = null,
+            string eInvoiceToken = null)
         {
             if (string.IsNullOrEmpty(name))
                 return Result.Failure<Company>("Company.Create", "Company name is required.");
@@ -78,14 +79,9 @@ namespace EgyptianeInvoicing.Core.Models
             if (address == null)
                 return Result.Failure<Company>("Company.Create", "Address is required.");
 
-            if (string.IsNullOrEmpty(activityCode))
-                return Result.Failure<Company>("Company.Create", "Activity code cannot be null or empty.");
-
             if (!Enum.IsDefined(typeof(CompanyType), type))
                 return Result.Failure<Company>("Company.Create", "Invalid company type.");
 
-            if (credentials == null)
-                return Result.Failure<Company>("Company.Create", "Client credentials are required.");
 
             var id = Guid.NewGuid();
             var company = new Company(
@@ -99,7 +95,8 @@ namespace EgyptianeInvoicing.Core.Models
                 activityCode,
                 type,
                 credentials,
-                payments);
+                payments,
+                eInvoiceToken);
             return Result.Success(company);
         }
 

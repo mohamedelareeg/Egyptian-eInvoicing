@@ -46,5 +46,28 @@ namespace EgyptianeInvoicing.MVC.Clients
             var response = await PostAsync<SubmitInvoiceRequestDto, BaseResponse<SubmissionResponseDto>>("api/v1/documents/submit-invoice", request);
             return response;
         }
+        public async Task<Stream> DownloadImportInvoicesAsync()
+        {
+            var response = await HttpClient.GetAsync("api/v1/documents/download-import-invoices");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new HttpRequestException($"Failed to download import_invoices.xlsx. Status code: {response.StatusCode}");
+            }
+
+            return await response.Content.ReadAsStreamAsync();
+        }
+        //public async Task<byte[]> DownloadImportInvoicesAsync()
+        //{
+        //    var response = await HttpClient.GetAsync("api/v1/documents/download-import-invoices");
+
+        //    if (!response.IsSuccessStatusCode)
+        //    {
+        //        throw new HttpRequestException($"Failed to download import_invoices.xlsx. Status code: {response.StatusCode}");
+        //    }
+
+        //    return await response.Content.ReadAsByteArrayAsync();
+        //}
+
     }
 }

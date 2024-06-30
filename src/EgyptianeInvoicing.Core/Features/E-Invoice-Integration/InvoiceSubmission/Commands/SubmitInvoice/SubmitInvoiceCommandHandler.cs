@@ -2,19 +2,23 @@
 using BuildingBlocks.Results;
 using EgyptianeInvoicing.Core.Clients.Invoicing.Abstractions;
 using EgyptianeInvoicing.Core.Constants;
-using EgyptianeInvoicing.Core.Data.Repositories.Abstractions;
+using EgyptianeInvoicing.Core.Data.Abstractions.Repositories;
 using EgyptianeInvoicing.Core.Features.Authontication.Commands.Authenticate;
 using EgyptianeInvoicing.Core.Features.InvoiceSubmission.Commands.SubmitInvoice;
+using EgyptianeInvoicing.Core.Models;
+using EgyptianeInvoicing.Core.Services;
 using EgyptianeInvoicing.Core.Services.Abstractions;
 using EgyptianeInvoicing.Shared.Dtos.ClientsDto.Invoicing.DocumentOperations.GetSubmission.Response;
 using EgyptianeInvoicing.Shared.Dtos.ClientsDto.Invoicing.InvoiceSubmission;
 using EgyptianeInvoicing.Shared.Dtos.ClientsDto.Invoicing.InvoiceSubmission.Details;
 using EgyptianeInvoicing.Shared.Dtos.ClientsDto.Invoicing.InvoiceSubmission.Response;
+using EgyptianeInvoicing.Shared.Enums;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
@@ -28,12 +32,14 @@ namespace EgyptianeInvoicing.Core.Features.E_Invoice_Integration.InvoiceSubmissi
         private readonly ICompanyRepository _companyRepository;
         private readonly IInvoiceSubmissionClient _invoiceSubmissionClient;
         private readonly ITokenSigner _tokenSigner;
-        public SubmitInvoiceCommandHandler(ILogger<SubmitInvoiceCommandHandler> logger, ICompanyRepository companyRepository, IInvoiceSubmissionClient invoiceSubmissionClient, ITokenSigner tokenSigner)
+        private readonly IInvoiceService _invoiceService;
+        public SubmitInvoiceCommandHandler(ILogger<SubmitInvoiceCommandHandler> logger, ICompanyRepository companyRepository, IInvoiceSubmissionClient invoiceSubmissionClient, ITokenSigner tokenSigner, IInvoiceService invoiceService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _companyRepository = companyRepository;
             _invoiceSubmissionClient = invoiceSubmissionClient;
             _tokenSigner = tokenSigner;
+            _invoiceService = invoiceService;
         }
 
         public async Task<Result<SubmissionResponseDto>> Handle(SubmitInvoiceCommand request, CancellationToken cancellationToken)
@@ -53,7 +59,7 @@ namespace EgyptianeInvoicing.Core.Features.E_Invoice_Integration.InvoiceSubmissi
                     Type = company.Type.ToString(),
                     Address = new AddressDto
                     {
-                        
+
                         Country = "EG",//company.Address.Country,
                         BranchID = company.Address.BranchId.ToString(),
                         PostalCode = company.Address.PostalCode,
@@ -67,10 +73,10 @@ namespace EgyptianeInvoicing.Core.Features.E_Invoice_Integration.InvoiceSubmissi
                         AdditionalInformation = company.Address.AdditionalInformation,
                     }
                 };
-                var invoicesDto = new List<DocumentDto>();
+                var invoicesDto = new List<EInvoiceDto>();
                 foreach (var invoice in request.Request)
                 {
-                    var invoiceDto = new DocumentDto();
+                    var invoiceDto = new EInvoiceDto();
                     invoiceDto.Issuer = companyDto;
                     #region Customer Information
                     var customerType = CompanyTypes.FromName(invoice.CustomerType);
@@ -114,89 +120,115 @@ namespace EgyptianeInvoicing.Core.Features.E_Invoice_Integration.InvoiceSubmissi
                     invoiceDto.TaxpayerActivityCode = company.ActivityCode;
                     invoiceDto.InternalID = invoice.SerialNumber;
                     var invoiceLines = new List<InvoiceLineDto>();
-                    double invoiceTotal = 0;
+                    double totalSalesAmount = 0, totalDiscountAmount = 0, vatTotal = 0, totalItemsDiscountAmount = 0;
+
                     foreach (var item in invoice.Items)
                     {
-                        var invoiceLine = new InvoiceLineDto();
-                        invoiceLine.Description = item.ProductName;
-                        invoiceLine.ItemType = item.CodeType;
-                        switch (item.CodeType)
-                        {
-                            case "GS1":
-                                invoiceLine.ItemCode = item.InternationalProductCode;
-                                break;
-                            case "EGS":
-                                invoiceLine.ItemCode = item.InternalProductCode;
-                                break;
-                            default:
-                                _logger.LogWarning($"Unknown item code type: {item.CodeType}");
-                                break;
-                        }
                         var unit = UnitTypes.Codes.FirstOrDefault(u => u.ArabicDescription == item.Unit);
                         if (unit == null)
                         {
                             _logger.LogError($"Invalid unit '{item.Unit}' in invoice serial '{invoice.SerialNumber}'.");
                             return Result.Failure<SubmissionResponseDto>("SubmitInvoiceCommand", $"Invalid unit '{item.Unit}' in invoice serial '{invoice.SerialNumber}'.");
                         }
-                        invoiceLine.UnitType = unit.Code;
-                        invoiceLine.Quantity = item.Quantity;
-                        invoiceLine.SalesTotal = item.UnitPrice;
-                        invoiceLine.ItemsDiscount = item.UnitDiscount;
-                        var total = (invoiceLine.SalesTotal * invoiceLine.Quantity) - item.UnitDiscount;
-                        invoiceTotal += total;
-                        invoiceLine.Total = total;
-                        var currency = Currencies.Codes.FirstOrDefault(c => c.ArabicDescription == item.Currency);
-                        if (currency == null)
-                        {
-                            _logger.LogError($"Invalid currency '{item.Currency}' in invoice serial '{invoice.SerialNumber}'.");
-                            return Result.Failure<SubmissionResponseDto>("SubmitInvoiceCommand", $"Invalid currency '{item.Currency}' in invoice serial '{invoice.SerialNumber}'.");
-                        }
-                        invoiceLine.UnitValue = new UnitValueDto { CurrencySold = currency.Code, AmountEGP = total };
 
+                        var invoiceLine = new InvoiceLineDto
+                        {
+                            Description = item.ProductName,
+                            ItemType = item.CodeType,
+                            ItemCode = item.CodeType switch
+                            {
+                                "GS1" => item.InternationalProductCode,
+                                "EGS" => item.InternalProductCode,
+                                _ => null
+                            },
+                            UnitType = unit.Code,
+                            Quantity = Math.Round(item.Quantity, 5),
+                            ItemsDiscount = Math.Round(item.UnitDiscount, 5),
+                            Discount = new DiscountDto { Amount = Math.Round(item.UnitDiscount, 5) },
+                            SalesTotal = Math.Round(item.UnitPrice * item.Quantity, 5),
+                            UnitValue = new UnitValueDto
+                            {
+                                CurrencySold = Currencies.Codes.FirstOrDefault(c => c.ArabicDescription == item.Currency)?.Code,
+                                AmountEGP = Math.Round(item.UnitPrice, 5)
+                            }
+                        };
+
+                        // Calculate line totals
+                        double subtotal = Math.Round((double)((item.UnitPrice * invoiceLine.Quantity) - item.UnitDiscount), 5);
+                        double lineTotal = subtotal;
+
+                        // Calculate VAT and other taxes
                         var taxableItems = new List<TaxableItemDto>();
                         var vatCode = TaxSubtypes.Codes.FirstOrDefault(c => c.ArabicDescription == item.VATCode);
-                        //if (vatCode == null)
-                        //{
-                        //    _logger.LogError($"Unable to determine VAT code for invoice in serial '{invoice.SerialNumber}'.");
-                        //    return Result.Failure<SubmissionResponseDto>("SubmitInvoiceCommand", $"Unable to determine VAT code for invoice in serial '{invoice.SerialNumber}'.");
-                        //}
                         if (vatCode != null)
                         {
-                            taxableItems.Add(new TaxableItemDto { TaxType = vatCode.TaxTypeReference, SubType = vatCode.Code, Rate = item.VATPercentage });
+                            double vatValue = Math.Round(subtotal * (item.VATPercentage / 100), 5);
+                            vatTotal += vatValue;
+                            lineTotal += vatValue;
+                            taxableItems.Add(new TaxableItemDto { TaxType = vatCode.TaxTypeReference, SubType = vatCode.Code, Rate = item.VATPercentage, Amount = vatValue });
                         }
+
+                        // Calculate discount taxes
                         var discountTaxCode = TaxSubtypes.Codes.FirstOrDefault(c => c.ArabicDescription == item.DiscountTaxCode);
-                        //if (discountTaxCode == null)
-                        //{
-                        //    _logger.LogError($"Unable to determine discount tax code for invoice in serial '{invoice.SerialNumber}'.");
-                        //    return Result.Failure<SubmissionResponseDto>("SubmitInvoiceCommand", $"Unable to determine discount tax code for invoice in serial '{invoice.SerialNumber}'.");
-                        //}
                         if (discountTaxCode != null)
                         {
-                            taxableItems.Add(new TaxableItemDto { TaxType = discountTaxCode.TaxTypeReference, SubType = discountTaxCode.Code, Rate = item.DiscountTaxPercentage });
+                            double discountValue = Math.Round(subtotal * (item.DiscountTaxPercentage / 100), 5);
+                            totalDiscountAmount += discountValue;
+                            lineTotal -= discountValue;
+                            taxableItems.Add(new TaxableItemDto { TaxType = discountTaxCode.TaxTypeReference, SubType = discountTaxCode.Code, Rate = item.DiscountTaxPercentage, Amount = discountValue });
                         }
+
+                        // Summarize totals
+                        invoiceLine.Total = Math.Round(lineTotal, 5);
+                        invoiceLine.NetTotal = Math.Round(subtotal, 5);
+                        invoiceLine.TaxableItems = taxableItems;
+
+                        totalSalesAmount += (double)invoiceLine.SalesTotal;
+                        totalItemsDiscountAmount += item.UnitDiscount;
 
                         invoiceLines.Add(invoiceLine);
                     }
+
+
+                    // Calculate invoice totals
                     invoiceDto.InvoiceLines = invoiceLines;
-                    invoiceDto.TotalAmount = (double)invoiceTotal;
-                    invoiceDto.TotalSalesAmount = (double)invoiceTotal;
-                    invoiceDto.NetAmount = (double)invoiceTotal;
-                    #region Signatures
+                    invoiceDto.TotalSalesAmount = Math.Round(totalSalesAmount, 5);
+                    invoiceDto.TotalDiscountAmount = Math.Round(totalItemsDiscountAmount, 5);
+                    invoiceDto.NetAmount = Math.Round(totalSalesAmount - totalItemsDiscountAmount, 5);
+                    invoiceDto.TotalAmount = Math.Round((double)invoiceDto.NetAmount + vatTotal - totalDiscountAmount, 5);
+                    invoiceDto.TaxTotals = new List<TaxTotalDto>
+                    {
+                        new TaxTotalDto { TaxType = "T1", Amount = Math.Round(vatTotal, 5) },
+                        new TaxTotalDto { TaxType = "T4", Amount = Math.Round(totalDiscountAmount, 5) }
+                    };
+                    invoiceDto.TotalItemsDiscountAmount = Math.Round(totalItemsDiscountAmount, 5);
+
+                    // Sign invoice
                     var signatures = new List<SignatureDto>();
-                    var signatureValue = _tokenSigner.SignDocuments(SerializeToJson(invoiceDto));
+                    var signatureValue = _tokenSigner.SignDocuments(SerializeToJson(invoiceDto), company.Credentials.TokenPin, company.Credentials.Certificate);
                     if (signatureValue.IsFailure)
                     {
                         _logger.LogError(signatureValue.Error.Message);
                         return Result.Failure<SubmissionResponseDto>("SubmitInvoiceCommand", $"'{signatureValue.Error.Message}' in invoice serial '{invoice.SerialNumber}'.");
                     }
-
-                    var signature = new SignatureDto { SignatureType = "I", Value = signatureValue.Value };
-                    signatures.Add(signature);
+                    signatures.Add(new SignatureDto { SignatureType = "I", Value = signatureValue.Value });
                     invoiceDto.Signatures = signatures;
-                    #endregion
+
                     invoicesDto.Add(invoiceDto);
                 }
+
                 var response = await _invoiceSubmissionClient.SubmitRegularInvoiceAsync(request.CompanyId, invoicesDto);
+                if (response.acceptedDocuments.Count > 0)
+                {
+                    foreach (var invoice in invoicesDto)
+                    {
+                        var createdInvoice = await CreateInvoice(invoice, request.CompanyId);
+                        if (createdInvoice.IsFailure)
+                        {
+                            return Result.Failure<SubmissionResponseDto>(createdInvoice.Error);
+                        }
+                    }
+                }
                 return Result.Success(response);
             }
             catch (Exception ex)
@@ -207,7 +239,7 @@ namespace EgyptianeInvoicing.Core.Features.E_Invoice_Integration.InvoiceSubmissi
             //return null;
             //var response = await _invoiceSubmissionClient.SubmitRegularInvoiceAsync(request.CompanyId, invoicesDto);
         }
-        public string SerializeToJson(DocumentDto invoiceDto)
+        public string SerializeToJson(EInvoiceDto invoiceDto)
         {
             var options = new JsonSerializerOptions
             {
@@ -219,6 +251,34 @@ namespace EgyptianeInvoicing.Core.Features.E_Invoice_Integration.InvoiceSubmissi
             var jsonString = JsonSerializer.Serialize(invoiceDto, options);
 
             return jsonString;
+        }
+        private async Task<Result<Invoice>> CreateInvoice(EInvoiceDto eInvoice, Guid issuerId)
+        {
+            if (!Enum.TryParse<Shared.Enums.DocumentType>(eInvoice.DocumentType, out var documentType))
+            {
+                documentType = EnumExtensions.ParseEnumFromDescription<Shared.Enums.DocumentType>(eInvoice.DocumentType);
+            }
+
+            var createInvoiceResult = await _invoiceService.CreateInvoiceAsync(
+             issuerId,
+             Guid.Empty,
+             "",
+             Guid.Empty,
+             Guid.Empty,
+             eInvoice.InternalID,
+             eInvoice.InvoiceLines,
+             eInvoice.Payment,
+             eInvoice.Delivery,
+             InvoiceStatus.Submitted,
+             documentType,
+             Shared.Enums.Currency.EGP,
+             (double)eInvoice.ExtraDiscountAmount,
+             eInvoice.Receiver);
+
+            if (createInvoiceResult.IsFailure)
+                return Result.Failure<Invoice>(createInvoiceResult.Error);
+
+            return createInvoiceResult.Value;
         }
     }
 }

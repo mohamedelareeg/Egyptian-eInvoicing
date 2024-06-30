@@ -43,7 +43,7 @@ namespace EgyptianeInvoicing.MVC.Constants
                     FaIcon = "far fa-clock"
                 },
 
-                new Modules
+                   new Modules
                 {
                     PageName = "SearchDocument",
                     RoleName = "SearchDocument",
@@ -53,9 +53,20 @@ namespace EgyptianeInvoicing.MVC.Constants
                     Parent = 1,
                     IsShow = 1,
                     FaIcon = "fas fa-search"
+                },
+                new Modules
+                {
+                    PageName = "Invoices",
+                    RoleName = "Invoices",
+                    Path = "",
+                    ControllerName = "Invoices",
+                    ActionName = "Index",
+                    Parent = 1,
+                    IsShow = 1,
+                    FaIcon = "fas fa-file-invoice"
                 }
 
-               
+
             };
         }
     }

@@ -2,7 +2,7 @@
 
 namespace EgyptianeInvoicing.Shared.Dtos.ClientsDto.Invoicing.InvoiceSubmission
 {
-    public class DocumentDto
+    public class EInvoiceDto
     {
         public CompanyDto Issuer { get; set; }
         public CompanyDto Receiver { get; set; }

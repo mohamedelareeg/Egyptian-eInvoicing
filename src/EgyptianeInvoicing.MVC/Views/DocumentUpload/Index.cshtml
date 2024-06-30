@@ -21,16 +21,17 @@
                                 @TempData["SuccessMessage"]
                             </div>
                         }
-                        @if (TempData["Error"] != null)
+                     @if (TempData["Error"] != null)
                         {
                             <div class="alert alert-danger alert-dismissible" role="alert">
                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
-                                @TempData["Error"]
+                                @Html.Raw(TempData["Error"].ToString().Replace("\n", "<br />"))
                             </div>
                         }
-                     
+
+
                       <div class="container-fluid">
                             <div class="row mb-4">
                                 <div class="col-md-12">
@@ -51,7 +52,7 @@
                                 <div class="col-md-12">
                                     <div class="card">
                                         <div class="card-header">
-                                            <h4 class="card-title">@localizer["Import product (Excel)"]</h4>
+                                            <h4 class="card-title">@localizer["Import Invoice (Excel)"]</h4>
                                         </div>
                                         <div class="card-body">
                                             <form asp-action="Upload" method="post" enctype="multipart/form-data" class="form-vertical">
@@ -66,7 +67,7 @@
 
                                                 <div class="row">
                                                     <div class="col-sm-6">
-                                                        <input type="submit" class="btn btn-primary" value="@localizer["Submit"]" />
+                                                        <input type="submit" class="btn btn-primary" value="@localizer["Import Invoices"]" />
                                                     </div>
                                                 </div>
                                             </form>
@@ -211,25 +212,44 @@
             e.preventDefault();
 
             $.ajax({
-                url: '/DocumentUpload/DownloadSample',
+                url: '/DocumentUpload/DownloadImportInvoices',
                 type: 'GET',
                 xhrFields: {
-                    responseType: 'blob'
+                    responseType: 'blob' // Ensure responseType is set to 'blob'
                 },
                 success: function (data) {
-                    var blob = new Blob([data], { type: 'text/excel' });
+                    var blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
 
-                    var link = document.createElement('a');
-                    link.href = window.URL.createObjectURL(blob);
-                    link.download = 'sample.excel';
-                    link.click();
-                    window.URL.revokeObjectURL(link.href);
+                    // Check for IE and Edge compatibility
+                    if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+                        window.navigator.msSaveOrOpenBlob(blob, 'import_invoices.xlsx');
+                    } else {
+                        // For other browsers
+                        var link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = 'import_invoices.xlsx';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    }
+                     Swal.fire({
+                        icon: 'success',
+                        title: '@localizer["DownloadSuccessful"]',
+                        text: '@localizer["ImportInvoicesDownloadSuccess"]'
+                    });
                 },
                 error: function (xhr, status, error) {
-                    console.error('Error downloading Excel:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: '@localizer["DownloadError"]',
+                        text: '@localizer["FailedToDownloadImportInvoices"]'
+                    });
                 }
             });
         });
+
+
+
        var invoices = @Html.Raw(Json.Serialize(Model));
        $('#submitInvoicesButton').on('click', function () {
     Swal.fire({
@@ -272,35 +292,44 @@
                         type: 'POST',
                         data: JSON.stringify(invoices[currentInvoice]),
                         contentType: 'application/json',
-                        success: function (data) {
-                            var progress = ((currentInvoice + 1) / totalInvoices) * 100;
-                            $('#invoiceProgressBar').val(progress);
-                            $('#currentInvoice').text(currentInvoice + 1);
+                                success: function (data) {
+                                    console.log(data);
+                                    var progress = ((currentInvoice + 1) / totalInvoices) * 100;
+                                    $('#invoiceProgressBar').val(progress);
+                                    $('#currentInvoice').text(currentInvoice + 1);
+                                    console.log("update progress bar");
 
-                            // Update DataTable with success status for the current invoice
-                            var table = $('#DocumentsTable').DataTable();
-                            var row = table.row('#row-' + invoices[currentInvoice].serialNumber);
-                            row.cell(row.index(), 10).data('<span class="text-success"><i class="fas fa-check-circle"></i> @localizer["Success"]</span>').draw(false);
-                            invoices[currentInvoice].Uploaded = true;
-                            // Continue to next invoice
-                            currentInvoice++;
-                            if (currentInvoice < totalInvoices) {
-                                submitInvoices(invoices, totalInvoices, currentInvoice);
-                            } else {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: '@localizer["Completed"]',
-                                    text: '@localizer["All invoices have been submitted successfully."]',
-                                    confirmButtonText: '@localizer["OK"]'
-                                });
-                            }
-                        },
+                                    // Update DataTable with success status for the current invoice
+                                    var table = $('#DocumentsTable').DataTable();
+                                    var row = table.row('#row-' + invoices[currentInvoice].serialNumber);
+                                    row.cell(row.index(), 8).data('<span class="text-success"><i class="fas fa-check-circle"></i> @localizer["Success"]</span>').draw(false);
+                                    invoices[currentInvoice].Uploaded = true;
+
+                                    row.cell(row.index(), 8).data(data.submissionResponse.acceptedDocuments[0].longId).draw(false);
+
+
+                                    // Continue to next invoice
+                                    console.log("ready to modify current invoice");
+                                    currentInvoice++;
+                                    if (currentInvoice < totalInvoices) {
+                                        console.log("ready to submit new invoice");
+                                        submitInvoices(invoices, totalInvoices, currentInvoice);
+                                    } else {
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: '@localizer["Completed"]',
+                                            text: '@localizer["All invoices have been submitted successfully."]',
+                                            confirmButtonText: '@localizer["OK"]'
+                                        });
+                                    }
+                                },
+
                         error: function (xhr, status, error) {
                             var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : error;
                             // Update DataTable with error status for the current invoice
                             var table = $('#DocumentsTable').DataTable();
                             var row = table.row('#row-' + invoices[currentInvoice].serialNumber);
-                                                        row.cell(row.index(), 10).data('<span class="text-danger">'+errorMessage+'</span>').draw(false);
+                                                        row.cell(row.index(), 8).data('<span class="text-danger">'+errorMessage+'</span>').draw(false);
                             // Continue to next invoice
                             currentInvoice++;
                             if (currentInvoice < totalInvoices) {

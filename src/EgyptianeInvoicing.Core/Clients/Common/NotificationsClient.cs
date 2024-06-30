@@ -1,5 +1,5 @@
 ﻿using EgyptianeInvoicing.Core.Clients.Common.Abstractions;
-using EgyptianeInvoicing.Core.Data.Repositories.Abstractions;
+using EgyptianeInvoicing.Core.Data.Abstractions.Repositories;
 using EgyptianeInvoicing.Core.Services.Abstractions;
 using EgyptianeInvoicing.Shared.Dtos.ClientsDto.Common.Notifications.Response;
 using System.Text.Json;

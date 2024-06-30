@@ -3,11 +3,11 @@
     "SqlServer": "Server=.;Database=E-Invoice;Integrated Security=true;MultipleActiveResultSets=true;TrustServerCertificate=true;"
   },
   "TokenSigningSettings": {
-    "DllLibPath": "eps2003csp11.dll",
-    "TokenPin": "05827500",
-    "TokenCertificate": "MCDR CA 2018" //"Egypt Trust Sealing CA"
+    "DllLibPath": "eps2003csp11.dll"
+    //"TokenPin": "",
+    //"TokenCertificate": "MCDR CA 2018" //"Egypt Trust Sealing CA"
   },
-  "E-InvoiceEnvironment": "PreProd",
+  "E-InvoiceEnvironment": "Preprod",
   "E-InvoiceEnvironments": {
     "Preprod": {
       "IdSrvBaseUrl": "https://id.preprod.eta.gov.eg",

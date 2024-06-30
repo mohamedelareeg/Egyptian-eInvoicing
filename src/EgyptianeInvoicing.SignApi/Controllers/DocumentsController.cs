@@ -17,12 +17,15 @@ namespace EgyptianeInvoicing.SignApi.Controllers
     public class DocumentsController : AppControllerBase
     {
         private readonly ILogger<DocumentsController> _logger;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
-        public DocumentsController(ISender sender, ILogger<DocumentsController> logger)
+        public DocumentsController(ISender sender, ILogger<DocumentsController> logger, IWebHostEnvironment hostingEnvironment)
             : base(sender)
         {
             _logger = logger;
+            _hostingEnvironment = hostingEnvironment;
         }
+
         [HttpPost("search")]
         public async Task<IActionResult> SearchDocuments([FromBody] SearchDocumentsRequestDto request)
         {
@@ -89,6 +92,59 @@ namespace EgyptianeInvoicing.SignApi.Controllers
             var result = await Sender.Send(command);
             return CustomResult(result);
         }
+        [HttpGet("download-import-invoices")]
+        public async Task<IActionResult> DownloadImportInvoices()
+        {
+            try
+            {
+                var fileName = "import_invoices.xlsx";
+                var filePath = Path.Combine(_hostingEnvironment.WebRootPath, fileName);
+
+                if (!System.IO.File.Exists(filePath))
+                {
+                    _logger.LogError($"File {fileName} not found at {filePath}");
+                    return NotFound();
+                }
+
+                var memory = new MemoryStream();
+                using (var stream = new FileStream(filePath, FileMode.Open))
+                {
+                    await stream.CopyToAsync(memory);
+                }
+                memory.Position = 0;
+
+                return File(memory, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error downloading {nameof(DownloadImportInvoices)}: {ex.Message}");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+        //[HttpGet("download-import-invoices")]
+        //public async Task<byte[]> DownloadImportInvoices()
+        //{
+        //    try
+        //    {
+        //        var fileName = "import_invoices.xlsx";
+        //        var filePath = Path.Combine(_hostingEnvironment.WebRootPath, fileName);
+
+        //        if (!System.IO.File.Exists(filePath))
+        //        {
+        //            _logger.LogError($"File {fileName} not found at {filePath}");
+        //            return null;
+        //        }
+
+        //        byte[] fileBytes = await System.IO.File.ReadAllBytesAsync(filePath);
+
+        //        return fileBytes;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError($"Error downloading {nameof(DownloadImportInvoices)}: {ex.Message}");
+        //        throw;
+        //    }
+        //}
 
     }
 }

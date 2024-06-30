@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace EgyptianeInvoicing.Core.Features.InvoiceSubmission.Commands.SubmitInvoice
 {
-    public class DocumentDtoValidator : AbstractValidator<DocumentDto>
+    public class DocumentDtoValidator : AbstractValidator<EInvoiceDto>
     {
         public DocumentDtoValidator()
         {

@@ -8,16 +8,19 @@ using Newtonsoft.Json;
 using EgyptianeInvoicing.MVC.Clients;
 using EgyptianeInvoicing.MVC.Constants;
 using EgyptianeInvoicing.MVC.Clients.Abstractions;
+using System.Security.Cryptography;
 
 namespace EgyptianeInvoicing.MVC.Controllers
 {
     public partial class DocumentUploadController : Controller
     {
+        private readonly ValidateImportedInvoice _validateImportedInvoice;
         private readonly IDocumentsClient _documentsClient;
 
-        public DocumentUploadController(IDocumentsClient documentsClient)
+        public DocumentUploadController(IDocumentsClient documentsClient, ValidateImportedInvoice validateImportedInvoice)
         {
             _documentsClient = documentsClient;
+            _validateImportedInvoice = validateImportedInvoice;
         }
 
         [HttpGet]
@@ -38,7 +41,7 @@ namespace EgyptianeInvoicing.MVC.Controllers
         {
             if (file == null || file.Length == 0)
             {
-                ModelState.AddModelError("File", "Please select an Excel file to upload.");
+                TempData["Error"] = "Please select an Excel file to upload.";
                 return BadRequest(ModelState);
             }
 
@@ -54,8 +57,8 @@ namespace EgyptianeInvoicing.MVC.Controllers
                         ExcelWorksheet worksheet = package.Workbook.Worksheets.FirstOrDefault();
                         if (worksheet == null)
                         {
-                            ModelState.AddModelError("File", "No worksheet found in the Excel file.");
-                            return BadRequest(ModelState);
+                            TempData["Error"] = "No worksheet found in the Excel file.";
+                            return RedirectToAction("Index");
                         }
 
                         int startRow = 4;
@@ -101,18 +104,18 @@ namespace EgyptianeInvoicing.MVC.Controllers
                                     invoiceItem.Currency = worksheet.Cells[row, 24].GetValue<string>();
                                     invoiceItem.CurrencyConvert = worksheet.Cells[row, 25].GetValue<double>();
                                     invoiceItem.VATCode = worksheet.Cells[row, 27].GetValue<string>();
-                                    invoiceItem.VATPercentage = worksheet.Cells[row, 28].GetValue<decimal>();
-                                    invoiceItem.RelativeTableTaxPercentage = worksheet.Cells[row, 29].GetValue<decimal>();
-                                    invoiceItem.SpecificTableTaxPercentage = worksheet.Cells[row, 30].GetValue<decimal>();
+                                    invoiceItem.VATPercentage = worksheet.Cells[row, 28].GetValue<double>();
+                                    invoiceItem.RelativeTableTaxPercentage = worksheet.Cells[row, 29].GetValue<double>();
+                                    invoiceItem.SpecificTableTaxPercentage = worksheet.Cells[row, 30].GetValue<double>();
                                     invoiceItem.DiscountTaxCode = worksheet.Cells[row, 31].GetValue<string>();
-                                    invoiceItem.DiscountTaxPercentage = worksheet.Cells[row, 32].GetValue<decimal>();
+                                    invoiceItem.DiscountTaxPercentage = worksheet.Cells[row, 32].GetValue<double>();
                                     invoice.Items.Add(invoiceItem);
                                     invoices.Add(invoice);
                                 }
                                 catch (Exception ex)
                                 {
-                                    ModelState.AddModelError("File", $"Error in row {row}: {ex.Message}");
-                                    return BadRequest(ModelState);
+                                    TempData["Error"] = $"Error in row {row}: {ex.Message}";
+                                    return RedirectToAction("Index");
                                 }
                             }
                             else
@@ -131,22 +134,72 @@ namespace EgyptianeInvoicing.MVC.Controllers
                                     invoiceItem.Currency = worksheet.Cells[row, 24].GetValue<string>();
                                     invoiceItem.CurrencyConvert = worksheet.Cells[row, 23].GetValue<double>();
                                     invoiceItem.VATCode = worksheet.Cells[row, 27].GetValue<string>();
-                                    invoiceItem.VATPercentage = worksheet.Cells[row, 28].GetValue<decimal>();
-                                    invoiceItem.RelativeTableTaxPercentage = worksheet.Cells[row, 29].GetValue<decimal>();
-                                    invoiceItem.SpecificTableTaxPercentage = worksheet.Cells[row, 30].GetValue<decimal>();
+                                    invoiceItem.VATPercentage = worksheet.Cells[row, 28].GetValue<double>();
+                                    invoiceItem.RelativeTableTaxPercentage = worksheet.Cells[row, 29].GetValue<double>();
+                                    invoiceItem.SpecificTableTaxPercentage = worksheet.Cells[row, 30].GetValue<double>();
                                     invoiceItem.DiscountTaxCode = worksheet.Cells[row, 31].GetValue<string>();
-                                    invoiceItem.DiscountTaxPercentage = worksheet.Cells[row, 32].GetValue<decimal>();
+                                    invoiceItem.DiscountTaxPercentage = worksheet.Cells[row, 32].GetValue<double>();
                                     existingInvoice.Items.Add(invoiceItem);
                                 }
                                 catch (Exception ex)
                                 {
-                                    ModelState.AddModelError("File", $"Error in row {row}: {ex.Message}");
-                                    return BadRequest(ModelState);
+                                    TempData["Error"] = $"Error in row {row}: {ex.Message}";
+                                    return RedirectToAction("Index");
                                 }
                             }
                         }
                     }
                 }
+                var allErrors = new Dictionary<string, List<string>>();
+
+                foreach (var invoice in invoices)
+                {
+                    var validationErrors = _validateImportedInvoice.IsValidInvoice(invoice);
+
+                    if (validationErrors.Count > 0)
+                    {
+                        allErrors[$"{invoice.SerialNumber}"] = validationErrors;
+                    }
+
+                    foreach (var item in invoice.Items)
+                    {
+                        var productValidationErrors = _validateImportedInvoice.IsValidInvoiceProduct(item);
+                        if (productValidationErrors.Count > 0)
+                        {
+                            if (allErrors.ContainsKey($"# {invoice.SerialNumber}"))
+                            {
+                                allErrors[$"{invoice.SerialNumber}"].AddRange(productValidationErrors);
+                            }
+                            else
+                            {
+                                allErrors[$"{invoice.SerialNumber}"] = productValidationErrors;
+                            }
+                        }
+                    }
+                }
+                if (allErrors.Count > 0)
+                {
+                    string errorMessage = "";
+
+                    foreach (var errorEntry in allErrors)
+                    {
+                        errorMessage += $"#{errorEntry.Key}:\n";
+                        foreach (var error in errorEntry.Value)
+                        {
+                            errorMessage += $"- {error}\n";
+                        }
+                        errorMessage += "\n"; // Add a blank line between invoices for clarity
+                    }
+
+                    TempData["Error"] = errorMessage;
+                    return RedirectToAction("Index");
+                }
+
+
+
+
+
+
                 TempData["SuccessMessage"] = "Excel file imported successfully.";
                 TempData["Invoices"] = JsonConvert.SerializeObject(invoices);
                 return RedirectToAction("Index");
@@ -167,11 +220,28 @@ namespace EgyptianeInvoicing.MVC.Controllers
                 var invoices = new List<ImportedInvoiceDto> { invoiceDto };
 
                 var response = await _documentsClient.SubmitInvoiceAsync((Guid)CompanyId, invoices);
-
                 if (response.Succeeded)
                 {
                     var submissionResponse = response.Data;
-                    return Ok(new { message = "Invoice submitted successfully", submissionResponse });
+
+                    if (!string.IsNullOrEmpty(submissionResponse.submissionId))
+                    {
+                        var rejectedDocuments = submissionResponse.rejectedDocuments;
+
+                        if (rejectedDocuments != null && rejectedDocuments.Any())
+                        {
+                            var errors = rejectedDocuments.Select(doc => $"{doc.internalId}: {doc.error.message}");
+                            return BadRequest(new { message = "Invoice submitted with errors", errors });
+                        }
+                        else
+                        {
+                            return Ok(new { message = "Invoice submitted successfully", submissionResponse });
+                        }
+                    }
+                    else
+                    {
+                        return BadRequest(new { message = "Failed to submit invoice", error = "Submission ID is null or empty" });
+                    }
                 }
                 else
                 {
@@ -184,17 +254,40 @@ namespace EgyptianeInvoicing.MVC.Controllers
             }
         }
 
-
-        private bool IsUsbConnected()
+        [HttpGet]
+        public async Task<IActionResult> DownloadImportInvoices()
         {
-            return true; 
+            try
+            {
+                var stream = await _documentsClient.DownloadImportInvoicesAsync();
+
+                // Set the content type and file name for the response
+                HttpContext.Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                HttpContext.Response.Headers.Add("Content-Disposition", "attachment; filename=import_invoices.xlsx");
+
+                // Copy the stream directly to the response body
+                await stream.CopyToAsync(HttpContext.Response.Body);
+                HttpContext.Response.Body.FlushAsync();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = "Failed to download import_invoices.xlsx", error = ex.Message });
+            }
+
+            return Ok();
         }
 
-        private bool IsInvoiceValid(ImportedInvoiceDto invoiceDto)
-        {
-            return invoiceDto.SerialNumber == "1";
-        }
+        //[HttpGet]
+        //public async Task<IActionResult> DownloadImportInvoices(string invoiceId)
+        //{
+        //    var response = await _documentsClient.DownloadImportInvoicesAsync();
 
+        //    if (response == null)
+        //    {
+        //        return BadRequest("Can't Download Example Excel");
+        //    }
+        //    return File(response, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", rid + "import_invoices.xlsx");
+        //}
 
     }
 }

@@ -25,10 +25,25 @@ namespace EgyptianeInvoicing.Core.Services
             _settings = settings.Value;
         }
 
-        public Result<string> SignDocuments(string serializedJson)
+        public Result<string> SignDocuments(string serializedJson, string tokenPin, string certificate)
         {
             try
             {
+                if (string.IsNullOrEmpty(serializedJson))
+                {
+                    return Result.Failure<string>("SignDocuments", "Serialized JSON data is required.");
+                }
+
+                if (string.IsNullOrEmpty(tokenPin))
+                {
+                    return Result.Failure<string>("SignDocuments", "Token PIN is required.");
+                }
+
+                if (string.IsNullOrEmpty(certificate))
+                {
+                    return Result.Failure<string>("SignDocuments", "Certificate is required.");
+                }
+
                 var request = JsonConvert.DeserializeObject<JObject>(serializedJson, new JsonSerializerSettings
                 {
                     FloatFormatHandling = FloatFormatHandling.String,
@@ -45,7 +60,7 @@ namespace EgyptianeInvoicing.Core.Services
 
                 string canonicalString = canonicalStringResult.Value;
 
-                var cadesResult = _signingService.SignWithCMS(canonicalString, _settings);
+                var cadesResult = _signingService.SignWithCMS(canonicalString, _settings,tokenPin,certificate);
                 if (cadesResult.IsFailure)
                 {
                     return Result.Failure<string>(cadesResult.Error);

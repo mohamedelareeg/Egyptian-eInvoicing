@@ -1,7 +1,8 @@
 ﻿using Amazon.SecurityToken.Model;
 using BuildingBlocks.Messaging;
 using BuildingBlocks.Results;
-using EgyptianeInvoicing.Core.Data.Repositories.Abstractions;
+using EgyptianeInvoicing.Core.Data.Abstractions;
+using EgyptianeInvoicing.Core.Data.Abstractions.Repositories;
 using EgyptianeInvoicing.Core.ValueObjects;
 using EgyptianeInvoicing.Shared.Dtos.ClientsDto.Invoicing.InvoiceSubmission.Details;
 using MediatR;
@@ -16,10 +17,11 @@ namespace EgyptianeInvoicing.Core.Features.Companies.Commands.UpdateCompany
     public class UpdateCompanyCommandHandler : ICommandHandler<UpdateCompanyCommand, bool>
     {
         private readonly ICompanyRepository _repository;
-
-        public UpdateCompanyCommandHandler(ICompanyRepository repository)
+        private readonly IUnitOfWork _unitOfWork;
+        public UpdateCompanyCommandHandler(ICompanyRepository repository, IUnitOfWork unitOfWork)
         {
             _repository = repository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<Result<bool>> Handle(UpdateCompanyCommand request, CancellationToken cancellationToken)
@@ -116,7 +118,7 @@ namespace EgyptianeInvoicing.Core.Features.Companies.Commands.UpdateCompany
             }
 
             await _repository.UpdateAsync(existingCompany);
-
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
             return Result.Success(true);
         }
 

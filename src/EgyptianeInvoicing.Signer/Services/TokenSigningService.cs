@@ -26,9 +26,9 @@ namespace EgyptianeInvoicing.Signer.Services
         {
             _logger = logger;
         }
-        public Result<string> SignWithCMS(string serializedJson ,TokenSigningSettingsDto tokenSigningSettings)
+        public Result<string> SignWithCMS(string serializedJson ,TokenSigningSettingsDto tokenSigningSettings, string tokenPin, string certificate)
         {
-            Result<bool> validationResult = ValidateInputs(serializedJson, tokenSigningSettings.DllLibPath, tokenSigningSettings.TokenPin, tokenSigningSettings.TokenCertificate);
+            Result<bool> validationResult = ValidateInputs(serializedJson, tokenSigningSettings.DllLibPath, tokenPin, certificate);
             if (validationResult.IsFailure)
                 return Result.Failure<string>(validationResult.Error);
 
@@ -45,7 +45,7 @@ namespace EgyptianeInvoicing.Signer.Services
             if (sessionResult.IsFailure)
                 return Result.Failure<string>(sessionResult.Error);
 
-            Result<Unit> loginResult = Login(sessionResult.Value, tokenSigningSettings.TokenPin);
+            Result<Unit> loginResult = Login(sessionResult.Value, tokenPin);
             if (loginResult.IsFailure)
                 return Result.Failure<string>(loginResult.Error);
 
@@ -53,7 +53,7 @@ namespace EgyptianeInvoicing.Signer.Services
             if (certificateResult.IsFailure)
                 return Result.Failure<string>(certificateResult.Error);
 
-            Result<X509Certificate2> certForSigningResult = FindCertificateInStore(tokenSigningSettings.TokenCertificate);
+            Result<X509Certificate2> certForSigningResult = FindCertificateInStore(certificate);
             if (certForSigningResult.IsFailure)
                 return Result.Failure<string>(certForSigningResult.Error);
 
@@ -133,6 +133,12 @@ namespace EgyptianeInvoicing.Signer.Services
         {
             try
             {
+                CKS sessionState = session.GetSessionInfo().State;
+                if (sessionState == CKS.CKS_RO_USER_FUNCTIONS || sessionState == CKS.CKS_RW_USER_FUNCTIONS)
+                {
+                    _logger.LogInformation("Session is already logged in.");
+                    return Result.Success(Unit.Value);
+                }
                 session.Login(CKU.CKU_USER, Encoding.UTF8.GetBytes(tokenPin));
                 return Result.Success(Unit.Value);
             }

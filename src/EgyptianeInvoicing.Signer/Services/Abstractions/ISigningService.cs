@@ -10,6 +10,6 @@ namespace EgyptianeInvoicing.Signer.Services.Abstractions
 {
     public interface ISigningService
     {
-        Result<string> SignWithCMS(string serializedJson, TokenSigningSettingsDto tokenSigningSettings);
+        Result<string> SignWithCMS(string serializedJson, TokenSigningSettingsDto tokenSigningSettings, string tokenPin, string certificate);
     }
 }

@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EgyptianeInvoicing.Core.Data.Repositories.Abstractions
+namespace EgyptianeInvoicing.Core.Data.Abstractions.Repositories
 {
     public interface ICompanyRepository
     {

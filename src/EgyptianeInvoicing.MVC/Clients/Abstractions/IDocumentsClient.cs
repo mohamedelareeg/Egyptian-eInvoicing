@@ -12,5 +12,6 @@ namespace EgyptianeInvoicing.MVC.Clients.Abstractions
         Task<BaseResponse<byte[]>> GetDocumentPackageAsync(string Rid);
         Task<BaseResponse<byte[]>> GetDocumentPDFAsync(string Rid);
         Task<BaseResponse<SubmissionResponseDto>> SubmitInvoiceAsync(Guid CompanyId, List<ImportedInvoiceDto> invoices);
+        Task<Stream> DownloadImportInvoicesAsync();
     }
 }

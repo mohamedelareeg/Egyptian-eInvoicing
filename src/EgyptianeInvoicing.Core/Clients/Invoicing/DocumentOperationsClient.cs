@@ -3,7 +3,7 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using EgyptianeInvoicing.Core.Clients.Invoicing.Abstractions;
-using EgyptianeInvoicing.Core.Data.Repositories.Abstractions;
+using EgyptianeInvoicing.Core.Data.Abstractions.Repositories;
 using EgyptianeInvoicing.Core.Services.Abstractions;
 using EgyptianeInvoicing.Shared.Dtos.ClientsDto.Invoicing.DocumentOperations.GetRecentDocuments.Response;
 using EgyptianeInvoicing.Shared.Dtos.ClientsDto.Invoicing.DocumentOperations.GetSubmission.Response;

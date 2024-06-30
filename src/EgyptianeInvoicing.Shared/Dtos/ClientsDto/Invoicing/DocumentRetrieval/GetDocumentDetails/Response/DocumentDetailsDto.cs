@@ -12,7 +12,7 @@ namespace EgyptianeInvoicing.Shared.Dtos.ClientsDto.Invoicing.DocumentRetrieval.
         public string Status { get; set; }
         public string TransformationStatus { get; set; }
         public DocumentValidationResultsDto ValidationResults { get; set; }
-        public DocumentDto Document { get; set; }
+        public EInvoiceDto Document { get; set; }
         public DateTime? CancelRequestDate { get; set; }
         public DateTime? RejectRequestDate { get; set; }
         public DateTime? CancelRequestDelayedDate { get; set; }

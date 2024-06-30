@@ -21,28 +21,28 @@ namespace EgyptianeInvoicing.Core.Data.Configurations
 
             builder.OwnsOne(x => x.Address, address =>
             {
-                address.Property(a => a.BranchId).HasColumnName("BranchId");
-                address.Property(a => a.Country).HasColumnName("Country").IsRequired().HasMaxLength(100);
-                address.Property(a => a.Governorate).HasColumnName("Governorate").HasMaxLength(100);
-                address.Property(a => a.RegionCity).HasColumnName("RegionCity").HasMaxLength(100);
-                address.Property(a => a.Street).HasColumnName("Street").HasMaxLength(255);
-                address.Property(a => a.BuildingNumber).HasColumnName("BuildingNumber").HasMaxLength(20);
-                address.Property(a => a.PostalCode).HasColumnName("PostalCode").HasMaxLength(20);
-                address.Property(a => a.Floor).HasColumnName("Floor").HasMaxLength(10);
-                address.Property(a => a.Room).HasColumnName("Room").HasMaxLength(10);
-                address.Property(a => a.Landmark).HasColumnName("Landmark").HasMaxLength(255);
-                address.Property(a => a.AdditionalInformation).HasColumnName("AdditionalInformation").HasMaxLength(500);
+                address.Property(a => a.BranchId).HasColumnName("AddressBranchId");
+                address.Property(a => a.Country).HasColumnName("AddressCountry").IsRequired().HasMaxLength(100);
+                address.Property(a => a.Governorate).HasColumnName("AddressGovernorate").HasMaxLength(100);
+                address.Property(a => a.RegionCity).HasColumnName("AddressRegionCity").HasMaxLength(100);
+                address.Property(a => a.Street).HasColumnName("AddressStreet").HasMaxLength(255);
+                address.Property(a => a.BuildingNumber).HasColumnName("AddressBuildingNumber").HasMaxLength(20);
+                address.Property(a => a.PostalCode).HasColumnName("AddressPostalCode").HasMaxLength(20);
+                address.Property(a => a.Floor).HasColumnName("AddressFloor").HasMaxLength(10);
+                address.Property(a => a.Room).HasColumnName("AddressRoom").HasMaxLength(10);
+                address.Property(a => a.Landmark).HasColumnName("AddressLandmark").HasMaxLength(255);
+                address.Property(a => a.AdditionalInformation).HasColumnName("AddressAdditionalInformation").HasMaxLength(500);
             });
 
             builder.Property(x => x.Type).IsRequired().HasConversion<string>();
 
             builder.OwnsOne(x => x.Credentials, credentials =>
             {
-                credentials.Property(c => c.ClientId).HasColumnName("ClientId").IsRequired().HasMaxLength(100);
-                credentials.Property(c => c.ClientSecret1).HasColumnName("ClientSecret1").IsRequired().HasMaxLength(100);
-                credentials.Property(c => c.ClientSecret2).HasColumnName("ClientSecret2").IsRequired().HasMaxLength(100);
-                credentials.Property(c => c.TokenPin).HasColumnName("TokenPin").IsRequired().HasMaxLength(100);
-                credentials.Property(c => c.Certificate).HasColumnName("Certificate").HasMaxLength(100);
+                credentials.Property(c => c.ClientId).HasColumnName("CredentialsClientId").IsRequired().HasMaxLength(100);
+                credentials.Property(c => c.ClientSecret1).HasColumnName("CredentialsClientSecret1").IsRequired().HasMaxLength(100);
+                credentials.Property(c => c.ClientSecret2).HasColumnName("CredentialsClientSecret2").IsRequired().HasMaxLength(100);
+                credentials.Property(c => c.TokenPin).HasColumnName("CredentialsTokenPin").IsRequired().HasMaxLength(100);
+                credentials.Property(c => c.Certificate).HasColumnName("CredentialsCertificate").HasMaxLength(100);
             });
             builder.OwnsMany(x => x.Payments, payments =>
             {
