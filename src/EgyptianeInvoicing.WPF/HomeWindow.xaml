@@ -1,0 +1,583 @@
+﻿<Window x:Class="EgyptianeInvoicing.WPF.HomeWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EgyptianeInvoicing.WPF"
+        xmlns:fa="http://schemas.fontawesome.io/icons/" 
+        xmlns:controls="clr-namespace:EgyptianeInvoicing.WPF.Components"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:converters="clr-namespace:EgyptianeInvoicing.WPF.Validations"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
+        WindowState="Maximized" 
+        WindowStyle="None" 
+        Background="Transparent"
+        AllowsTransparency="True"
+        Closed="Window_Closed"
+    Loaded="Window_Loaded"
+    MinWidth="800"
+        
+        >
+
+    <Window.Resources>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <!-- ModernTextBoxStyle -->
+        <Style x:Key="ModernTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Background" Value="#F7F7F7"/>
+            <Setter Property="BorderBrush" Value="#DDDDDD"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="Padding" Value="8"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="ToolTip" Value="{Binding ErrorMessage}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                  VerticalAlignment="Center"
+                                  Padding="{TemplateBinding Padding}"
+                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                  Focusable="false"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+
+        <Style x:Key="CustomButtonStyle" TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="PART_Border"
+                                Cursor="Hand"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                                
+                        CornerRadius="{StaticResource AppCornerRadius}" Width="{Binding Width, FallbackValue=auto}" Padding="5, 0" MinWidth="{Binding MinWidth, FallbackValue=100}" Height="35" Margin="5, 0">
+                            <ContentPresenter x:Name="PART_ContentPresenter"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                              TextElement.FontSize="14"
+                                              TextElement.FontFamily="{StaticResource Montserrat_Semibold}"
+                                              TextElement.FontStretch="Expanded"
+                                      TextElement.Foreground="{TemplateBinding Foreground}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="PART_Border" Property="Background" Value="#004FC4" />
+                                <Setter TargetName="PART_ContentPresenter" Property="TextElement.Foreground" Value="White" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="PART_Border" Property="Background" Value="DarkGray" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="PART_Border" Property="Opacity" Value="0.5" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="CustomComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="{StaticResource PrimaryBlueColor}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="MinWidth" Value="200"/>
+            <Setter Property="Height" Value="35"/>
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+
+            <Setter Property="FontFamily" Value="{StaticResource Montserrat_Semibold}"/>
+
+        </Style>
+
+    </Window.Resources>
+    <Border CornerRadius="{StaticResource AppCornerRadius}" Background="White" FlowDirection="RightToLeft" HorizontalAlignment="Stretch">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <controls:WindowHeader Grid.Row="0" HeaderTitle="" />
+            <Border Grid.Row="1" BorderThickness="2" Margin="10,0,10,0" BorderBrush="LightSlateGray" Background="White">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="50" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="30" />
+                    </Grid.RowDefinitions>
+
+                    <!-- First Row - Content -->
+                    <Border BorderBrush="LightGray" BorderThickness="1" CornerRadius="5" >
+                        <Grid Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Toggle Button -->
+                            <Button x:Name="menuToggleButton" 
+                Background="{x:Null}" BorderBrush="{x:Null}" Foreground="Black"
+                HorizontalAlignment="Left" Margin="10,0,0,0"
+                >
+                                <StackPanel>
+                                    <materialDesign:PackIcon Kind="ReorderHorizontal" Foreground="Gray" Width="15" Height="15" />
+                                </StackPanel>
+                            </Button>
+
+                            <Grid Grid.Column="1" VerticalAlignment="Top" Margin="0 10 0 0 " 
+               HorizontalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                  
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                            
+
+                                <!-- TextBlock with Name -->
+                                <TextBlock Grid.Column="1" Text="{Binding SelectedItem.Name, ElementName=menuTreeView}" 
+FontWeight="Bold" FontSize="18" Foreground="Black" VerticalAlignment="Top" 
+HorizontalAlignment="Left" />
+                            </Grid>
+
+                         
+                            <!-- Notification and other buttons in the right corner -->
+                            <StackPanel Grid.Column="1" VerticalAlignment="Top" Margin="10 0 10 0" HorizontalAlignment="Right" Orientation="Horizontal">
+                                <!-- Button to show/hide the keyboard -->
+                                <Button x:Name="showHideKeyboardButton" Style="{StaticResource CustomButtonStyle}" Background="Transparent" BorderBrush="{x:Null}" Foreground="#333333" Margin="5" Click="ShowHideKeyboardButton_Click">
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Kind="Keyboard" Width="30" Height="30" Margin="0 0 5 0" />
+                                        <TextBlock Text=" لوحة المفاتيح" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </Button>
+
+                                <!-- Button to show/hide the calculator -->
+                                <Button x:Name="showHideCalculatorButton" Style="{StaticResource CustomButtonStyle}" Background="Transparent" BorderBrush="{x:Null}" Foreground="#333333" Margin="5" Click="ShowHideCalculatorButton_Click">
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Kind="Calculator" Width="30" Height="30" Margin="0 0 5 0" />
+                                        <TextBlock Text=" الآلة الحاسبة" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </Button>
+
+
+                                <!-- Notification Button -->
+                                <Button x:Name="notificationButton"  Background="{x:Null}" BorderBrush="{x:Null}" Foreground="Black" Click="NotificationButton_Click">
+                                    <Button.Resources>
+                                        <!-- Define the storyboard for the fade-in animation -->
+                                        <Storyboard x:Key="FadeInAnimation">
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.5"/>
+                                        </Storyboard>
+                                    </Button.Resources>
+                                    <!-- Apply the fade-in animation on button load -->
+                                    <Button.Triggers>
+                                        <EventTrigger RoutedEvent="Loaded">
+                                            <BeginStoryboard Storyboard="{StaticResource FadeInAnimation}"/>
+                                        </EventTrigger>
+                                    </Button.Triggers>
+                                    <Grid>
+                                        <materialDesign:PackIcon Kind="BellOutline" Width="30" Height="30" />
+                                        <Ellipse Width="20" Height="20" Fill="Red" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0 3 0 0">
+                                            <Ellipse.RenderTransform>
+                                                <TranslateTransform X="5" Y="-5"/>
+                                            </Ellipse.RenderTransform>
+                                            <Ellipse.Effect>
+                                                <DropShadowEffect ShadowDepth="0" BlurRadius="5"/>
+                                            </Ellipse.Effect>
+                                        </Ellipse>
+                                        <TextBlock x:Name="notificationCount"  Foreground="White" FontWeight="Bold" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10 0 0 0 " Text="3"/>
+                                    </Grid>
+                                </Button>
+
+                                <!-- Profile Button -->
+                                <Button x:Name="profileButton" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="Black" Height="40" Click="ProfileButton_Click">
+                                    <Button.Resources>
+                                        <!-- Define the storyboard for the fade-in animation -->
+                                        <Storyboard x:Key="FadeInAnimation">
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.5"/>
+                                        </Storyboard>
+                                    </Button.Resources>
+                                    <!-- Apply the fade-in animation on button load -->
+                                    <Button.Triggers>
+                                        <EventTrigger RoutedEvent="Loaded">
+                                            <BeginStoryboard Storyboard="{StaticResource FadeInAnimation}"/>
+                                        </EventTrigger>
+                                    </Button.Triggers>
+                                  
+                                </Button>
+
+
+
+                                <!-- Notification Popup -->
+                                <Popup x:Name="notificationPopup" PlacementTarget="{Binding ElementName=notificationButton}" Placement="Bottom" StaysOpen="False" AllowsTransparency="True">
+                                    <Border Background="#F5F5F5" BorderBrush="#CCCCCC" BorderThickness="1" CornerRadius="10">
+                                        <!-- Adjusted CornerRadius -->
+                                        <!-- Content of the notification popup -->
+                                        <StackPanel Width="250" Margin="10">
+                                            <TextBlock Text="الإشعارات" FontWeight="Bold" HorizontalAlignment="Center" Margin="0 10"/>
+                                            <ListBox BorderBrush="LightGray" BorderThickness="1" Background="#F5F5F5">
+                                                <ListBox.ItemContainerStyle>
+                                                    <Style TargetType="ListBoxItem">
+                                                        <Setter Property="Padding" Value="10"/>
+                                                        <Setter Property="Margin" Value="5"/>
+                                                        <Setter Property="BorderBrush" Value="LightGray"/>
+                                                        <Setter Property="BorderThickness" Value="1"/>
+                                                        <Setter Property="Background" Value="White"/>
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="ListBoxItem">
+                                                                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                                                                        <ContentPresenter/>
+                                                                    </Border>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </Style>
+                                                </ListBox.ItemContainerStyle>
+
+                                                <ListBoxItem>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="تم تحديث النظام إلى أحدث نسخة." Margin="5" FontWeight="Bold" Foreground="DarkRed"/>
+                                                       
+                                                    </StackPanel>
+                                                </ListBoxItem>
+
+                                                <ListBoxItem>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="تم تفعيل النظام بنجاح." Margin="5" FontWeight="Bold" Foreground="DarkBlue"/>
+                                                        
+                                                    </StackPanel>
+                                                </ListBoxItem>
+
+                                                <ListBoxItem>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="تم إنشاء المتجر بنجاح." Margin="5" FontWeight="Bold" Foreground="DarkGreen"/>
+                                                      
+                                                    </StackPanel>
+                                                </ListBoxItem>
+
+                                            </ListBox>
+
+                                        </StackPanel>
+                                    </Border>
+                                </Popup>
+
+                                <!-- Profile Popup -->
+                                <Popup x:Name="profilePopup" PlacementTarget="{Binding ElementName=profileButton}" Placement="Bottom" StaysOpen="False" AllowsTransparency="True">
+                                    <Border Background="#F5F5F5" BorderBrush="#CCCCCC" BorderThickness="1" CornerRadius="10">
+                                        <!-- Adjusted CornerRadius -->
+                                        <!-- Content of the profile popup -->
+                                        <StackPanel Width="250" Margin="10">
+                                            <!-- Profile Image and Name -->
+                                            <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                                                <!-- Profile Image -->
+                                                <Border Width="85" Height="60" Margin="0 10" CornerRadius="30">
+                                                    <Image  RenderOptions.BitmapScalingMode="HighQuality" Width="85" Height="60" Source="/Assets/pic/arp-tran-removebg-preview.png" Stretch="Fill"/>
+                                                </Border>
+
+                                                <!-- Profile Name -->
+                                                <TextBlock x:Name="UserNameDialog" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 10"/>
+                                            </StackPanel>
+
+                                            <!-- Divider -->
+                                            <Border Height="1" Background="#CCCCCC" Margin="0 10"/>
+                                            <!-- Settings and Sign Out Buttons -->
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                <!-- Settings Button -->
+                                                <Button  Style="{StaticResource CustomButtonStyle}" Content="الإعدادات" Background="Transparent" BorderBrush="{x:Null}" Foreground="#333333" Margin="5" Click="SettingsBtn_Click"/>
+                                                <!-- Sign Out Button -->
+                                                <Button  Style="{StaticResource CustomButtonStyle}" Content="تسجيل الخروج" Background="Transparent" BorderBrush="{x:Null}" Foreground="#E53935" Margin="5"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+                                </Popup>
+
+                           </StackPanel>
+
+
+                        </Grid>
+                    </Border>
+
+                    <Border Margin="10 5 10 5" Background="Transparent" BorderBrush="LightGray" BorderThickness="1" Grid.Row="1">
+                        <materialDesign:Card UniformCornerRadius="15">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Side Menu -->
+                                <ScrollViewer VerticalScrollBarVisibility="Auto" >
+                                    <StackPanel x:Name="sideMenu" Margin="0 15">
+                                        <TreeView x:Name="menuTreeView" BorderThickness="0" Background="Transparent" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedItemChanged="menuTreeView_SelectedItemChanged" MouseDoubleClick="menuTreeView_MouseLeftButtonDown">
+                                            <TreeView.ItemTemplate>
+                                                <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <materialDesign:PackIcon Kind="{Binding Icon}" Width="24" Height="24" Foreground="Black" />
+                                                        <!-- Adjust Width and Height as needed -->
+                                                        <TextBlock Text="{Binding Name}" Margin="10,0" FontSize="16" Foreground="Black" />
+                                                        <!-- Adjust FontSize as needed -->
+                                                    </StackPanel>
+                                                </HierarchicalDataTemplate>
+                                            </TreeView.ItemTemplate>
+                                        </TreeView>
+                                    </StackPanel>
+                                </ScrollViewer>
+
+
+                                <!-- Render Pages -->
+                                <!--<Grid Grid.Column="1" Background="#F6F5F8" Name="RenderPages">
+                                    --><!-- Content for the second column goes here --><!--
+                                </Grid>-->
+                                <DockPanel Grid.Column="1" Background="#F6F5F8" Name="RenderPages">
+                                    <!-- Top Menu -->
+                                    <TabControl x:Name="tabControlRenderPages" SelectionChanged="tabControl_SelectionChanged">
+                                        <TabControl.Resources>
+                                            <!-- Define a style for the TabItem -->
+                                            <Style TargetType="TabItem">
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="TabItem" >
+                                                            <Grid>
+                                                                <!-- Tab Header -->
+                                                                <Border Name="Border" BorderThickness="1,1,1,0" CornerRadius="3,3,0,0"
+            Background="{TemplateBinding Background}">
+                                                                    <StackPanel Orientation="Horizontal">
+                                                                        <!-- Icon -->
+                                                                        <ContentPresenter x:Name="Icon" ContentSource="Header" Margin="5,0"/>
+
+                                                                        <!-- Close Button -->
+                                                                        <fa:FontAwesome x:Name="CloseButton" Icon="Times" FontSize="14" Foreground="Red"
+                            Margin="5,0" VerticalAlignment="Center" HorizontalAlignment="Right"
+                            MouseLeftButtonDown="CloseTab_Click" Visibility="{Binding IsSelected, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                                                        <!-- Detach Button -->
+                                                                        <fa:FontAwesome x:Name="DetachButton" Icon="Columns" FontSize="14" Foreground="Green"
+                            Margin="5,0" VerticalAlignment="Center" HorizontalAlignment="Right"
+                            MouseLeftButtonDown="DetachTab_Click" Visibility="{Binding IsSelected, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BoolToVisibilityConverter}}"/>
+
+                                                                    </StackPanel>
+                                                                </Border>
+                                                            </Grid>
+
+
+                                                            <ControlTemplate.Triggers>
+                                                                <!-- Change the background color when the tab item is selected -->
+                                                                <Trigger Property="IsSelected" Value="True">
+                                                                    <Setter TargetName="Border" Property="Background" Value="LightBlue"/>
+                                                                    <Setter TargetName="CloseButton" Property="Visibility" Value="Visible"/>
+                                                                    <Setter TargetName="DetachButton" Property="Visibility" Value="Visible"/>
+                                                                </Trigger>
+                                                                <Trigger Property="IsSelected" Value="False">
+                                                                    <Setter TargetName="CloseButton" Property="Visibility" Value="Collapsed"/>
+                                                                    <Setter TargetName="DetachButton" Property="Visibility" Value="Collapsed"/>
+                                                                </Trigger>
+                                                            </ControlTemplate.Triggers>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </TabControl.Resources>
+                                    </TabControl>
+
+
+                                    <!-- Content for the second column goes here -->
+                                </DockPanel>
+
+                                <ProgressBar Grid.Column="1"
+x:Name="loadingProgressBar"
+IsIndeterminate="True"
+Visibility="Collapsed"
+VerticalAlignment="Center"
+HorizontalAlignment="Center"
+Margin="0,20,0,0"
+Height="30"
+Width="200"
+Background="#E0E0E0"
+BorderBrush="Transparent"
+Foreground="#2196F3"
+BorderThickness="0"
+/>
+
+                                <Border x:Name="keyboardContainer" Margin="10" Background="Transparent" BorderBrush="LightGray" BorderThickness="1" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1" VerticalAlignment="Bottom" Visibility="Collapsed">
+                                    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <!-- First row (numbers) -->
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                            <Button Content="1" Width="60" Height="60" Margin="5"/>
+                                            <Button Content="2" Width="60" Height="60" Margin="5"/>
+                                            <Button Content="3" Width="60" Height="60" Margin="5"/>
+                                            <Button Content="4" Width="60" Height="60" Margin="5"/>
+                                            <Button Content="5" Width="60" Height="60" Margin="5"/>
+                                            <Button Content="6" Width="60" Height="60" Margin="5"/>
+                                            <Button Content="7" Width="60" Height="60" Margin="5"/>
+                                            <Button Content="8" Width="60" Height="60" Margin="5"/>
+                                            <Button Content="9" Width="60" Height="60" Margin="5"/>
+                                            <Button Content="0" Width="60" Height="60" Margin="5"/>
+                                        </StackPanel>
+                                        <!-- Second row (Arabic letters) -->
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                            <Button Content="ض" Width="60" Height="60" Margin="5"/>
+                                            <Button Content="ص" Width="60" Height="60" Margin="5"/>
+                                            <Button Content="ث" Width="60" Height="60" Margin="5"/>
+                                            <Button Content="ق" Width="60" Height="60" Margin="5"/>
+                                            <Button Content="ف" Width="60" Height="60" Margin="5"/>
+                                            <Button Content="غ" Width="60" Height="60" Margin="5"/>
+                                            <Button Content="ع" Width="60" Height="60" Margin="5"/>
+                                            <Button Content="ه" Width="60" Height="60" Margin="5"/>
+                                            <Button Content="خ" Width="60" Height="60" Margin="5"/>
+                                            <Button Content="ح" Width="60" Height="60" Margin="5"/>
+                                        </StackPanel>
+                                        <!-- Third row (Arabic letters) -->
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                            <Button Content="ج" Width="60" Height="60" Margin="5"/>
+                                            <Button Content="د" Width="60" Height="60" Margin="5"/>
+                                            <Button Content="ش" Width="60" Height="60" Margin="5"/>
+                                            <Button Content="س" Width="60" Height="60" Margin="5"/>
+                                            <Button Content="ي" Width="60" Height="60" Margin="5"/>
+                                            <Button Content="ط" Width="60" Height="60" Margin="5"/>
+                                            <Button Content="ظ" Width="60" Height="60" Margin="5"/>
+                                            <Button Content="ز" Width="60" Height="60" Margin="5"/>
+                                            <Button Content="ر" Width="60" Height="60" Margin="5"/>
+                                            <Button Content="ذ" Width="60" Height="60" Margin="5"/>
+                                        </StackPanel>
+                                        <!-- Fourth row (Arabic letters and symbols) -->
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                            <Button Content="ؤ" Width="60" Height="60" Margin="5"/>
+                                            <Button Content="ء" Width="60" Height="60" Margin="5"/>
+                                            <Button Content="ئ" Width="60" Height="60" Margin="5"/>
+                                            <Button Content="و" Width="60" Height="60" Margin="5"/>
+                                            <Button Content="ة" Width="60" Height="60" Margin="5"/>
+                                            <Button Content="ى" Width="60" Height="60" Margin="5"/>
+                                            <Button Content="-" Width="60" Height="60" Margin="5"/>
+                                            <Button Content="/" Width="60" Height="60" Margin="5"/>
+                                            <Button Content="*" Width="60" Height="60" Margin="5"/>
+                                            <Button Content="+" Width="60" Height="60" Margin="5"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+
+
+                                <Border x:Name="calculatorContainer" Margin="10" Background="Transparent" BorderBrush="LightGray" BorderThickness="1" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1" VerticalAlignment="Bottom" Visibility="Collapsed">
+                                    <!-- Add your calculator control here -->
+                                  
+                                        <StackPanel Orientation="Horizontal"
+   HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <StackPanel Margin="5,0,0,0"
+HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+>
+                                                <StackPanel Orientation="Horizontal" 
+    HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+    >
+                                                    <Button Width="50" Height="40" Margin="5" Content="%" Background="White" Foreground="Black" FontSize="24" FontWeight="Bold" />
+                                                   
+                                                    <TextBox Width="280" Height="40" Margin="5,5,15,5" TextAlignment="Center" FontSize="24" FontWeight="Bold"/>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal"
+    HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+    >
+                                                    <Button Width="110" Height="40" Margin="5" Content="×" Background="White" Foreground="Black" FontSize="24" FontWeight="Bold"></Button>
+                                                    <Button Width="50" Height="40" Margin="5" Background="#FF036AFF" Content="9" Foreground="White" FontSize="24" FontWeight="Bold"></Button>
+                                                    <Button Width="50" Height="40" Margin="5" Background="#FF036AFF" Content="8" Foreground="White" FontSize="24" FontWeight="Bold"></Button>
+                                                    <Button Width="50" Height="40" Margin="5" Background="#FF036AFF" Content="7" Foreground="White" FontSize="24" FontWeight="Bold"></Button>
+                                                    <Button Width="100" Height="40" Margin="5">
+                                                        <Button.Background>
+                                                            <ImageBrush ImageSource="/Assets/pic/wallet.png" Stretch="Uniform"/>
+                                                        </Button.Background>
+                                                    </Button>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal"
+    HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+    >
+                                                    <Button Width="110" Height="40" Margin="5" Content="÷" Background="White" Foreground="Black" FontSize="24" FontWeight="Bold"></Button>
+                                                    <Button Width="50" Height="40" Margin="5" Background="#FF036AFF" Content="6" Foreground="White" FontSize="24" FontWeight="Bold"></Button>
+                                                    <Button Width="50" Height="40" Margin="5" Background="#FF036AFF" Content="5" Foreground="White" FontSize="24" FontWeight="Bold"></Button>
+                                                    <Button Width="50" Height="40" Margin="5" Background="#FF036AFF" Content="4" Foreground="White" FontSize="24" FontWeight="Bold"></Button>
+                                                    <Button Width="100" Height="40" Margin="5" RenderTransformOrigin="0.5,0.5">
+                                                        <Button.Background>
+                                                            <ImageBrush ImageSource="/Assets/pic/38-512.png" Stretch="Uniform">
+                                                                <ImageBrush.RelativeTransform>
+                                                                    <TransformGroup>
+                                                                        <ScaleTransform ScaleY="1" ScaleX="1"/>
+                                                                        <SkewTransform AngleY="0" AngleX="0"/>
+                                                                        <RotateTransform Angle="0"/>
+                                                                        <TranslateTransform/>
+                                                                    </TransformGroup>
+                                                                </ImageBrush.RelativeTransform>
+                                                            </ImageBrush>
+                                                        </Button.Background>
+                                                    </Button>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal"
+    HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+    >
+                                                    <Button Width="110" Height="40" Margin="5" Content="+" Background="White" Foreground="Black" FontSize="24" FontWeight="Bold"></Button>
+                                                    <Button Width="50" Height="40" Margin="5" Background="#FF036AFF" Content="3" Foreground="White" FontSize="24" FontWeight="Bold"></Button>
+                                                    <Button Width="50" Height="40" Margin="5" Background="#FF036AFF" Content="2" Foreground="White" FontSize="24" FontWeight="Bold"></Button>
+                                                    <Button Width="50" Height="40" Margin="5" Background="#FF036AFF" Content="1" Foreground="White" FontSize="24" FontWeight="Bold"></Button>
+                                                    <Button Width="100" Height="40" Margin="5">
+                                                        <Button.Background >
+                                                            <ImageBrush ImageSource="/Assets/pic/handshake-651818_960_720.png" Stretch="Uniform"/>
+                                                        </Button.Background>
+                                                    </Button>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal"
+    HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+    >
+                                                    <Button Width="110" Height="40" Margin="5" Content="-" Background="White" Foreground="Black" FontSize="24" FontWeight="Bold"></Button>
+                                                    <Button Width="50" Height="40" Margin="5" Background="#FF036AFF" Content="." Foreground="White" FontSize="24" FontWeight="Bold"></Button>
+                                                    <Button Width="110" Height="40" Margin="5" Background="#FF036AFF" Content="0" Foreground="White" FontSize="24" FontWeight="Bold"></Button>
+                                                    <Button Width="100" Height="40" Margin="5" Content="=" Background="White" Foreground="Black" FontSize="24" FontWeight="Bold"></Button>
+                                                </StackPanel>
+
+                                            </StackPanel>
+
+                                            <StackPanel
+HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+>
+
+                                            </StackPanel>
+                                        </StackPanel>
+                                 
+                                </Border>
+
+
+                            </Grid>
+                        </materialDesign:Card>
+
+
+
+                    </Border>
+                    <Border Margin="10 0 10 0" Background="Transparent" BorderBrush="LightGray" BorderThickness="1" Grid.Row="2">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBox x:Name="MessageSlider" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsReadOnly="True" />
+                            <TextBox Text="ARP © - Mohamed El Sayed 2024" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" IsReadOnly="True" Background="Transparent" BorderThickness="0" FontSize="12" FontWeight="Normal" Foreground="Gray" Padding="5"/>
+
+                        </Grid>
+                    </Border>
+
+
+
+
+                </Grid>
+               
+            </Border>
+
+
+        </Grid>
+
+    </Border>
+</Window>

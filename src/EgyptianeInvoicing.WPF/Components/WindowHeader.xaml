@@ -1,0 +1,128 @@
+﻿<UserControl x:Class="EgyptianeInvoicing.WPF.Components.WindowHeader"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:EgyptianeInvoicing.WPF.Components"
+             xmlns:Icon="http://schemas.fontawesome.io/icons/"
+             mc:Ignorable="d" Width="auto"
+             >
+
+    <Grid  Height="30" VerticalAlignment="Top">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="auto"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Margin="20, 10, 0, 0" Grid.Column="0" HorizontalAlignment="Stretch" MouseDown="Border_MouseDown" MouseLeftButtonDown="Border_MouseLeftButtonDown"   FontFamily="{StaticResource Montserrat_Medium}"   FontSize="15" Text="{Binding HeaderTitle, RelativeSource={RelativeSource AncestorType={x:Type local:WindowHeader}}}"  VerticalAlignment="Center"  />
+        <StackPanel Margin="0, 10, 20, 0" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Height="30">
+                <Button x:Name="btnMinimize"
+                            BorderThickness="0"
+
+                            Foreground="White"
+                            FontSize="16"
+                            FontFamily="Montserrat"
+                            Cursor="Hand"
+                            Grid.Column="1"
+                            Click="btnMinimize_Click" Grid.ColumnSpan="2" Margin="10,0,10,0">
+                    <Button.Content>
+                        <Icon:ImageAwesome Icon="Minus" Width="10" Height="10" VerticalAlignment="Center" HorizontalAlignment="Center"></Icon:ImageAwesome>
+                    </Button.Content>
+
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="{StaticResource PrimaryBlueColor}" />
+
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#278BEF" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Width="18" Height="18"
+                                            CornerRadius="9"
+                                            Background="{TemplateBinding Background}">
+                                <ContentPresenter VerticalAlignment="Center"
+                                                          HorizontalAlignment="Center" />
+                            </Border>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+
+
+
+                <Button Visibility="Collapsed" x:Name="btn_restore"
+
+                        BorderThickness="0"
+                        Foreground="White"
+                        FontSize="12"
+                        FontFamily="Montserrat"
+                        Cursor="Hand"
+                        Grid.Column="2"
+
+                        Click="btn_restore_Click" Margin="10,0,10,0" Grid.ColumnSpan="2">
+
+                    <Button.Content>
+                        <Icon:ImageAwesome Icon="SquareOutline" Width="10" Height="10" HorizontalAlignment="Center" VerticalAlignment="Center"></Icon:ImageAwesome>
+                    </Button.Content>
+
+                    <Button.Style>
+                        <Style TargetType="{x:Type Button}">
+
+                            <Setter Property="Background" Value="{StaticResource PrimaryGreenColor}" />
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource SecundaryGreenColor}" />
+
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+
+                    <Button.Template>
+                        <ControlTemplate TargetType="{x:Type Button}">
+                            <Border Width="18" Height="18"
+                                    CornerRadius="9"
+                                    Background="{TemplateBinding Background}">
+                                <ContentPresenter VerticalAlignment="Center"
+                                        HorizontalAlignment="Center" />
+                            </Border>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+            <Button Margin="10,0,10,0" Grid.Column="3" Click="btnClose_Click" Cursor="Hand">
+                    <Button.Style>
+                        <Style TargetType="Button">
+
+                        <Setter Property="Background" Value="{StaticResource SecundaryRedColor}" />
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource PrimaryRedColor}" />
+
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Width="18" Height="18"
+                                        CornerRadius="9"
+                                        Background="{TemplateBinding Background}">
+                                <ContentPresenter VerticalAlignment="Center"
+                                                      HorizontalAlignment="Center" />
+                            </Border>
+                        </ControlTemplate>
+                    </Button.Template>
+                    <Button.Content>
+                        <Icon:ImageAwesome Icon="Times" Width="10" Height="10" VerticalAlignment="Center" HorizontalAlignment="Center"></Icon:ImageAwesome>
+                    </Button.Content>
+                </Button>
+            </StackPanel>
+
+        </Grid>
+ 
+</UserControl>

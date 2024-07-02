@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\pic\38-512.png" />
+    <None Remove="Assets\pic\arp-tran-removebg-preview.png" />
+    <None Remove="Assets\pic\handshake-651818_960_720.png" />
+    <None Remove="Assets\pic\math_delete.png" />
+    <None Remove="Assets\pic\wallet.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EPPlus" Version="7.2.0" />
+    <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
+    <PackageReference Include="MaterialDesignColors" Version="3.1.0" />
+    <PackageReference Include="MaterialDesignThemes" Version="5.1.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Serilog" Version="4.0.0" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="6.0.0" />
+    <PackageReference Include="Serilog.Formatting.Compact" Version="2.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ViewModels\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EgyptianeInvoicing.Shared\EgyptianeInvoicing.Shared.csproj" />
+    <ProjectReference Include="..\EgyptianeInvoicing.Signer\EgyptianeInvoicing.Signer.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\pic\38-512.png" />
+    <Resource Include="Assets\pic\arp-tran-removebg-preview.png" />
+    <Resource Include="Assets\pic\handshake-651818_960_720.png" />
+    <Resource Include="Assets\pic\math_delete.png" />
+    <Resource Include="Assets\pic\wallet.png" />
+  </ItemGroup>
+
+</Project>

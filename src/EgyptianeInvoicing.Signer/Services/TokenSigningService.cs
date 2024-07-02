@@ -17,7 +17,7 @@ using System.Text;
 
 namespace EgyptianeInvoicing.Signer.Services
 {
-    public class TokenSigningService : ISigningService
+    public partial class TokenSigningService : ISigningService
     {
 
         private readonly ILogger<TokenSigningService> _logger;
@@ -26,9 +26,66 @@ namespace EgyptianeInvoicing.Signer.Services
         {
             _logger = logger;
         }
+
+        public Result<SigningResultDto> Sign(string dllPath, string tokenPin, string certificate)
+        {
+            Result<bool> validationResult = ValidateInputs(dllPath, tokenPin, certificate);
+            if (validationResult.IsFailure)
+                return Result.Failure<SigningResultDto>(validationResult.Error);
+
+            Result<IPkcs11Library> pkcs11LibraryResult = LoadPkcs11Library(dllPath);
+            if (pkcs11LibraryResult.IsFailure)
+                return Result.Failure<SigningResultDto>(pkcs11LibraryResult.Error);
+
+            Result<ISlot> slotResult = GetFirstAvailableSlot(pkcs11LibraryResult.Value);
+            if (slotResult.IsFailure)
+                return Result.Failure<SigningResultDto>(slotResult.Error);
+
+            Result<ISession> sessionResult = OpenSession(slotResult.Value);
+            if (sessionResult.IsFailure)
+                return Result.Failure<SigningResultDto>(sessionResult.Error);
+
+            Result<Unit> loginResult = Login(sessionResult.Value, tokenPin);
+            if (loginResult.IsFailure)
+                return Result.Failure<SigningResultDto>(loginResult.Error);
+
+            Result<IObjectHandle> certificateResult = FindCertificate(sessionResult.Value);
+            if (certificateResult.IsFailure)
+                return Result.Failure<SigningResultDto>(certificateResult.Error);
+
+            Result<X509Certificate2> certForSigningResult = FindCertificateInStore(certificate);
+            if (certForSigningResult.IsFailure)
+                return Result.Failure<SigningResultDto>(certForSigningResult.Error);
+
+            SigningResultDto signingResult = new SigningResultDto
+            {
+                CertificateHandle = certificateResult.Value,
+                CertificateForSigning = certForSigningResult.Value
+            };
+            return Result.Success(signingResult);
+        }
+        public Result<string> UseSignature(string serializedJson, IObjectHandle certificate, X509Certificate2 certForSigning)
+        {
+            if (string.IsNullOrEmpty(serializedJson))
+                return Result.Failure<string>(new Error("TokenSigningService.ValidateInputs", "Serialized JSON is null or empty"));
+
+            byte[] data = Encoding.UTF8.GetBytes(serializedJson);
+            Result<SignedCms> cmsResult = CreateSignedCms(data, certificate, certForSigning);
+            if (cmsResult.IsFailure)
+                return Result.Failure<string>(cmsResult.Error);
+
+            Result<byte[]> encodedCmsResult = ComputeSignature(cmsResult.Value);
+            if (encodedCmsResult.IsFailure)
+                return Result.Failure<string>(encodedCmsResult.Error);
+
+            return Result.Success(Convert.ToBase64String(encodedCmsResult.Value));
+        }
         public Result<string> SignWithCMS(string serializedJson ,TokenSigningSettingsDto tokenSigningSettings, string tokenPin, string certificate)
         {
-            Result<bool> validationResult = ValidateInputs(serializedJson, tokenSigningSettings.DllLibPath, tokenPin, certificate);
+            if (string.IsNullOrEmpty(serializedJson))
+                return Result.Failure<string>(new Error("TokenSigningService.ValidateInputs", "Serialized JSON is null or empty"));
+
+            Result<bool> validationResult = ValidateInputs(tokenSigningSettings.DllLibPath, tokenPin, certificate);
             if (validationResult.IsFailure)
                 return Result.Failure<string>(validationResult.Error);
 
@@ -68,11 +125,9 @@ namespace EgyptianeInvoicing.Signer.Services
             return Result.Success(Convert.ToBase64String(encodedCmsResult.Value));
         }
 
-        private Result<bool> ValidateInputs(string serializedJson, string dllLibPath, string tokenPin, string tokenCertificate)
+        private Result<bool> ValidateInputs(string dllLibPath, string tokenPin, string tokenCertificate)
         {
-            if (string.IsNullOrEmpty(serializedJson))
-                return Result.Failure<bool>(new Error("TokenSigningService.ValidateInputs", "Serialized JSON is null or empty"));
-
+           
             if (string.IsNullOrEmpty(dllLibPath))
                 return Result.Failure<bool>(new Error("TokenSigningService.ValidateInputs", "DLL library path is null or empty"));
 

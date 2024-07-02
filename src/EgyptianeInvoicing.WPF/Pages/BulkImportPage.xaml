@@ -1,0 +1,116 @@
+﻿<UserControl x:Class="EgyptianeInvoicing.WPF.Pages.BulkImportPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800"
+             FlowDirection="RightToLeft">
+    <UserControl.Resources>
+        <!-- Custom Button Style -->
+        <Style TargetType="Button" x:Key="CustomButtonStyle">
+            <Setter Property="Background" Value="#007ACC"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="Margin" Value="0,10,0,0"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header Section -->
+        <StackPanel Grid.Row="0" Margin="10" VerticalAlignment="Top">
+            <TextBlock Text="تحميل المستندات" FontSize="20" FontWeight="Bold" Margin="0,0,10,10"/>
+            <Button Content="تحميل ملف العينة" Width="200" Style="{StaticResource CustomButtonStyle}" Click="DownloadSampleFile_Click"/>
+            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                <TextBlock Text="تحميل ملف Excel" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                <TextBox x:Name="FilePathTextBox" Width="300" Margin="0,0,10,0"/>
+                <Button Content="تصفح" Width="100" Style="{StaticResource CustomButtonStyle}" Margin="0,0,10,0" Click="BrowseFile_Click"/>
+            </StackPanel>
+            <Button Content="استيراد الفواتير" Width="150" Style="{StaticResource CustomButtonStyle}" Margin="0,10,0,0" Click="ImportInvoices_Click"/>
+        </StackPanel>
+
+        <!-- DataGrid Section -->
+        <DataGrid x:Name="InvoicesDataGrid" Grid.Row="1" AutoGenerateColumns="False" Margin="10" ItemsSource="{Binding Invoices}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="الرقم التسلسلي" Binding="{Binding SerialNumber}" Width="Auto"/>
+                <DataGridTextColumn Header="تاريخ الإصدار" Binding="{Binding IssueDate, StringFormat={}{0:dd/MM/yyyy}}" Width="Auto"/>
+                <DataGridTextColumn Header="نوع الفاتورة" Binding="{Binding InvoiceType}" Width="Auto"/>
+                <DataGridTextColumn Header="نوع العميل" Binding="{Binding CustomerType}" Width="Auto"/>
+                <DataGridTextColumn Header="الاسم" Binding="{Binding Name}" Width="*"/>
+                <DataGridTextColumn Header="رقم التسجيل" Binding="{Binding RegisterNumber}" Width="Auto"/>
+                <DataGridTemplateColumn Header="العناصر" Width="*" MinWidth="200">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <DataGrid ItemsSource="{Binding Items}" AutoGenerateColumns="False" Width="Auto" Height="200">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="اسم العنصر" Binding="{Binding ProductName}" Width="*"/>
+                                    <DataGridTextColumn Header="نوع الكود" Binding="{Binding CodeType}" Width="Auto"/>
+                                    <DataGridTextColumn Header="الكمية" Binding="{Binding Quantity}" Width="Auto"/>
+                                    <DataGridTextColumn Header="سعر الوحدة" Binding="{Binding UnitPrice}" Width="Auto"/>
+                                    <DataGridTextColumn Header="خصم الوحدة" Binding="{Binding UnitDiscount}" Width="Auto"/>
+                                    <DataGridTextColumn Header="كود ضريبة القيمة المضافة" Binding="{Binding VATCode}" Width="Auto"/>
+                                    <DataGridTextColumn Header="كود ضريبة الخصم" Binding="{Binding DiscountTaxCode}" Width="Auto"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="الحالة" Binding="{Binding Status}" Width="Auto"/>
+            </DataGrid.Columns>
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="Background" Value="White"/>
+                    <Setter Property="Foreground" Value="Black"/>
+                    <Setter Property="BorderBrush" Value="LightGray"/>
+                    <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                    <Setter Property="Height" Value="Auto"/>
+                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                </Style>
+            </DataGrid.RowStyle>
+            <DataGrid.CellStyle>
+                <Style TargetType="DataGridCell">
+                    <Setter Property="BorderThickness" Value="0"/>
+                </Style>
+            </DataGrid.CellStyle>
+            <DataGrid.ColumnHeaderStyle>
+                <Style TargetType="DataGridColumnHeader">
+                    <Setter Property="Background" Value="#007ACC"/>
+                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="Padding" Value="10"/>
+                    <Setter Property="Height" Value="40"/>
+                    <Setter Property="BorderBrush" Value="LightGray"/>
+                    <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                </Style>
+            </DataGrid.ColumnHeaderStyle>
+        </DataGrid>
+
+        <!-- Footer Section -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="10" VerticalAlignment="Bottom">
+            <Button Content="إرسال الفواتير" Width="150" Style="{StaticResource CustomButtonStyle}" Click="SubmitInvoices_Click"/>
+            <ProgressBar x:Name="SubmissionProgressBar" Width="200" Margin="10,0,0,0" VerticalAlignment="Center"/>
+            <TextBlock x:Name="SubmissionStatusTextBlock" VerticalAlignment="Center" Margin="10,0,0,0"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

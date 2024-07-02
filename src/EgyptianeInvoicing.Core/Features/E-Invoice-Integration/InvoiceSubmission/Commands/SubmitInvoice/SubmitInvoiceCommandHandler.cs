@@ -13,6 +13,7 @@ using EgyptianeInvoicing.Shared.Dtos.ClientsDto.Invoicing.InvoiceSubmission;
 using EgyptianeInvoicing.Shared.Dtos.ClientsDto.Invoicing.InvoiceSubmission.Details;
 using EgyptianeInvoicing.Shared.Dtos.ClientsDto.Invoicing.InvoiceSubmission.Response;
 using EgyptianeInvoicing.Shared.Enums;
+using EgyptianeInvoicing.Signer.Services.Abstractions;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System;
@@ -205,7 +206,7 @@ namespace EgyptianeInvoicing.Core.Features.E_Invoice_Integration.InvoiceSubmissi
 
                     // Sign invoice
                     var signatures = new List<SignatureDto>();
-                    var signatureValue = _tokenSigner.SignDocuments(SerializeToJson(invoiceDto), company.Credentials.TokenPin, company.Credentials.Certificate);
+                    var signatureValue = _tokenSigner.SignDocuments(SerializeToJson(invoiceDto), company.Credentials.TokenPin, company.Credentials.Certificate , request.certificate , request.certForSigning);
                     if (signatureValue.IsFailure)
                     {
                         _logger.LogError(signatureValue.Error.Message);

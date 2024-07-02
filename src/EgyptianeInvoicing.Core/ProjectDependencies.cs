@@ -106,7 +106,7 @@ namespace EgyptianeInvoicing.Core
             services.AddScoped<IInvoiceSubmissionClient, InvoiceSubmissionClient>();
             #endregion
             //Services
-            services.AddSignerDependencies(_configuration);
+            services.AddSignerDependencies();
             services.AddScoped<ISecureStorageService, SecureStorageService>();
             services.AddScoped<ITokenSigner, TokenSigner>();
             services.AddScoped<IInvoiceService, InvoiceService>();
