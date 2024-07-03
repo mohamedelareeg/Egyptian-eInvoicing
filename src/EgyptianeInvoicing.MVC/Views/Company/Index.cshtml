@@ -23,6 +23,20 @@
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+    var localizationStrings = {
+        "search": "@localizer["datatable_search"]",
+        "lengthMenu": "@localizer["datatable_lengthMenu"]",
+        "info": "@localizer["datatable_info"]",
+        "infoEmpty": "@localizer["datatable_infoEmpty"]",
+        "infoFiltered": "@localizer["datatable_infoFiltered"]",
+        "zeroRecords": "@localizer["datatable_zeroRecords"]",
+        "paginate": {
+            "first": "@localizer["datatable_paginate_first"]",
+            "previous": "@localizer["datatable_paginate_previous"]",
+            "next": "@localizer["datatable_paginate_next"]",
+            "last": "@localizer["datatable_paginate_last"]"
+        }
+    };
     $(document).ready(function () {
       var table = $('#CompaniesTable').DataTable({
         "processing": true,
@@ -55,7 +69,8 @@
                     `;
                 }
             }
-        ]
+        ],
+        "language": localizationStrings
     });
    
     });

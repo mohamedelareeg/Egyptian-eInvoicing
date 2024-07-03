@@ -7,7 +7,7 @@
     //"TokenPin": "",
     //"TokenCertificate": "MCDR CA 2018" //"Egypt Trust Sealing CA"
   },
-  "E-InvoiceEnvironment": "Preprod",
+  "E-InvoiceEnvironment": "Prod",
   "E-InvoiceEnvironments": {
     "Preprod": {
       "IdSrvBaseUrl": "https://id.preprod.eta.gov.eg",
